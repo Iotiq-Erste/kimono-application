@@ -16,7 +16,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
+opentelemetry:
+  enabled: false
 #logging:
 #  level:
 #    com:
