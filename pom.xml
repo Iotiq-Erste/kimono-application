@@ -128,7 +128,7 @@
                         <image>eclipse-temurin:20.0.1_9-jre</image>
                     </from>
                     <to>
-                        <image>iotiqdevops/culturati-backend</image>
+                        <image>iotiqdevops/kimono-backend</image>
                     </to>
                     <auth>
                         <username>${env.DOCKERHUB_USERNAME} ?: "username1"</username>
