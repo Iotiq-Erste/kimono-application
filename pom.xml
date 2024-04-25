@@ -125,7 +125,7 @@
                 <configuration>
                     <allowInsecureRegistries>true</allowInsecureRegistries>
                     <from>
-                        <image>eclipse-temurin:20.0.1_9-jre</image>
+                        <image>eclipse-temurin:21.0.2_13-jre</image>
                     </from>
                     <to>
                         <image>iotiqdevops/kimono-backend</image>
