@@ -129,6 +129,11 @@
                     </from>
                     <to>
                         <image>iotiqdevops/kimono-backend</image>
+                        <tags>
+                            <tag>latest</tag>
+                            <tag>${env.APP_VERSION}</tag>
+                            <tag>${env.COMMIT_HASH}</tag>
+                        </tags>
                     </to>
                     <auth>
                         <username>${env.DOCKERHUB_USERNAME} ?: "username1"</username>
