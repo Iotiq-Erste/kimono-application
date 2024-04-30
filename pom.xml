@@ -135,6 +135,12 @@
                             <tag>${env.COMMIT_HASH}</tag>
                         </tags>
                     </to>
+                    <container>
+                        <environment>
+                            <APP_VERSION>${env.APP_VERSION}</APP_VERSION>
+                            <GIT_COMMIT>${env.GIT_COMMIT}</GIT_COMMIT>
+                        </environment>
+                    </container>
                     <auth>
                         <username>${env.DOCKERHUB_USERNAME} ?: "username1"</username>
                         <password>${env.DOCKERHUB_PASSWORD} ?: "pass"</password>
