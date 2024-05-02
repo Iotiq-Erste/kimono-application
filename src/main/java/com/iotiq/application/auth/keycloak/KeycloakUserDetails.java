@@ -8,4 +8,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public class KeycloakUserDetails extends UserCreateDto {
     private String keycloakId;
+
+    @Override
+    public String getExternalUserId() {
+        return keycloakId;
+    }
 }

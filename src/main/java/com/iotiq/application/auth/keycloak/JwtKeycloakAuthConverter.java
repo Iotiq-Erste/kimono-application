@@ -1,63 +1,53 @@
 package com.iotiq.application.auth.keycloak;
 
 import com.iotiq.user.domain.TransientUser;
-import com.iotiq.user.security.AuthStrategy;
+import com.iotiq.user.domain.User;
+import com.iotiq.user.internal.UserService;
 import com.iotiq.user.security.jwt.JwtParser;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.iotiq.user.security.jwt.JwtParser.extractClaim;
 
 @Component
-@ConditionalOnProperty(name = "auth.strategy", havingValue = "keycloak")
-public class JwtKeycloakAuthConverter implements Converter<Jwt, AbstractAuthenticationToken>, AuthStrategy {
+@RequiredArgsConstructor
+public class JwtKeycloakAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
+
     private static final Logger log = LoggerFactory.getLogger(JwtKeycloakAuthConverter.class);
-
-
     private final JwtParser jwtParser;
-
-    public JwtKeycloakAuthConverter(JwtParser jwtParser) {
-        this.jwtParser = jwtParser;
-    }
-
-    @Override
-    public void apply(@NotNull HttpSecurity httpSecurity) throws Exception {
-        log.info("Setting auth strategy to Keycloak");
-        httpSecurity
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(configurer -> configurer.jwtAuthenticationConverter(this)));
-    }
+    private final UserService userService;
 
     @Override
     public AbstractAuthenticationToken convert(@NotNull Jwt jwt) {
-        try {
-            KeycloakUserDetails userDetails = extractKeycloakUserDetails(jwt);
+//        try {
+        KeycloakUserDetails userDetails = extractUserDetails(jwt);
+        TransientUser principal = getPrincipal(userDetails);
 
-            TransientUser principal = new TransientUser(UUID.randomUUID(), userDetails.getUsername(), "", userDetails.getRole().getAuthorities());
-            List<GrantedAuthority> authorities = userDetails.getRole().getAuthorities();
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(principal, jwt, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        List<GrantedAuthority> authorities = userDetails.getRole().getAuthorities();
+        return new UsernamePasswordAuthenticationToken(principal, userDetails.getKeycloakId(), authorities);
+//        } catch (Exception e) {
+//            log.error(e.getMessage(), e);
+//            throw e;
+//        }
+    }
 
-            return authentication;
-        } catch (Exception e) {
-            throw e;
-        }
+    private @NotNull TransientUser getPrincipal(KeycloakUserDetails userDetails) {
+        User user = userService.loadExternalUserOrCreate(userDetails);
+        return new TransientUser(user.getId(), userDetails.getUsername(), userDetails.getRole().getAuthorities());
     }
 
     @NotNull
-    private KeycloakUserDetails extractKeycloakUserDetails(Jwt jwt) {
+    private KeycloakUserDetails extractUserDetails(Jwt jwt) {
         KeycloakUserDetails userDetails = new KeycloakUserDetails();
 
         userDetails.setKeycloakId(extractClaim(jwt, KeycloakJwtClaimNames.ID));
