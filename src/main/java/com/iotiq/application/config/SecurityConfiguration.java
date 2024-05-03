@@ -1,7 +1,6 @@
 package com.iotiq.application.config;
 
-import com.iotiq.user.security.jwt.JWTConfigurer;
-import com.iotiq.user.security.jwt.TokenProvider;
+import com.iotiq.user.security.AuthStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,19 +18,18 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final TokenProvider tokenProvider;
+    private final AuthStrategy authStrategy;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        HttpSecurity httpSecurity = http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> request
                         .requestMatchers("/swagger-ui/*", "/v3/api-docs", "/v3/api-docs/*").permitAll()
                         .requestMatchers("/api/v1/auth/*").permitAll()
                         .anyRequest().authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .apply(new JWTConfigurer(tokenProvider));
+                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS));
+        authStrategy.apply(httpSecurity);
+
         return http.build();
-
     }
-
 }
