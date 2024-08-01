@@ -1,5 +1,6 @@
 package com.iotiq.application.domain;
 
+import com.iotiq.application.domain.authority.ProductManagementAuthority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -12,6 +13,17 @@ public enum Role implements com.iotiq.user.domain.authorities.Role {
     ),
     ADMIN(
             new SimpleGrantedAuthority("ROLE_ADMIN")
+    ),
+    COMPANY(
+            new SimpleGrantedAuthority("ROLE_COMPANY"),
+            ProductManagementAuthority.VIEW,
+            ProductManagementAuthority.CREATE,
+            ProductManagementAuthority.UPDATE,
+            ProductManagementAuthority.DELETE
+    ),
+    CUSTOMER(
+            new SimpleGrantedAuthority("ROLE_CUSTOMER"),
+            ProductManagementAuthority.VIEW
     ),
     CURATOR(),
     VISITOR();

@@ -1,5 +1,6 @@
 package com.iotiq.application.config;
 
+import com.iotiq.application.config.converter.JwtKeycloakAuthConverter;
 import com.iotiq.user.security.jwt.JWTConfigurer;
 import com.iotiq.user.security.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final TokenProvider tokenProvider;
+    private final JwtKeycloakAuthConverter jwtKeycloakAuthConverter;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -34,9 +35,7 @@ public class SecurityConfiguration {
                         .permitAll()
                         .anyRequest()
                         .authenticated())
-                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-                .apply(new JWTConfigurer(tokenProvider));
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(configurer -> configurer.jwtAuthenticationConverter(jwtKeycloakAuthConverter)));
         return http.build();
     }
-
 }

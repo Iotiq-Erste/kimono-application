@@ -7,6 +7,7 @@ import com.iotiq.commons.message.response.PagedResponse;
 import com.iotiq.commons.message.response.PagedResponseBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.actuate.logging.LoggersEndpoint;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -22,10 +23,12 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductService productService;
+    private final LoggersEndpoint loggersEndpoint;
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
     public PagedResponse<ProductDto> getAll(ProductFilter filter, Sort sort) {
+        System.out.println("ProductController.getAll");
         Page<Product> page = productService.getAll(filter, sort);
         List<ProductDto> dtos = page.getContent().stream().map(ProductDto::of).toList();
 

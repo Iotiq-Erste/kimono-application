@@ -12,6 +12,9 @@ public class RoleConverterImpl implements RoleConverter {
             case "SUPER_ADMIN" -> com.iotiq.application.domain.Role.SUPER_ADMIN;
             case "CURATOR" -> com.iotiq.application.domain.Role.CURATOR;
             case "VISITOR" -> com.iotiq.application.domain.Role.VISITOR;
+            case "ADMIN" -> com.iotiq.application.domain.Role.ADMIN;
+            case "COMPANY" -> com.iotiq.application.domain.Role.COMPANY;
+            case "CUSTOMER" -> com.iotiq.application.domain.Role.CUSTOMER;
             default -> null;
         };
     }
