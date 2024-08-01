@@ -78,85 +78,85 @@ public class ProductService {
         Product product = productRepository.findById(id).
                 orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
 
-        if (request.title() != null){
+        if (!request.title().equals(product.getTitle())){
             product.setTitle(request.title());
         }
-        if (request.description() != null){
+        if (!request.description().equals(product.getDescription())){
             product.setDescription(request.description());
         }
-        if (request.price() != null){
+        if (!request.price().equals(product.getPrice())){
             product.setPrice(request.price());
         }
-        if (request.imageUrl() != null){
+        if (!request.imageUrl().equals(product.getImageUrl())){
             product.setImageUrl(request.imageUrl());
         }
-        if (request.ageGroup() != null){
+        if (request.ageGroup() != product.getAgeGroup()){
             product.setAgeGroup(request.ageGroup());
         }
-        if (request.applicationArea() != null){
+        if (request.applicationArea() != product.getApplicationArea()){
             product.setApplicationArea(request.applicationArea());
         }
-        if (request.brand() != null){
+        if (request.brand() != product.getBrand()){
             product.setBrand(request.brand());
         }
-        if (request.category() != null){
+        if (request.category() != product.getCategory()){
             product.setCategory(request.category());
         }
-        if (request.certification() != null){
+        if (request.certification() != product.getCertification()){
             product.setCertification(request.certification());
         }
-        if (request.color() != null){
+        if (request.color() != product.getColor()){
             product.setColor(request.color());
         }
-        if (request.composition() != null){
+        if (request.composition() != product.getComposition()){
             product.setComposition(request.composition());
         }
-        if (request.design() != null){
+        if (request.design() != product.getDesign()){
             product.setDesign(request.design());
         }
-        if (request.designBodyPart() != null){
+        if (request.designBodyPart() != product.getDesignBodyPart()){
             product.setDesignBodyPart(request.designBodyPart());
         }
-        if (request.fiber() != null){
+        if (request.fiber() != product.getFiber()){
             product.setFiber(request.fiber());
         }
-        if (request.gender() != null){
+        if (request.gender() != product.getGender()){
             product.setGender(request.gender());
         }
-        if (request.haptics() != null){
+        if (request.haptics() != product.getHaptics()){
             product.setHaptics(request.haptics());
         }
-        if (request.materialBehavior() != null){
+        if (request.materialBehavior() != product.getMaterialBehavior()){
             product.setMaterialBehavior(request.materialBehavior());
         }
-        if (request.materialParameters() != null){
+        if (request.materialParameters() != product.getMaterialParameters()){
             product.setMaterialParameters(request.materialParameters());
         }
-        if (request.motif() != null){
+        if (request.motif() != product.getMotif()){
             product.setMotif(request.motif());
         }
-        if (request.neurodermatitis() != null){
+        if (request.neurodermatitis() != product.getNeurodermatitis()){
             product.setNeurodermatitis(request.neurodermatitis());
         }
-        if (request.oekotexStandard() != null){
+        if (request.oekotexStandard() != product.getOekotexStandard()){
             product.setOekotexStandard(request.oekotexStandard());
         }
-        if (request.priceRange() != null){
+        if (request.priceRange() != product.getPriceRange()){
             product.setPriceRange(request.priceRange());
         }
-        if (request.rating() != null){
+        if (request.rating() != product.getRating()){
             product.setRating(request.rating());
         }
-        if (request.size() != null){
+        if (request.size() != product.getSize()){
             product.setSize(request.size());
         }
-        if (request.specificBodyPart() != null){
+        if (request.specificBodyPart() != product.getSpecificBodyPart()){
             product.setSpecificBodyPart(request.specificBodyPart());
         }
-        if (request.specificFunctionality() != null){
+        if (request.specificFunctionality() != product.getSpecificFunctionality()){
             product.setSpecificFunctionality(request.specificFunctionality());
         }
-        if (request.sustainability() != null){
+        if (request.sustainability() != product.getSustainability()){
             product.setSustainability(request.sustainability());
         }
 
