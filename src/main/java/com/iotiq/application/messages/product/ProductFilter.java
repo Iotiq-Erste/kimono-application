@@ -51,13 +51,15 @@ import com.iotiq.application.entity.product.productFilters.productEnums.sustaina
 import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.commons.message.request.SearchRequest;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductFilter extends PageableRequest implements SearchRequest<Product> {
@@ -126,11 +128,7 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
     @Override
     public Specification<Product> buildSpecification(){
 
-        Specification<Product> y = Specification.where(isLike("title", search))
-                .or(isLike("description", search));
-
-        Specification<Product> x = Specification.where(isLike("title", title))
-                .and(isLike("description", description))
+       return Specification.where(isLike("title", search))
                 .and(isLike("price", price))
                 .and(ageGroup == null ?  null : isIn("ageGroup", "adultEnum", ageGroup.getAdultEnum()))
                 .and(ageGroup == null ?  null : isIn("ageGroup", "childrenEnum", ageGroup.getChildrenEnum()))
@@ -186,9 +184,6 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isIn("size","sizeEnum", sizes))
                 .and(isIn("specificBodyPart","specificBodyPartEnum", specificBodyParts))
                 .and(isIn("specificFunctionality","specificFunctionalityEnum", specificFunctionalities));
-
-
-        return x;
 
     }
 

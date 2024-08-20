@@ -1,8 +1,32 @@
 package com.iotiq.application.entity.product;
 
-import com.iotiq.application.entity.product.productFilters.*;
-import jakarta.persistence.*;
+import com.iotiq.application.entity.product.productFilters.AgeGroup;
+import com.iotiq.application.entity.product.productFilters.ApplicationArea;
+import com.iotiq.application.entity.product.productFilters.Brand;
+import com.iotiq.application.entity.product.productFilters.Category;
+import com.iotiq.application.entity.product.productFilters.Certification;
+import com.iotiq.application.entity.product.productFilters.Color;
+import com.iotiq.application.entity.product.productFilters.Composition;
+import com.iotiq.application.entity.product.productFilters.Design;
+import com.iotiq.application.entity.product.productFilters.DesignBodyPart;
+import com.iotiq.application.entity.product.productFilters.Fiber;
+import com.iotiq.application.entity.product.productFilters.Gender;
+import com.iotiq.application.entity.product.productFilters.Haptics;
+import com.iotiq.application.entity.product.productFilters.MaterialBehavior;
+import com.iotiq.application.entity.product.productFilters.MaterialParameter;
+import com.iotiq.application.entity.product.productFilters.Motif;
+import com.iotiq.application.entity.product.productFilters.Neurodermatitis;
+import com.iotiq.application.entity.product.productFilters.OekotexStandard;
+import com.iotiq.application.entity.product.productFilters.PriceRange;
+import com.iotiq.application.entity.product.productFilters.Rating;
+import com.iotiq.application.entity.product.productFilters.Size;
+import com.iotiq.application.entity.product.productFilters.SpecificBodyPart;
+import com.iotiq.application.entity.product.productFilters.SpecificFunctionality;
+import com.iotiq.application.entity.product.productFilters.Sustainability;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -11,6 +35,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Product extends AbstractPersistable<UUID> {
 
     private String title;
@@ -64,44 +89,4 @@ public class Product extends AbstractPersistable<UUID> {
     @Embedded
     private Sustainability sustainability;
 
-    public Product (String title, String description, String price, String imageUrl, AgeGroup ageGroup,
-                    ApplicationArea applicationArea, Brand brand, Category category, Certification certification,
-                    Color color, Composition composition, Design design, DesignBodyPart designBodyPart, Fiber fiber,
-                    Gender gender, Haptics haptics, MaterialBehavior materialBehavior,
-                    MaterialParameter materialParameters, Motif motif, Neurodermatitis neurodermatitis,
-                    OekotexStandard oekotexStandard, PriceRange priceRange, Rating rating, Size size,
-                    SpecificBodyPart specificBodyPart, SpecificFunctionality specificFunctionality,
-                    Sustainability sustainability) {
-        this.title = title;
-        this.description = description;
-        this.price = price;
-        this.imageUrl = imageUrl;
-        this.ageGroup = ageGroup;
-        this.applicationArea = applicationArea;
-        this.brand = brand;
-        this.category = category;
-        this.certification = certification;
-        this.color = color;
-        this.composition = composition;
-        this.design = design;
-        this.designBodyPart = designBodyPart;
-        this.fiber = fiber;
-        this.gender = gender;
-        this.haptics = haptics;
-        this.materialBehavior = materialBehavior;
-        this.materialParameters = materialParameters;
-        this.motif = motif;
-        this.neurodermatitis = neurodermatitis;
-        this.oekotexStandard = oekotexStandard;
-        this.priceRange = priceRange;
-        this.rating = rating;
-        this.size = size;
-        this.specificBodyPart = specificBodyPart;
-        this.specificFunctionality = specificFunctionality;
-        this.sustainability = sustainability;
-    }
-
-    public Product() {
-
-    }
 }

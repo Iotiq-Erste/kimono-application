@@ -11,7 +11,6 @@ import com.iotiq.commons.message.response.PagedResponse;
 import com.iotiq.commons.message.response.PagedResponseBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.actuate.logging.LoggersEndpoint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -35,7 +34,6 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductService productService;
-    private final LoggersEndpoint loggersEndpoint;
 
     @PostMapping("/filteredProducts")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
