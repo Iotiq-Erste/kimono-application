@@ -191,10 +191,6 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
         return (root, query, cb) -> value == null ? null : cb.like(cb.lower(root.get(attribute)), "%" + value.toLowerCase() + "%");
     }
 
-    private Specification<Product> isLike(String attribute,String subAttribute, String value) {
-        return (root, query, cb) -> value == null ? null : cb.like(cb.lower(root.get(attribute).get(subAttribute)), "%" + value.toLowerCase() + "%");
-    }
-
     private <E extends Enum<E>> Specification<Product> isIn(String attribute, String subAttribute, E values) {
         return (root, query, cb) -> values == null ? null : root.get(attribute).get(subAttribute).in(values.name());
     }
