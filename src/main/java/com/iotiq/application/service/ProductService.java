@@ -1,10 +1,12 @@
 package com.iotiq.application.service;
 
+import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.entity.product.Product;
 import com.iotiq.application.exception.productExceptions.ProductNotFoundException;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductCreateResponse;
 import com.iotiq.application.messages.product.ProductFilter;
+import com.iotiq.application.messages.product.ProductFilterRequest;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -12,6 +14,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.UUID;
 
 @Service
@@ -23,8 +26,10 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Page<Product> getAll(ProductFilter filter, Sort sort) {
-        return productRepository.findAll(filter.buildSpecification(), filter.buildPageable(sort));
+    public Page<Product> getAll(ProductFilterRequest filterRequest, Sort sort) {
+        ProductFilter productFilter = new ProductFilter();
+        ModelMapperUtil.map(filterRequest,productFilter);
+        return productRepository.findAll(productFilter.buildSpecification(), productFilter.buildPageable(sort));
     }
 
    public Product getOne(UUID id){

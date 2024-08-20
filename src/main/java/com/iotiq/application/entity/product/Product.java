@@ -4,16 +4,15 @@ import com.iotiq.application.entity.product.productFilters.*;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.AbstractPersistable;
+
 import java.util.UUID;
 
 @Getter
 @Setter
 @Entity
-public class Product {
+public class Product extends AbstractPersistable<UUID> {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
     private String title;
     private String description;
     private String price;
