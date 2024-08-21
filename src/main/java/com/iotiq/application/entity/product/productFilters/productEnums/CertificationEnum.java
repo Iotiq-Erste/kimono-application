@@ -29,5 +29,5 @@ public enum CertificationEnum {
     SA_8000, //SA 8000
     TOXPROOF, //Toxproof
     UN_GLOBA_COMPACT, //UN Global Compact
-    CERTIFICATION_MADE_IN_GERMANY, //Zertifizierung Made in Germany
+    CERTIFICATION_MADE_IN_GERMANY //Zertifizierung Made in Germany
 }

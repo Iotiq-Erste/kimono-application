@@ -10,6 +10,7 @@ public class ModelMapperUtil {
     }
 
     public static void map(Object source, Object destination) {
+        modelMapper.getConfiguration().setSkipNullEnabled(true);
         modelMapper.map(source, destination);
     }
 }

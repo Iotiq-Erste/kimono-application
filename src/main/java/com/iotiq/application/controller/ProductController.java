@@ -4,6 +4,7 @@ import com.iotiq.application.entity.product.Product;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductCreateResponse;
 import com.iotiq.application.messages.product.ProductDto;
+import com.iotiq.application.messages.product.ProductFilter;
 import com.iotiq.application.messages.product.ProductFilterRequest;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.service.ProductService;
@@ -37,7 +38,16 @@ public class ProductController {
 
     @PostMapping("/filteredProducts")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public PagedResponse<ProductDto> getAll(@RequestBody ProductFilterRequest filter, Sort sort) {
+    public PagedResponse<ProductDto> filteredProducts(@RequestBody ProductFilterRequest filter, Sort sort) {
+        Page<Product> page = productService.getFilteredProducts(filter, sort);
+        List<ProductDto> dtos = page.getContent().stream().map(ProductDto::of).toList();
+
+        return PagedResponseBuilder.createResponse(page, dtos);
+    }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
+    public PagedResponse<ProductDto> getAll(ProductFilter filter, Sort sort) {
         System.out.println("ProductController.getAll");
         Page<Product> page = productService.getAll(filter, sort);
         List<ProductDto> dtos = page.getContent().stream().map(ProductDto::of).toList();
@@ -55,7 +65,7 @@ public class ProductController {
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request){
+    public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request) {
         return productService.createProduct(request);
     }
 

@@ -1,9 +1,9 @@
 package com.iotiq.application.messages.product;
 
 import com.iotiq.application.entity.product.Product;
-import com.iotiq.application.entity.product.productFilters.AgeGroup;
-import com.iotiq.application.entity.product.productFilters.ApplicationArea;
+import com.iotiq.application.entity.product.productFilters.Certification;
 import com.iotiq.application.entity.product.productFilters.Composition;
+import com.iotiq.application.entity.product.productFilters.Sustainability;
 import com.iotiq.application.entity.product.productFilters.productEnums.BrandEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.CategoryEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.CertificationEnum;
@@ -21,6 +21,10 @@ import com.iotiq.application.entity.product.productFilters.productEnums.RatingEn
 import com.iotiq.application.entity.product.productFilters.productEnums.SizeEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.SpecificBodyPartEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.SpecificFunctionalityEnum;
+import com.iotiq.application.entity.product.productFilters.productEnums.ageGroupEnums.AdultEnum;
+import com.iotiq.application.entity.product.productFilters.productEnums.ageGroupEnums.ChildrenEnum;
+import com.iotiq.application.entity.product.productFilters.productEnums.applicationAreaEnums.ApplicationAreaEnum;
+import com.iotiq.application.entity.product.productFilters.productEnums.applicationAreaEnums.FrequencyEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.designEnums.DesignAppearanceEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.designEnums.DesignColorEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.ElasticEnum;
@@ -41,22 +45,16 @@ import com.iotiq.application.entity.product.productFilters.productEnums.material
 import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.ScratchResistantEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.SweatWickingEnum;
 import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.WashableEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.sustainabilityEnums.EnvironmentalCompatibilityEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.sustainabilityEnums.LifeCycleEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.sustainabilityEnums.RegionalityEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.sustainabilityEnums.ResourceConsumptionEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.sustainabilityEnums.SocialEthicsEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.sustainabilityEnums.SustainabilityCompositionEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.sustainabilityEnums.SustainabilityLightweightEnum;
 import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.commons.message.request.SearchRequest;
+import jakarta.persistence.criteria.Join;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -66,80 +64,76 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
 
     private String search;
 
-    private String title;
-    private String description;
     private String price;
 
-    private AgeGroup ageGroup;
+    private List<AdultEnum> adultEnum;
 
-    private ApplicationArea applicationArea;
+    private List<ChildrenEnum> childrenEnum;
+
+    private List<ApplicationAreaEnum> applicationAreaEnum;
+
+    private List<FrequencyEnum> frequencyEnum;
 
     private Composition composition;
 
-    private DesignAppearanceEnum designAppearances;
-    private DesignColorEnum designColors;
+    private List<DesignAppearanceEnum> designAppearances;
+    private List<DesignColorEnum> designColors;
 
-    private ElasticEnum elastics;
-    private FineEnum fines;
-    private LightweightEnum lightweights;
-    private LintFreeEnum lintFrees;
-    private SeamFeelableEnum seamFeelables;
-    private ScratchyEnum schratchies;
-    private SoftEnum softs;
-    private UniformEnum uniforms;
+    private List<ElasticEnum> elastics;
+    private List<FineEnum> fines;
+    private List<LightweightEnum> lightweights;
+    private List<LintFreeEnum> lintFrees;
+    private List<SeamFeelableEnum> seamFeelables;
+    private List<ScratchyEnum> schratchies;
+    private List<SoftEnum> softs;
+    private List<UniformEnum> uniforms;
 
-    private AbrassionResistantEnum abrassionResistants;
-    private AbsorbentEnum absorbents;
-    private AntistaticEnum antistatics;
-    private BreathableEnum breathables;
-    private ColorfastEnum colorfasts;
-    private MoistureTransportingEnum moistureTransportings;
-    private OdorNeutralizingEnum odorNeutralizings;
-    private ScratchResistantEnum scratchResistants;
-    private SweatWickingEnum sweatWickings;
-    private WashableEnum washables;
+    private List<AbrassionResistantEnum> abrassionResistants;
+    private List<AbsorbentEnum> absorbents;
+    private List<AntistaticEnum> antistatics;
+    private List<BreathableEnum> breathables;
+    private List<ColorfastEnum> colorfasts;
+    private List<MoistureTransportingEnum> moistureTransportings;
+    private List<OdorNeutralizingEnum> odorNeutralizings;
+    private List<ScratchResistantEnum> scratchResistants;
+    private List<SweatWickingEnum> sweatWickings;
+    private List<WashableEnum> washables;
 
-    private EnvironmentalCompatibilityEnum environmentalCompatibilities;
-    private LifeCycleEnum lifeCycles;
-    private RegionalityEnum regionalities;
-    private ResourceConsumptionEnum resourceConsumptions;
-    private SocialEthicsEnum socialEthics;
-    private SustainabilityCompositionEnum sustainabilityCompositions;
-    private SustainabilityLightweightEnum sustainabilityLightweights;
+    private Sustainability sustainability;
 
-    private BrandEnum brands;
-    private Set<CategoryEnum> categories;
-    private CertificationEnum certifications;
-    private ColorEnum color;
-    private DesignBodyPartEnum designBodyParts;
-    private FiberEnum fibers;
-    private GenderEnum genders;
-    private MaterialEnum materials;
-    private MaterialParameterEnum materialParameters;
-    private MotifEnum motifs;
-    private NeurdermatitisEnum neurodermatitis;
-    private OekotexStandardEnum oekotexStandards;
-    private PriceRangeEnum priceRanges;
-    private RatingEnum ratings;
-    private SizeEnum sizes;
-    private SpecificBodyPartEnum specificBodyParts;
-    private SpecificFunctionalityEnum specificFunctionalities;
+    private List<BrandEnum> brands;
+    private List<CategoryEnum> categories;
+    private List<CertificationEnum> certifications;
+    private List<ColorEnum> colors;
+    private List<DesignBodyPartEnum> designBodyParts;
+    private List<FiberEnum> fibers;
+    private List<GenderEnum> genders;
+    private List<MaterialEnum> materials;
+    private List<MaterialParameterEnum> materialParameters;
+    private List<MotifEnum> motifs;
+    private List<NeurdermatitisEnum> neurodermatitis;
+    private List<OekotexStandardEnum> oekotexStandards;
+    private List<PriceRangeEnum> priceRanges;
+    private List<RatingEnum> ratings;
+    private List<SizeEnum> sizes;
+    private List<SpecificBodyPartEnum> specificBodyParts;
+    private List<SpecificFunctionalityEnum> specificFunctionalities;
 
     @Override
     public Specification<Product> buildSpecification(){
 
-       return Specification.where(isLike("title", search))
+        return Specification.where(isLike("title", search))
                 .and(isLike("price", price))
-                .and(ageGroup == null ?  null : isIn("ageGroup", "adultEnum", ageGroup.getAdultEnum()))
-                .and(ageGroup == null ?  null : isIn("ageGroup", "childrenEnum", ageGroup.getChildrenEnum()))
-                .and(applicationArea == null ?  null : isIn("applicationArea","applicationAreaEnum", applicationArea.getApplicationAreaEnum()))
-                .and(applicationArea == null ?  null : isIn("applicationArea","frequencyEnum", applicationArea.getFrequencyEnum()))
-                .and(composition == null ?  null : isIn("composition","activeSubstanceAreaEnum", composition.getActiveSubstanceAreaEnum()))
-                .and(composition == null ?  null : isIn("composition","activeSubstanceEnum", composition.getActiveSubstanceEnum()))
-                .and(composition == null ?  null : isIn("composition","activeSubstancePlacementEnum", composition.getActiveSubstancePlacementEnum()))
-                .and(composition == null ?  null : isIn("composition","activeSubstanceReleaseEnum", composition.getActiveSubstanceReleaseEnum()))
-                .and(composition == null ?  null : isIn("composition","compositionEnum", composition.getCompositionEnum()))
-                .and(composition == null ?  null : isIn("composition","staggeringEnum", composition.getStaggeringEnum()))
+                .and(isIn("ageGroup", "adultEnum", adultEnum))
+                .and(isIn("ageGroup", "childrenEnum", childrenEnum))
+                .and(isIn("applicationArea","applicationAreaEnum", applicationAreaEnum))
+                .and(isIn("applicationArea","frequencyEnum", frequencyEnum))
+                .and(composition == null ?  null : isInList("composition","activeSubstanceAreaEnum", composition.getActiveSubstanceAreaEnum()))
+                .and(composition == null ?  null : isInList("composition","activeSubstanceEnum", composition.getActiveSubstanceEnum()))
+                .and(composition == null ?  null : isInList("composition","activeSubstancePlacementEnum", composition.getActiveSubstancePlacementEnum()))
+                .and(composition == null ?  null : isInList("composition","activeSubstanceReleaseEnum", composition.getActiveSubstanceReleaseEnum()))
+                .and(composition == null ?  null : isInList("composition","compositionEnum", composition.getCompositionEnum()))
+                .and(composition == null ?  null : isInList("composition","staggeringEnum", composition.getStaggeringEnum()))
                 .and(isIn("design","designAppearanceEnum", designAppearances))
                 .and(isIn("design","designColorEnum", designColors))
                 .and(isIn("haptics","elasticEnum", elastics))
@@ -160,19 +154,19 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isIn("materialBehavior","scratchResistantEnum", scratchResistants))
                 .and(isIn("materialBehavior","sweatWickingEnum", sweatWickings))
                 .and(isIn("materialBehavior","washableEnum", washables))
-                .and(isIn("sustainability","environmentalCompatibilityEnum", environmentalCompatibilities))
-                .and(isIn("sustainability","lifeCycleEnum", lifeCycles))
-                .and(isIn("sustainability","regionalityEnum", regionalities))
-                .and(isIn("sustainability","resourceConsumptionEnum", resourceConsumptions))
-                .and(isIn("sustainability","socialEthicsEnum", socialEthics))
-                .and(isIn("sustainability","sustainabilityCompositionEnum", sustainabilityCompositions))
-                .and(isIn("sustainability","sustainabilityLightweightEnum", sustainabilityLightweights))
+                .and(sustainability == null ?  null : isInList("sustainability","environmentalCompatibilityEnum", sustainability.getEnvironmentalCompatibilityEnum()))
+                .and(sustainability == null ?  null : isInList("sustainability","lifeCycleEnum", sustainability.getLifeCycleEnum()))
+                .and(sustainability == null ?  null : isInList("sustainability","regionalityEnum", sustainability.getRegionalityEnum()))
+                .and(sustainability == null ?  null : isInList("sustainability","resourceConsumptionEnum", sustainability.getResourceConsumptionEnum()))
+                .and(sustainability == null ?  null : isInList("sustainability","socialEthicsEnum", sustainability.getSocialEthicsEnum()))
+                .and(sustainability == null ?  null : isInList("sustainability","sustainabilityCompositionEnum", sustainability.getSustainabilityCompositionEnum()))
+                .and(sustainability == null ?  null : isInList("sustainability","sustainabilityLightweightEnum", sustainability.getSustainabilityLightweightEnum()))
                 .and(isIn("brand","brandEnum", brands))
                 .and(isIn("category","categoryEnum", categories))
-                .and(isIn("certification","certificationEnum", certifications))
-                .and(isIn("color","colorEnum", color))
-                .and(isIn("designBodyPart","designBodyPartEnum", designBodyParts))
-                .and(isIn("fiber","fiberEnum", fibers))
+                .and(isInList("certification","certificationEnum", certifications))
+                .and(isIn("color","colorEnum", colors))
+                .and(isInList("designBodyPart","designBodyPartEnum", designBodyParts))
+                .and(isInList("fiber","fiberEnum", fibers))
                 .and(isIn("gender","genderEnum",genders))
                 .and(isIn("material","materialEnum", materials))
                 .and(isIn("materialParameter","materialParameterEnum", materialParameters))
@@ -182,8 +176,8 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isIn("priceRange","priceRangeEnum", priceRanges))
                 .and(isIn("rating","ratingEnum", ratings))
                 .and(isIn("size","sizeEnum", sizes))
-                .and(isIn("specificBodyPart","specificBodyPartEnum", specificBodyParts))
-                .and(isIn("specificFunctionality","specificFunctionalityEnum", specificFunctionalities));
+                .and(isInList("specificBodyPart","specificBodyPartEnum", specificBodyParts))
+                .and(isInList("specificFunctionality","specificFunctionalityEnum", specificFunctionalities));
 
     }
 
@@ -195,7 +189,18 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
         return (root, query, cb) -> values == null ? null : root.get(attribute).get(subAttribute).in(values.name());
     }
 
-    private <E extends Enum<E>> Specification<Product> isIn(String attribute, String subAttribute, Set<E> values) {
+    private <E extends Enum<E>> Specification<Product> isIn(String attribute, String subAttribute, List<E> values) {
         return (root, query, cb) -> values == null ? null : root.get(attribute).get(subAttribute).in(values);
+    }
+
+    private <E extends Enum<E>> Specification<Product> isInList(String attribute, String subAttribute, List<E> values) {
+        return (root, query, cb) -> {
+            if(values == null) {
+                return cb.conjunction();
+            }
+            Join<Product, Certification> join = root.join(attribute);
+            Join<Certification, CertificationEnum> enumJoin = join.join(subAttribute);
+            return enumJoin.in(values);
+        };
     }
 }

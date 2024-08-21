@@ -8,7 +8,7 @@ import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -19,5 +19,5 @@ public class Certification {
     //Zertifizierung
     @ElementCollection(targetClass = CertificationEnum.class)
     @Enumerated(EnumType.STRING)
-    private Set<CertificationEnum> certificationEnum;
+    private List<CertificationEnum> certificationEnum;
 }

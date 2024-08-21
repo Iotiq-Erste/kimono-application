@@ -26,10 +26,15 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public Page<Product> getAll(ProductFilterRequest filterRequest, Sort sort) {
+    public Page<Product> getFilteredProducts(ProductFilterRequest filterRequest, Sort sort) {
         ProductFilter productFilter = new ProductFilter();
         ModelMapperUtil.map(filterRequest,productFilter);
+
         return productRepository.findAll(productFilter.buildSpecification(), productFilter.buildPageable(sort));
+    }
+
+    public Page<Product> getAll(ProductFilter filter,Sort sort) {
+        return productRepository.findAll(filter.buildPageable(sort));
     }
 
    public Product getOne(UUID id){
