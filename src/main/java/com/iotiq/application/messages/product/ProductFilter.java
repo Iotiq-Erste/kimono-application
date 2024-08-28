@@ -1,202 +1,214 @@
 package com.iotiq.application.messages.product;
 
-import com.iotiq.application.entity.product.Product;
-import com.iotiq.application.entity.product.productFilters.Certification;
-import com.iotiq.application.entity.product.productFilters.Composition;
-import com.iotiq.application.entity.product.productFilters.Sustainability;
-import com.iotiq.application.entity.product.productFilters.productEnums.BrandEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.CategoryEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.CertificationEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.ColorEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.DesignBodyPartEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.FiberEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.GenderEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.MaterialEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.MaterialParameterEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.MotifEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.NeurdermatitisEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.OekotexStandardEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.PriceRangeEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.RatingEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.SizeEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.SpecificBodyPartEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.SpecificFunctionalityEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.ageGroupEnums.AdultEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.ageGroupEnums.ChildrenEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.applicationAreaEnums.ApplicationAreaEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.applicationAreaEnums.FrequencyEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.designEnums.DesignAppearanceEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.designEnums.DesignColorEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.ElasticEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.FineEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.LightweightEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.LintFreeEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.ScratchyEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.SeamFeelableEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.SoftEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.hapticsEnums.UniformEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.AbrassionResistantEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.AbsorbentEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.AntistaticEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.BreathableEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.ColorfastEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.MoistureTransportingEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.OdorNeutralizingEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.ScratchResistantEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.SweatWickingEnum;
-import com.iotiq.application.entity.product.productFilters.productEnums.materialBehaviorEnums.WashableEnum;
+import com.iotiq.application.domain.Product;
+import com.iotiq.application.domain.enums.AbrassionResistant;
+import com.iotiq.application.domain.enums.Absorbency;
+import com.iotiq.application.domain.enums.ActiveSubstance;
+import com.iotiq.application.domain.enums.ActiveSubstanceArea;
+import com.iotiq.application.domain.enums.ActiveSubstancePlacement;
+import com.iotiq.application.domain.enums.ActiveSubstanceRelease;
+import com.iotiq.application.domain.enums.AdultAgeGroup;
+import com.iotiq.application.domain.enums.Antistatic;
+import com.iotiq.application.domain.enums.ApplicationArea;
+import com.iotiq.application.domain.enums.Brand;
+import com.iotiq.application.domain.enums.Breathable;
+import com.iotiq.application.domain.enums.Category;
+import com.iotiq.application.domain.enums.Certification;
+import com.iotiq.application.domain.enums.ChildrenAgeGroup;
+import com.iotiq.application.domain.enums.Color;
+import com.iotiq.application.domain.enums.Colorfast;
+import com.iotiq.application.domain.enums.Currency;
+import com.iotiq.application.domain.enums.DesignAppearance;
+import com.iotiq.application.domain.enums.DesignBodyPart;
+import com.iotiq.application.domain.enums.DesignColor;
+import com.iotiq.application.domain.enums.Elasticity;
+import com.iotiq.application.domain.enums.EnvironmentalCompatibility;
+import com.iotiq.application.domain.enums.FiberType;
+import com.iotiq.application.domain.enums.Fineness;
+import com.iotiq.application.domain.enums.Frequency;
+import com.iotiq.application.domain.enums.Gender;
+import com.iotiq.application.domain.enums.LifeCycle;
+import com.iotiq.application.domain.enums.Lightweight;
+import com.iotiq.application.domain.enums.LintFree;
+import com.iotiq.application.domain.enums.Material;
+import com.iotiq.application.domain.enums.MaterialParameter;
+import com.iotiq.application.domain.enums.MoistureTransporting;
+import com.iotiq.application.domain.enums.Motif;
+import com.iotiq.application.domain.enums.Neurodermatitis;
+import com.iotiq.application.domain.enums.OdorNeutralizing;
+import com.iotiq.application.domain.enums.OekotexStandard;
+import com.iotiq.application.domain.enums.PriceRange;
+import com.iotiq.application.domain.enums.Rating;
+import com.iotiq.application.domain.enums.Regionality;
+import com.iotiq.application.domain.enums.ResourceConsumption;
+import com.iotiq.application.domain.enums.ScratchResistant;
+import com.iotiq.application.domain.enums.Scratchy;
+import com.iotiq.application.domain.enums.SeamFeelable;
+import com.iotiq.application.domain.enums.Size;
+import com.iotiq.application.domain.enums.SocialEthics;
+import com.iotiq.application.domain.enums.Softness;
+import com.iotiq.application.domain.enums.SpecificBodyPart;
+import com.iotiq.application.domain.enums.SpecificFunctionality;
+import com.iotiq.application.domain.enums.Staggering;
+import com.iotiq.application.domain.enums.SustainabilityComposition;
+import com.iotiq.application.domain.enums.SustainabilityLightweight;
+import com.iotiq.application.domain.enums.SweatWicking;
+import com.iotiq.application.domain.enums.Uniform;
+import com.iotiq.application.domain.enums.Washable;
 import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.commons.message.request.SearchRequest;
-import jakarta.persistence.criteria.Join;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.math.BigDecimal;
 import java.util.List;
+
+import static com.iotiq.application.service.ProductSpecification.isIn;
+import static com.iotiq.application.service.ProductSpecification.isInList;
+import static com.iotiq.application.service.ProductSpecification.isLike;
+import static com.iotiq.application.service.ProductSpecification.priceBetween;
+
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProductFilter extends PageableRequest implements SearchRequest<Product> {
+ public class ProductFilter extends PageableRequest implements SearchRequest<Product> {
 
     private String search;
 
-    private String price;
+    private BigDecimal lowestPrice;
+    private BigDecimal highestPrice;
+    private Currency currency;
 
-    private List<AdultEnum> adultEnum;
+    private List<AdultAgeGroup> adultAgeGroups;
 
-    private List<ChildrenEnum> childrenEnum;
+    private List<ChildrenAgeGroup> childrenAgeGroups;
 
-    private List<ApplicationAreaEnum> applicationAreaEnum;
+    private List<ApplicationArea> applicationAreas;
 
-    private List<FrequencyEnum> frequencyEnum;
+    private List<Frequency> frequencies;
+ 
+    //Composition
+    private List<ActiveSubstanceArea> activeSubstanceAreas;
+    private List<ActiveSubstance> activeSubstances;
+    private List<ActiveSubstancePlacement> activeSubstancePlacements;
+    private List<ActiveSubstanceRelease> activeSubstanceReleases;
+    private List<com.iotiq.application.domain.enums.Composition> compositions;
+    private List<Staggering> staggerings;
 
-    private Composition composition;
+    private List<DesignAppearance> designAppearances;
+    private List<DesignColor> designColors;
 
-    private List<DesignAppearanceEnum> designAppearances;
-    private List<DesignColorEnum> designColors;
+    private List<Elasticity> elasticities;
+    private List<Fineness> finenesses;
+    private List<Lightweight> lightweights;
+    private List<LintFree> lintFrees;
+    private List<SeamFeelable> seamFeelables;
+    private List<Scratchy> schratchies;
+    private List<Softness> softnesses;
+    private List<Uniform> uniforms;
 
-    private List<ElasticEnum> elastics;
-    private List<FineEnum> fines;
-    private List<LightweightEnum> lightweights;
-    private List<LintFreeEnum> lintFrees;
-    private List<SeamFeelableEnum> seamFeelables;
-    private List<ScratchyEnum> schratchies;
-    private List<SoftEnum> softs;
-    private List<UniformEnum> uniforms;
+    private List<AbrassionResistant> abrassionResistants;
+    private List<Absorbency> absorbencies;
+    private List<Antistatic> antistatics;
+    private List<Breathable> breathables;
+    private List<Colorfast> colorfasts;
+    private List<MoistureTransporting> moistureTransportings;
+    private List<OdorNeutralizing> odorNeutralizings;
+    private List<ScratchResistant> scratchResistants;
+    private List<SweatWicking> sweatWickings;
+    private List<Washable> washables;
 
-    private List<AbrassionResistantEnum> abrassionResistants;
-    private List<AbsorbentEnum> absorbents;
-    private List<AntistaticEnum> antistatics;
-    private List<BreathableEnum> breathables;
-    private List<ColorfastEnum> colorfasts;
-    private List<MoistureTransportingEnum> moistureTransportings;
-    private List<OdorNeutralizingEnum> odorNeutralizings;
-    private List<ScratchResistantEnum> scratchResistants;
-    private List<SweatWickingEnum> sweatWickings;
-    private List<WashableEnum> washables;
+    //Sustainability
+    private List<EnvironmentalCompatibility> environmentalCompatibilities;
+    private List<LifeCycle> lifeCycles;
+    private List<Regionality> regionalityList;
+    private List<ResourceConsumption> resourceConsumptions;
+    private List<SocialEthics> socialEthics;
+    private List<SustainabilityComposition> sustainabilityCompositions;
+    private List<SustainabilityLightweight> sustainabilityLightweights;
 
-    private Sustainability sustainability;
-
-    private List<BrandEnum> brands;
-    private List<CategoryEnum> categories;
-    private List<CertificationEnum> certifications;
-    private List<ColorEnum> colors;
-    private List<DesignBodyPartEnum> designBodyParts;
-    private List<FiberEnum> fibers;
-    private List<GenderEnum> genders;
-    private List<MaterialEnum> materials;
-    private List<MaterialParameterEnum> materialParameters;
-    private List<MotifEnum> motifs;
-    private List<NeurdermatitisEnum> neurodermatitis;
-    private List<OekotexStandardEnum> oekotexStandards;
-    private List<PriceRangeEnum> priceRanges;
-    private List<RatingEnum> ratings;
-    private List<SizeEnum> sizes;
-    private List<SpecificBodyPartEnum> specificBodyParts;
-    private List<SpecificFunctionalityEnum> specificFunctionalities;
+    private List<Brand> brands;
+    private List<Category> categories;
+    private List<Certification> certifications;
+    private List<Color> colors;
+    private List<DesignBodyPart> designBodyParts;
+    private List<FiberType> fiberTypes;
+    private List<Gender> genders;
+    private List<Material> materials;
+    private List<MaterialParameter> materialParameters;
+    private List<Motif> motifs;
+    private List<Neurodermatitis> neurodermatitis;
+    private List<OekotexStandard> oekotexStandards;
+    private List<PriceRange> priceRanges;
+    private List<Rating> ratings;
+    private List<Size> sizes;
+    private List<SpecificBodyPart> specificBodyParts;
+    private List<SpecificFunctionality> specificFunctionalities;
 
     @Override
     public Specification<Product> buildSpecification(){
 
         return Specification.where(isLike("title", search))
-                .and(isLike("price", price))
-                .and(isIn("ageGroup", "adultEnum", adultEnum))
-                .and(isIn("ageGroup", "childrenEnum", childrenEnum))
-                .and(isIn("applicationArea","applicationAreaEnum", applicationAreaEnum))
-                .and(isIn("applicationArea","frequencyEnum", frequencyEnum))
-                .and(composition == null ?  null : isInList("composition","activeSubstanceAreaEnum", composition.getActiveSubstanceAreaEnum()))
-                .and(composition == null ?  null : isInList("composition","activeSubstanceEnum", composition.getActiveSubstanceEnum()))
-                .and(composition == null ?  null : isInList("composition","activeSubstancePlacementEnum", composition.getActiveSubstancePlacementEnum()))
-                .and(composition == null ?  null : isInList("composition","activeSubstanceReleaseEnum", composition.getActiveSubstanceReleaseEnum()))
-                .and(composition == null ?  null : isInList("composition","compositionEnum", composition.getCompositionEnum()))
-                .and(composition == null ?  null : isInList("composition","staggeringEnum", composition.getStaggeringEnum()))
-                .and(isIn("design","designAppearanceEnum", designAppearances))
-                .and(isIn("design","designColorEnum", designColors))
-                .and(isIn("haptics","elasticEnum", elastics))
-                .and(isIn("haptics","fineEnum", fines))
-                .and(isIn("haptics","lightweightEnum", lightweights))
-                .and(isIn("haptics","lintFreeEnum", lintFrees))
-                .and(isIn("haptics","scratchyEnum", schratchies))
-                .and(isIn("haptics","seamFeelableEnum", seamFeelables))
-                .and(isIn("haptics","softEnum", softs))
-                .and(isIn("haptics","uniformEnum", uniforms))
-                .and(isIn("materialBehavior","abrassionResistantEnum", abrassionResistants))
-                .and(isIn("materialBehavior","absorbentEnum", absorbents))
-                .and(isIn("materialBehavior","antistaticEnum", antistatics))
-                .and(isIn("materialBehavior","breathableEnum", breathables))
-                .and(isIn("materialBehavior","colorfastEnum", colorfasts))
-                .and(isIn("materialBehavior","moistureTransportingEnum", moistureTransportings))
-                .and(isIn("materialBehavior","odorNeutralizingEnum", odorNeutralizings))
-                .and(isIn("materialBehavior","scratchResistantEnum", scratchResistants))
-                .and(isIn("materialBehavior","sweatWickingEnum", sweatWickings))
-                .and(isIn("materialBehavior","washableEnum", washables))
-                .and(sustainability == null ?  null : isInList("sustainability","environmentalCompatibilityEnum", sustainability.getEnvironmentalCompatibilityEnum()))
-                .and(sustainability == null ?  null : isInList("sustainability","lifeCycleEnum", sustainability.getLifeCycleEnum()))
-                .and(sustainability == null ?  null : isInList("sustainability","regionalityEnum", sustainability.getRegionalityEnum()))
-                .and(sustainability == null ?  null : isInList("sustainability","resourceConsumptionEnum", sustainability.getResourceConsumptionEnum()))
-                .and(sustainability == null ?  null : isInList("sustainability","socialEthicsEnum", sustainability.getSocialEthicsEnum()))
-                .and(sustainability == null ?  null : isInList("sustainability","sustainabilityCompositionEnum", sustainability.getSustainabilityCompositionEnum()))
-                .and(sustainability == null ?  null : isInList("sustainability","sustainabilityLightweightEnum", sustainability.getSustainabilityLightweightEnum()))
-                .and(isIn("brand","brandEnum", brands))
-                .and(isIn("category","categoryEnum", categories))
-                .and(isInList("certification","certificationEnum", certifications))
-                .and(isIn("color","colorEnum", colors))
-                .and(isInList("designBodyPart","designBodyPartEnum", designBodyParts))
-                .and(isInList("fiber","fiberEnum", fibers))
-                .and(isIn("gender","genderEnum",genders))
-                .and(isIn("material","materialEnum", materials))
-                .and(isIn("materialParameter","materialParameterEnum", materialParameters))
-                .and(isIn("motif","motifEnum", motifs))
-                .and(isIn("neurodermatitis","neurodermatitisEnum", neurodermatitis))
-                .and(isIn("oekotexStandard","oekotexStandardEnum", oekotexStandards))
-                .and(isIn("priceRange","priceRangeEnum", priceRanges))
-                .and(isIn("rating","ratingEnum", ratings))
-                .and(isIn("size","sizeEnum", sizes))
-                .and(isInList("specificBodyPart","specificBodyPartEnum", specificBodyParts))
-                .and(isInList("specificFunctionality","specificFunctionalityEnum", specificFunctionalities));
-
+                .and(priceBetween(lowestPrice, highestPrice))
+                .and(isIn("ageGroup", "adultAgeGroup", adultAgeGroups))
+                .and(isIn("ageGroup", "childrenAgeGroup", childrenAgeGroups))
+                .and(isIn("applicationAreaGroup","applicationArea", applicationAreas))
+                .and(isIn("applicationAreaGroup","frequency", frequencies))
+                .and(isInList("composition","activeSubstanceAreas", activeSubstanceAreas))
+                .and(isInList("composition","activeSubstances", activeSubstances))
+                .and(isInList("composition","activeSubstancePlacements", activeSubstancePlacements))
+                .and(isInList("composition","activeSubstanceReleases", activeSubstanceReleases))
+                .and(isInList("composition","compositions", compositions))
+                .and(isInList("composition","staggerings", staggerings))
+                .and(isIn("design","designAppearance", designAppearances))
+                .and(isIn("design","designColor", designColors))
+                .and(isIn("haptics","elasticity", elasticities))
+                .and(isIn("haptics","fineness", finenesses))
+                .and(isIn("haptics","lightweight", lightweights))
+                .and(isIn("haptics","lintFree", lintFrees))
+                .and(isIn("haptics","scratchy", schratchies))
+                .and(isIn("haptics","seamFeelable", seamFeelables))
+                .and(isIn("haptics","softness", softnesses))
+                .and(isIn("haptics","uniform", uniforms))
+                .and(isIn("materialBehavior","abrasionResistant", abrassionResistants))
+                .and(isIn("materialBehavior","absorbency", absorbencies))
+                .and(isIn("materialBehavior","antistatic", antistatics))
+                .and(isIn("materialBehavior","breathable", breathables))
+                .and(isIn("materialBehavior","colorfast", colorfasts))
+                .and(isIn("materialBehavior","moistureTransporting", moistureTransportings))
+                .and(isIn("materialBehavior","odorNeutralizing", odorNeutralizings))
+                .and(isIn("materialBehavior","scratchResistant", scratchResistants))
+                .and(isIn("materialBehavior","sweatWicking", sweatWickings))
+                .and(isIn("materialBehavior","washable", washables))
+                .and(isInList("sustainability","environmentalCompatibilities", environmentalCompatibilities))
+                .and(isInList("sustainability","lifeCycles", lifeCycles))
+                .and(isInList("sustainability","regionalityList", regionalityList))
+                .and(isInList("sustainability","resourceConsumptions", resourceConsumptions))
+                .and(isInList("sustainability","socialEthics", socialEthics))
+                .and(isInList("sustainability","sustainabilityCompositions", sustainabilityCompositions))
+                .and(isInList("sustainability","sustainabilityLightweights", sustainabilityLightweights))
+                .and(isIn("brand", brands))
+                .and(isIn("category", categories))
+                .and(isInList("certifications", certifications))
+                .and(isIn("color", colors))
+                .and(isInList("designBodyParts", designBodyParts))
+                .and(isInList("fiberTypes", fiberTypes))
+                .and(isIn("gender", genders))
+                .and(isIn("material", materials))
+                .and(isIn("materialParameter", materialParameters))
+                .and(isIn("motif", motifs))
+                .and(isIn("neurodermatitis", neurodermatitis))
+                .and(isIn("oekotexStandard", oekotexStandards))
+                .and(isIn("priceRange", priceRanges))
+                .and(isIn("rating", ratings))
+                .and(isIn("sizes", sizes))
+                .and(isInList("specificBodyParts", specificBodyParts))
+                .and(isInList("specificFunctionalities", specificFunctionalities));
     }
 
-    private Specification<Product> isLike(String attribute, String value) {
-        return (root, query, cb) -> value == null ? null : cb.like(cb.lower(root.get(attribute)), "%" + value.toLowerCase() + "%");
-    }
-
-    private <E extends Enum<E>> Specification<Product> isIn(String attribute, String subAttribute, List<E> values) {
-        return (root, query, cb) -> values == null ? null : root.get(attribute).get(subAttribute).in(values);
-    }
-
-    private <E extends Enum<E>> Specification<Product> isInList(String attribute, String subAttribute, List<E> values) {
-        return (root, query, cb) -> {
-            if(values == null) {
-                return cb.conjunction();
-            }
-            Join<Product, Certification> join = root.join(attribute);
-            Join<Certification, CertificationEnum> enumJoin = join.join(subAttribute);
-            return enumJoin.in(values);
-        };
-    }
 }
