@@ -10,6 +10,7 @@ grant_type={{grantType}}&client_id={{clientId}}&password={{password}}&username={
     client.test("Obtain Token", function() {
         client.assert(response.status === 200, "HTTP response code is 200");
         client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+        client.global.set("productTotalElements", 0);
     });
 %}
 
@@ -96,14 +97,122 @@ Content-Type: application/json
     }
 }
 > {%
-    client.global.set("newProductID1", response.body.newProductID);
     client.test("Create new product" ,function() {
         client.assert(response.status === 201, "Status code is 201");
         client.assert(response.body.hasOwnProperty("newProductID"), "Product has been created");
     });
+    client.global.set("productTotalElements", client.global.get("productTotalElements")+1);
+    client.global.set("newProductID1", response.body.newProductID);
 %}
 
-### Scenario 3: Update Product
+### Scenario 3: Create New Product
+POST {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Sample Product 2",
+  "description": "Sample Description",
+  "price":{
+    "amount":20,
+    "currency":"EUR"
+  },
+  "imageUrl": "http://example.com/image.jpg",
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup" : "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea" : "WORK_CLOTHING",
+    "frequency" : "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certification":  ["BLUESIGN", "TOXPROOF"],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": ["COMPLETE"],
+    "activeSubstances": ["CHITOSAN"],
+    "activeSubstancePlacements": ["SERUM"],
+    "activeSubstanceReleases": ["DIFFUSING"],
+    "compositions": ["PATCHWORK"],
+    "staggerings": ["TEMPORAL"]
+  },
+  "design": {
+    "designAppearance" : "DYNAMIC",
+    "designColor" : "COLORFUL"
+  },
+  "designBodyPart": ["SEAMLESS"],
+  "fiberTypes": ["COTTON","MODAL"],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity" : "ELASTIC",
+    "fineness" : "FINE",
+    "lightweight" : "LIGHT",
+    "lintFree" : "FREE",
+    "scratchy" : "SMOOTH",
+    "seamFeelable" : "FEELABLE",
+    "softness" : "SOFT",
+    "uniform" : "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant" : "VERY",
+    "absorbency" : "VERY",
+    "antistatic" : "VERY",
+    "breathable" : "VERY",
+    "colorfast" : "VERY",
+    "moistureTransporting" : "VERY",
+    "odorNeutralizing" : "VERY",
+    "scratchResistant" : "VERY",
+    "sweatWicking" : "VERY",
+    "washable" : "VERY"
+  },
+  "materialParameter": "THICKNESS",
+  "motif":  "ANIMALS",
+  "neurodermatitis":  "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange":  "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": ["XXS"],
+  "specificBodyParts": ["SCALP","FACE"],
+  "specificFunctionalities": ["ANTIBACTERIAL", "ANTIVIRAL"],
+  "sustainability": {
+    "environmentalCompatibilities": ["ENVIRONMENTAL_COMPATIBILITY","BIODEGRADABLE"],
+    "lifeCycles": ["LIFE_CYCLE"],
+    "regionalityList": ["MADE_IN_GERMANY"],
+    "resourceConsumptions": ["LOW_USAGE"],
+    "socialEthics": ["FAIR_WAGES"],
+    "sustainabilityCompositions": ["RARE_MATERIALS"],
+    "sustainabilityLightweights": ["LIGHTWEIGHT"]
+  }
+}
+> {%
+
+    client.test("Create new product" ,function() {
+        client.assert(response.status === 201, "Status code is 201");
+        client.assert(response.body.hasOwnProperty("newProductID"), "Product has been created");
+    });
+    client.global.set("newProductID2", response.body.newProductID);
+    client.global.set("productTotalElements", client.global.get("productTotalElements")+1);
+%}
+
+### Scenario 4: Get All Products
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+
+}
+> {%
+    client.test("Product has been updated" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.page.totalElements === client.global.get("productTotalElements"), "Total element didnt match");
+    });
+%}
+
+### Scenario 5: Update Product
 PUT {{baseUrl}}/api/v1/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -191,7 +300,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 4: Get Product
+### Scenario 6: Get Product
 GET {{baseUrl}}/api/v1/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -199,82 +308,28 @@ Content-Type: application/json
 > {%
     client.test("Get product" ,function() {
         client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.title === "Sample Product 1 has been updated", "Update failed");
     });
 %}
 
-### Scenario 5: Get All Products
-GET {{baseUrl}}/api/v1/products
+### Scenario 7: Get All Products
+GET {{baseUrl}}/api/v1/products?lowestPrice=0&highestPrice=100
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 {
-"search":"",
-"lowestPrice":null,
-"highestPrice":null,
-"adultAgeGroups": [],
-"childrenAgeGroups": [],
-"applicationAreas": [],
-"frequencies": [],
-"activeSubstanceAreas": [],
-"activeSubstances": [],
-"activeSubstancePlacements": [],
-"activeSubstanceReleases": [],
-"compositions": [],
-"staggerings": [],
-"designAppearances": [],
-"designColors": [],
-"elasticities": [],
-"finenesses": [],
-"lightweights": [],
-"lintFrees": [],
-"seamFeelables": [],
-"schratchies": [],
-"softnesses": [],
-"uniforms": [],
-"abrassionResistants": [],
-"absorbencies": [],
-"antistatics": [],
-"breathables": [],
-"colorfasts": [],
-"moistureTransportings": [],
-"odorNeutralizings": [],
-"scratchResistants": [],
-"sweatWickings": [],
-"washables": [],
-"environmentalCompatibilities": [],
-"lifeCycles": [],
-"regionalityList": [],
-"resourceConsumptions": [],
-"socialEthics": [],
-"sustainabilityCompositions": [],
-"sustainabilityLightweights": [],
-"brands": [],
-"categories": [],
-"certifications": [],
-"colors": [],
-"designBodyParts": [],
-"fiberTypes": [],
-"genders": [],
-"materials": [],
-"materialParameters": [],
-"motifs": [],
-"neurodermatitis": [],
-"oekotexStandards": [],
-"priceRanges": [],
-"ratings": [],
-"sizes": [],
-"specificBodyParts": [],
-"specificFunctionalities": []
 }
 
 > {%
     client.test("Get all products" ,function() {
         client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.content[0].price.amount >= 0  && response.body.content[0].price.amount <=100, "x");
+        client.assert(response.body.content[1].price.amount >= 0  && response.body.content[1].price.amount <=100, "y");
     });
 %}
 
 
-### Scenario 6: Delete Product
+### Scenario 8: Delete Product
 DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -282,5 +337,34 @@ Content-Type: application/json
 > {%
     client.test("Product has been deleted" ,function() {
         client.assert(response.status === 200, "Status code is 200");
+    });
+    client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
+%}
+
+### Scenario 9: Delete Product
+DELETE {{baseUrl}}/api/v1/products/{{newProductID2}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Product has been deleted" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+    client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
+%}
+
+### Scenario 10: Get All Products
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+
+}
+
+> {%
+    client.test("Get all products" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.page.totalElements === client.global.get("productTotalElements"), "Deletion failed, product total element didnt match");
     });
 %}
