@@ -206,7 +206,7 @@ import static com.iotiq.application.service.ProductSpecification.priceBetween;
                 .and(isIn("oekotexStandard", oekotexStandards))
                 .and(isIn("priceRange", priceRanges))
                 .and(isIn("rating", ratings))
-                .and(isIn("sizes", sizes))
+                .and(isInList("sizes", sizes))
                 .and(isInList("specificBodyParts", specificBodyParts))
                 .and(isInList("specificFunctionalities", specificFunctionalities));
     }

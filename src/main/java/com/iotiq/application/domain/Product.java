@@ -118,6 +118,7 @@ public class Product extends AbstractPersistable<UUID> {
     private Rating rating;
 
     //Basisgröße
+    @ElementCollection(targetClass = Size.class)
     @Enumerated(EnumType.STRING)
     private List<Size> sizes;
 

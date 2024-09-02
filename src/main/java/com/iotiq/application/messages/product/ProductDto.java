@@ -51,7 +51,7 @@ public class ProductDto{
     private Gender gender;
     private Haptics haptics;
     private MaterialBehavior materialBehavior;
-    private MaterialParameter materialParameters;
+    private MaterialParameter materialParameter;
     private Motif motif;
     private Neurodermatitis neurodermatitis;
     private OekotexStandard oekotexStandard;
