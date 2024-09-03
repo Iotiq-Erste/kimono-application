@@ -1,6 +1,6 @@
 package com.iotiq.application.repository;
 
-import com.iotiq.application.entity.product.Product;
+import com.iotiq.application.domain.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

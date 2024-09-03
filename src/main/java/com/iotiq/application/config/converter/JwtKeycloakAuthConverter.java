@@ -1,7 +1,7 @@
 package com.iotiq.application.config.converter;
 
 import com.iotiq.application.domain.KeycloakUser;
-import com.iotiq.application.domain.Role;
+import com.iotiq.application.domain.enums.Role;
 import com.iotiq.application.exception.JwtConversionException;
 import com.iotiq.application.messages.keycloak.KeycloakJwtClaimNames;
 import com.iotiq.application.messages.keycloak.KeycloakUserDetails;

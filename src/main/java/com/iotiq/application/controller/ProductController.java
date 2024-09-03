@@ -1,18 +1,30 @@
 package com.iotiq.application.controller;
 
-import com.iotiq.application.entity.product.Product;
-import com.iotiq.application.messages.product.*;
+import com.iotiq.application.config.ModelMapperUtil;
+import com.iotiq.application.domain.Product;
+import com.iotiq.application.messages.product.ProductCreateRequest;
+import com.iotiq.application.messages.product.ProductCreateResponse;
+import com.iotiq.application.messages.product.ProductDto;
+import com.iotiq.application.messages.product.ProductFilter;
+import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.service.ProductService;
 import com.iotiq.commons.message.response.PagedResponse;
 import com.iotiq.commons.message.response.PagedResponseBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.actuate.logging.LoggersEndpoint;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,14 +35,13 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductService productService;
-    private final LoggersEndpoint loggersEndpoint;
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
     public PagedResponse<ProductDto> getAll(ProductFilter filter, Sort sort) {
-        System.out.println("ProductController.getAll");
+
         Page<Product> page = productService.getAll(filter, sort);
-        List<ProductDto> dtos = page.getContent().stream().map(ProductDto::of).toList();
+        List<ProductDto> dtos = ModelMapperUtil.map(page.getContent(), ProductDto.class);
 
         return PagedResponseBuilder.createResponse(page, dtos);
     }
@@ -39,13 +50,13 @@ public class ProductController {
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
     public ProductDto getOne(@PathVariable UUID id) {
         Product product = productService.getOne(id);
-        return ProductDto.of(product);
+        return ModelMapperUtil.map(product, ProductDto.class);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request){
+    public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request) {
         return productService.createProduct(request);
     }
 
