@@ -53,7 +53,6 @@ public class OrderController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
     public OrderCreateResponse createOrder(@RequestBody OrderCreateRequest request) {
         return orderService.createOrder(request);
