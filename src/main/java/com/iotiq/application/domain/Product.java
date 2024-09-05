@@ -135,4 +135,7 @@ public class Product extends AbstractPersistable<UUID> {
     @Embedded
     private Sustainability sustainability;
 
+    private UUID supplierId;
+
+    //private Long quantity;
 }
