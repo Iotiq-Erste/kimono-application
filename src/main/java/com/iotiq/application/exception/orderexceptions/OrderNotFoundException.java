@@ -1,7 +1,7 @@
 package com.iotiq.application.exception.orderexceptions;
 
-public class OrderNotFoundExcption extends RuntimeException {
-    public OrderNotFoundExcption(String message) {
+public class OrderNotFoundException extends RuntimeException {
+    public OrderNotFoundException(String message) {
         super(message);
     }
 

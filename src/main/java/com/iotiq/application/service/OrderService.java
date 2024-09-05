@@ -2,7 +2,7 @@ package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Order;
-import com.iotiq.application.exception.orderexceptions.OrderNotFoundExcption;
+import com.iotiq.application.exception.orderexceptions.OrderNotFoundException;
 import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
@@ -20,7 +20,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
 
     public Order getOrder(UUID id) {
-        return orderRepository.findById(id) .orElseThrow(() -> new OrderNotFoundExcption("Order not found with ID: " + id));
+        return orderRepository.findById(id) .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
     }
 
     public List<Order> getOrdersByUser(UUID userId){
