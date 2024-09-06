@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class ProductService {
     }
 
 
-    public Page<Product> getAll(ProductFilter filter,Sort sort) {
+    public Page<Product> getAll(@RequestParam ProductFilter filter, Sort sort) {
         return productRepository.findAll(filter.buildSpecification(), filter.buildPageable(sort));
     }
 

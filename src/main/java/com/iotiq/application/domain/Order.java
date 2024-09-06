@@ -1,7 +1,10 @@
 package com.iotiq.application.domain;
 
 import com.iotiq.application.domain.enums.DeliveryStatus;
+import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
@@ -9,9 +12,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
-//@Entity
+@Entity
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Order extends AbstractPersistable<UUID> {
 
     private UUID userId;
