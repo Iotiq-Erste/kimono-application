@@ -19,7 +19,7 @@ import java.util.UUID;
 @Setter
 public class Customer extends AbstractPersistable<UUID> {
 
-    @OneToOne(cascade = CascadeType.ALL, optional = true)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 
