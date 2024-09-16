@@ -32,44 +32,44 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
+    @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
     public OrderDto getOne(@PathVariable UUID id) {
         Order order = orderService.getOrder(id);
         return ModelMapperUtil.map(order, OrderDto.class);
     }
 
-    @GetMapping("/getOrdersByUser/{userId}")
-    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public List<OrderDto> getOrdersByUser(@PathVariable UUID userId) {
-        List<Order> orders = orderService.getOrdersByUser(userId);
+    @GetMapping
+    @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
+    public List<OrderDto> getOrders() {
+        List<Order> orders = orderService.getOrders();
         return ModelMapperUtil.map(orders, OrderDto.class);
     }
 
-    @GetMapping("/getOrdersBySupplier/{supplierId}")
-    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public List<OrderDto> getOrderBySupplier(@PathVariable UUID supplierId) {
-        List<Order> orders = orderService.getOrdersBySupplier(supplierId);
+    @GetMapping("/getOrdersBySeller")
+    @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
+    public List<OrderDto> getOrderBySeller() {
+        List<Order> orders = orderService.getOrdersBySeller();
         return ModelMapperUtil.map(orders, OrderDto.class);
     }
+
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @PreAuthorize("hasAuthority(@OrderManagementAuth.CREATE)")
     public OrderCreateResponse createOrder(@RequestBody OrderCreateRequest request) {
         return orderService.createOrder(request);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") UUID id) {
-        orderService.delete(id);
+    @PreAuthorize("hasAuthority(@OrderManagementAuth.DELETE)")
+    public void invisible(@PathVariable("id") UUID id) {
+        orderService.visible(id);
     }
 
-
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority(@OrderManagementAuth.UPDATE)")
     public void update(@PathVariable("id") UUID id, @RequestBody @Valid OrderUpdateRequest request) {
         orderService.update(id, request);
     }
-
-
-
 
 }

@@ -61,11 +61,13 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.DELETE)")
     public void delete(@PathVariable("id") UUID id) {
         productService.delete(id);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.UPDATE)")
     public void update(@PathVariable("id") UUID id, @RequestBody @Valid ProductUpdateRequest request) {
         productService.update(id, request);
     }

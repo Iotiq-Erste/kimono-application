@@ -2,6 +2,12 @@ package com.iotiq.application.domain;
 
 import com.iotiq.application.domain.enums.DeliveryStatus;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +15,8 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -17,9 +24,12 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "order_table")
 public class Order extends AbstractPersistable<UUID> {
 
-    private UUID userId;
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     private String orderNumber;
 
@@ -35,12 +45,16 @@ public class Order extends AbstractPersistable<UUID> {
 
     private String deliveryAddress;
 
+    @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
-    private Date deliveryStatusDate;
+    private LocalDate deliveryStatusDate;
 
-    private Date orderDate;
+    private LocalDate orderDate;
 
-    private Cart cart;
+    @OneToMany(mappedBy = "order")
+    private List<OrderedProduct> orderedProducts;
+
+    private boolean isVisible;
 
 }

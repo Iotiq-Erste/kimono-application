@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderUpdateRequest {
+
     private String deliveryAddressType;
     private String deliveryAddress;
     private DeliveryStatus deliveryStatus;

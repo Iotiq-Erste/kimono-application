@@ -14,7 +14,7 @@ import java.util.UUID;
 public class OrderDto {
 
     private UUID id;
-    private String userId;
+    private String customerId;
     private String orderNumber;
     private BigDecimal cargoPrice;
     private BigDecimal totalDiscount;
