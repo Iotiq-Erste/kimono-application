@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -28,7 +27,5 @@ public class CartItem extends AbstractPersistable<UUID> {
     private Cart cart;
 
     private Long quantity;
-
-    private BigDecimal cartTotal;
 
 }

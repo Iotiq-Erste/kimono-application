@@ -43,7 +43,7 @@ public class CartController {
 
     @PutMapping
     @PreAuthorize("hasAuthority(@CartManagementAuth.UPDATE)")
-    public void updateCartByCustomerId(@RequestBody CartUpdateRequest request){
+    public void updateCart(@RequestBody CartUpdateRequest request){
         cartService.update(request);
     }
 

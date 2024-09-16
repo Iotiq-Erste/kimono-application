@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,4 +34,6 @@ public class Cart extends AbstractPersistable<UUID> {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    private BigDecimal cartTotal;
 }
