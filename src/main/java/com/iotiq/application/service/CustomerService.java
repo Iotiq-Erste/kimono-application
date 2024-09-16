@@ -26,6 +26,7 @@ public class CustomerService {
         return new CustomerCreateResponse(customer.getId());
     }
 
+    @Transactional
     public void inactiveCustomer() {
         Customer customer = getCurrentCustomer();
         customer.setActive(false);

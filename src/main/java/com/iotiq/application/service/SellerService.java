@@ -42,6 +42,7 @@ public class SellerService {
         return new SellerCreateResponse(seller.getId());
     }
 
+    @Transactional
     public void inactiveSeller() {
         Seller currentSeller = getCurrentSeller();
         currentSeller.setActive(false);
