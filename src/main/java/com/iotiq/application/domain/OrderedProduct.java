@@ -2,7 +2,6 @@ package com.iotiq.application.domain;
 
 import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,6 +30,5 @@ public class OrderedProduct extends BaseAbstractAuditingEntity<UUID> {
     private UUID sellerId;
 
     @ManyToOne
-    @JoinColumn(name = "order_id")
     private Order order;
 }
