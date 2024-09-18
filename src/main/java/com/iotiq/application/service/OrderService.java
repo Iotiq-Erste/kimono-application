@@ -1,6 +1,7 @@
 package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
+import com.iotiq.application.domain.Cart;
 import com.iotiq.application.domain.CartItem;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.OrderedProduct;
@@ -39,8 +40,9 @@ public class OrderService {
 
     public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
         Order order =  ModelMapperUtil.map(createRequest, Order.class);
+        Cart cart = customerService.getCurrentCustomer().getCart();
         Order finalOrder = order;
-        order.setOrderedProducts(createRequest.getCart().getCartItems()
+        order.setOrderedProducts(cart.getCartItems()
                 .stream().map(cartItem -> convertToOrderedProduct(cartItem, finalOrder)).collect(Collectors.toList()));
         order.setCustomer(customerService.getCurrentCustomer());
 

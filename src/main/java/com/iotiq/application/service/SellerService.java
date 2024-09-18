@@ -2,8 +2,6 @@ package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Seller;
-import com.iotiq.application.messages.seller.SellerCreateRequest;
-import com.iotiq.application.messages.seller.SellerCreateResponse;
 import com.iotiq.application.messages.seller.SellerUpdateRequest;
 import com.iotiq.application.repository.SellerRepository;
 import com.iotiq.user.domain.User;
@@ -25,28 +23,11 @@ public class SellerService {
         return sellerRepository.findByUser(currentUser).orElseGet(() -> createDefaultSeller(currentUser));
     }
 
-
     public Seller createDefaultSeller(User currentUser) {
         Seller seller = new Seller();
         seller.setUser(currentUser);
         seller.setActive(true);
         return sellerRepository.save(seller);
-    }
-
-    @Transactional
-    public SellerCreateResponse createSeller(SellerCreateRequest request) {
-        User user = userService.getCurrentUser();
-        Seller seller = sellerRepository.save(ModelMapperUtil.map(request, Seller.class));
-        seller.setActive(true);
-        seller.setUser(user);
-        return new SellerCreateResponse(seller.getId());
-    }
-
-    @Transactional
-    public void inactiveSeller() {
-        Seller currentSeller = getCurrentSeller();
-        currentSeller.setActive(false);
-        sellerRepository.save(currentSeller);
     }
 
     @Transactional

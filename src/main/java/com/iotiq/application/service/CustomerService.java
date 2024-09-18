@@ -2,7 +2,6 @@ package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Customer;
-import com.iotiq.application.messages.customer.CustomerCreateResponse;
 import com.iotiq.application.messages.customer.CustomerUpdateRequest;
 import com.iotiq.application.repository.CustomerRepository;
 import com.iotiq.user.domain.Person;
@@ -18,20 +17,6 @@ public class CustomerService {
 
     final private CustomerRepository customerRepository;
     final private UserService userService;
-
-    @Transactional
-    public CustomerCreateResponse createCustomer() {
-        Customer customer = createCustomer(userService.getCurrentUser());
-
-        return new CustomerCreateResponse(customer.getId());
-    }
-
-    @Transactional
-    public void inactiveCustomer() {
-        Customer customer = getCurrentCustomer();
-        customer.setActive(false);
-        customerRepository.save(customer);
-    }
 
     @Transactional
     public void update(CustomerUpdateRequest request){

@@ -1,6 +1,7 @@
 package com.iotiq.application.domain;
 
 import com.iotiq.application.domain.enums.DeliveryStatus;
+import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,7 +13,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,7 +25,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "order_table")
-public class Order extends AbstractPersistable<UUID> {
+public class Order extends BaseAbstractAuditingEntity<UUID> {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)

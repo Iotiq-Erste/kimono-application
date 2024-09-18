@@ -31,7 +31,7 @@ public class Customer extends AbstractPersistable<UUID> {
     @JsonIdentityReference(alwaysAsId = true)
     private Cart cart;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
     private boolean isActive;

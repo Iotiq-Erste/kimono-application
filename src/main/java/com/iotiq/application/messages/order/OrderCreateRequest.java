@@ -1,6 +1,5 @@
 package com.iotiq.application.messages.order;
 
-import com.iotiq.application.messages.cart.CartDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +13,5 @@ public class OrderCreateRequest {
     private String deliveryType;
     private String deliveryAddressType;
     private String deliveryAddress;
-    private CartDto cart;
 
 }

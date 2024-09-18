@@ -1,5 +1,6 @@
 package com.iotiq.application.domain;
 
+import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -7,7 +8,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.util.UUID;
 
@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderedProduct extends AbstractPersistable<UUID> {
+public class OrderedProduct extends BaseAbstractAuditingEntity<UUID> {
 
     private UUID productId;
 
