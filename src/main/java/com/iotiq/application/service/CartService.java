@@ -19,7 +19,6 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CustomerService customerService;
     private final ProductService productService;
-    private final CartItemService cartItemService;
 
     public Cart getCart() {
         return customerService.getCurrentCustomer().getCart();
@@ -31,7 +30,7 @@ public class CartService {
         cart.setLastModifiedDate(Instant.now());
         cart.getCartItems().clear();
         cart.getCartItems().addAll(toCartItemList(request.getCartItems(), cart));
-        //cartItemService.save(cart.getCartItems());
+
         cartRepository.save(cart);
     }
 
