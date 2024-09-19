@@ -1,4 +1,4 @@
-package com.iotiq.application.messages.cart;
+package com.iotiq.application.messages.cartitem;
 
 import lombok.Getter;
 import lombok.Setter;

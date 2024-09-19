@@ -1,6 +1,6 @@
 package com.iotiq.application.messages.cart;
 
-import com.iotiq.application.domain.CartItem;
+import com.iotiq.application.messages.cartitem.CartItemDetailDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,7 +16,7 @@ public class CartDto {
 
     private UUID customerId;
 
-    private List<CartItem> cartItems;
+    private List<CartItemDetailDto> cartItems;
 
     private LocalDate createdAt;
 

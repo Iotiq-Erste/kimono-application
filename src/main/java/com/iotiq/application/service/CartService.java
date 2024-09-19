@@ -2,7 +2,7 @@ package com.iotiq.application.service;
 
 import com.iotiq.application.domain.Cart;
 import com.iotiq.application.domain.CartItem;
-import com.iotiq.application.messages.cart.CartItemDto;
+import com.iotiq.application.messages.cartitem.CartItemDto;
 import com.iotiq.application.messages.cart.CartUpdateRequest;
 import com.iotiq.application.repository.CartRepository;
 import jakarta.transaction.Transactional;
