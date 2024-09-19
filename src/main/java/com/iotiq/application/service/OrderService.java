@@ -47,7 +47,7 @@ public class OrderService {
         order.setCustomer(customerService.getCurrentCustomer());
 
         order = orderRepository.save(order);
-        return ModelMapperUtil.map(order, OrderCreateResponse.class);
+        return new OrderCreateResponse(order.getId(), order.getOrderNumber());
     }
 
     public void visible(UUID id) {

@@ -1,5 +1,6 @@
 package com.iotiq.application.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iotiq.application.domain.enums.Brand;
 import com.iotiq.application.domain.enums.Category;
 import com.iotiq.application.domain.enums.Certification;
@@ -23,6 +24,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -138,8 +140,12 @@ public class Product extends AbstractPersistable<UUID> {
     @Embedded
     private Sustainability sustainability;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "seller_id", referencedColumnName = "id")
     private Seller seller;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<CartItem> cartItemList;
 
 }

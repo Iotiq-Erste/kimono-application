@@ -21,9 +21,11 @@ import java.util.UUID;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final SellerService sellerService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, SellerService sellerService) {
         this.productRepository = productRepository;
+        this.sellerService = sellerService;
     }
 
 
@@ -38,10 +40,9 @@ public class ProductService {
     @Transactional
     public ProductCreateResponse createProduct (@Valid ProductCreateRequest request){
 
-        Product saved = productRepository.save(ModelMapperUtil.map(request, Product.class));
-
-        return new ProductCreateResponse(saved.getId());
-        //ID APPLICATION LAYER MI OLMALI DATABASE MI YAPMALIYIM
+        Product product =ModelMapperUtil.map(request, Product.class);
+        product.setSeller(sellerService.getCurrentSeller());
+        return new ProductCreateResponse(productRepository.save(product).getId());
     }
 
     public void delete (UUID id){

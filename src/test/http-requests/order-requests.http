@@ -179,7 +179,7 @@ Content-Type: application/json
 %}
 
 
-### Scenario 2: Get
+### Scenario 5: Get Cart to Validate
 GET {{baseUrl}}/api/v1/cart
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -192,7 +192,7 @@ Content-Type: application/json
 %}
 
 
-### Scenario 2: Create Order
+### Scenario 6: Create Order
 POST {{baseUrl}}/api/v1/orders
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -207,12 +207,13 @@ Content-Type: application/json
 > {%
     client.test("Testing create order " ,function() {
         client.assert(response.status === 201, "Status code is 201");
-        client.assert(response.body.hasOwnProperty("newProductID"), "Product has been created");
+        client.assert(response.body.hasOwnProperty("newOrderId"), "Order hasn't been created");
+        client.assert(response.body.hasOwnProperty("orderNumber"), "Order hasn't been created");
     });
     client.global.set("newOrderId", response.body.newOrderId);
 %}
 
-### Scenario 2: Get Order By ID
+### Scenario 7: Get Order By ID
 GET {{baseUrl}}/api/v1/orders/{{newOrderId}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -227,11 +228,11 @@ Content-Type: application/json
 > {%
     client.test("Testing get order by id " ,function() {
         client.assert(response.status === 200, "Status code is 200");
-        client.assert(response.body.newOrderId == client.global.get("newOrderId"), "Get one order failed, created order id did not match with requested order id");
+        client.assert(response.body.id == client.global.get("newOrderId"), "Get one order failed, created order id did not match with requested order id");
     });
 %}
 
-### Scenario 2: Update Order
+### Scenario 8: Update Order
 PUT {{baseUrl}}/api/v1/orders/{{newOrderId}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -248,7 +249,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 2: Get Order By ID
+### Scenario 9: Get Order By ID
 GET {{baseUrl}}/api/v1/orders/{{newOrderId}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -262,3 +263,28 @@ Content-Type: application/json
     });
 %}
 
+
+### Scenario 10: Delete Order
+DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Product has been deleted" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+%}
+
+### Scenario 11: Update Cart by Deleting Cart Item
+PUT {{baseUrl}}/api/v1/cart
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "cartItems": []
+}
+
+### Scenario 12: Delete Product
+DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json

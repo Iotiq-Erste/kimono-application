@@ -52,7 +52,6 @@ public class OrderController {
         return ModelMapperUtil.map(orders, OrderDto.class);
     }
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority(@OrderManagementAuth.CREATE)")

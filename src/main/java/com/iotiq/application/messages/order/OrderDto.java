@@ -25,4 +25,5 @@ public class OrderDto {
     private DeliveryStatus deliveryStatus;
     private Date orderDate;
     private Cart cart;
+    private Boolean isVisible;
 }
