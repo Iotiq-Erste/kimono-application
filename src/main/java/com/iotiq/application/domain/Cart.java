@@ -13,9 +13,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity
@@ -33,5 +33,17 @@ public class Cart extends BaseAbstractAuditingEntity<UUID> {
     @OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> cartItems = new ArrayList<>();
 
-    private BigDecimal cartTotal;
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Cart that)) return false;
+        if (this.getId() != null && that.getId() != null) return this.getId().equals(that.getId());
+
+        return Objects.equals(customer, that.customer);
+    }
+
+    @Override
+    public int hashCode() {
+        return 13;
+    }
 }

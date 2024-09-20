@@ -1,6 +1,5 @@
 package com.iotiq.application.controller;
 
-import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.messages.cart.CartDto;
 import com.iotiq.application.messages.cart.CartUpdateRequest;
 import com.iotiq.application.service.CartService;
@@ -22,7 +21,7 @@ public class CartController {
     @GetMapping
     @PreAuthorize("hasAuthority(@CartManagementAuth.VIEW)")
     public CartDto getCart(){
-        return ModelMapperUtil.map(cartService.getCart(), CartDto.class);
+        return cartService.getCart();
     }
 
     @PutMapping
