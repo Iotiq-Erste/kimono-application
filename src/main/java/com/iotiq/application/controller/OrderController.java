@@ -4,7 +4,7 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
-import com.iotiq.application.messages.order.OrderDto;
+import com.iotiq.application.messages.order.OrderResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
 import com.iotiq.application.service.OrderService;
 import jakarta.validation.Valid;
@@ -33,23 +33,23 @@ public class OrderController {
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
-    public OrderDto getOne(@PathVariable UUID id) {
+    public OrderResponse getOne(@PathVariable UUID id) {
         Order order = orderService.getOrder(id);
-        return ModelMapperUtil.map(order, OrderDto.class);
+        return ModelMapperUtil.map(order, OrderResponse.class);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
-    public List<OrderDto> getOrders() {
+    public List<OrderResponse> getOrders() {
         List<Order> orders = orderService.getOrders();
-        return ModelMapperUtil.map(orders, OrderDto.class);
+        return ModelMapperUtil.map(orders, OrderResponse.class);
     }
 
     @GetMapping("/getOrdersBySeller")
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
-    public List<OrderDto> getOrderBySeller() {
+    public List<OrderResponse> getOrderBySeller() {
         List<Order> orders = orderService.getOrdersBySeller();
-        return ModelMapperUtil.map(orders, OrderDto.class);
+        return ModelMapperUtil.map(orders, OrderResponse.class);
     }
 
     @PostMapping

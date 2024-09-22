@@ -4,8 +4,8 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductCreateResponse;
-import com.iotiq.application.messages.product.ProductDto;
 import com.iotiq.application.messages.product.ProductFilter;
+import com.iotiq.application.messages.product.ProductResponse;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.service.ProductService;
 import com.iotiq.commons.message.response.PagedResponse;
@@ -38,26 +38,26 @@ public class ProductController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public PagedResponse<ProductDto> getAll(ProductFilter filter, Sort sort) {
+    public PagedResponse<ProductResponse> getAll(ProductFilter filter, Sort sort) {
 
         Page<Product> page = productService.getAll(filter, sort);
-        List<ProductDto> dtos = ModelMapperUtil.map(page.getContent(), ProductDto.class);
+        List<ProductResponse> responseList = ModelMapperUtil.map(page.getContent(), ProductResponse.class);
 
-        return PagedResponseBuilder.createResponse(page, dtos);
+        return PagedResponseBuilder.createResponse(page, responseList);
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public ProductDto getOne(@PathVariable UUID id) {
+    public ProductResponse getOne(@PathVariable UUID id) {
         Product product = productService.getOne(id);
-        return ModelMapperUtil.map(product, ProductDto.class);
+        return ModelMapperUtil.map(product, ProductResponse.class);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request) {
-        return productService.createProduct(request);
+        return new ProductCreateResponse(productService.createProduct(request).getId());
     }
 
     @DeleteMapping("/{id}")

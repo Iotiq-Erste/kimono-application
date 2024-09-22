@@ -25,7 +25,8 @@ public class CartService {
     public CartDto getCart() {
         Cart cart = customerService.getCurrentCustomer().getCart();
         BigDecimal totalAmount = cart.getCartItems().stream()
-                .map(cartItem -> cartItem.getProduct().getPrice().getAmount())
+                .map(cartItem ->  BigDecimal.valueOf(cartItem.getQuantity())
+                        .multiply(cartItem.getProduct().getPrice().getAmount()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         CartDto cartDto = ModelMapperUtil.map(cart, CartDto.class);
         cartDto.setTotalAmount(totalAmount);

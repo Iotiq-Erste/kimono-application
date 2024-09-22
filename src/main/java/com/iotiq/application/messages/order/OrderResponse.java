@@ -11,8 +11,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class OrderDto {
-
+public class OrderResponse {
     private UUID id;
     private String customerId;
     private String orderNumber;

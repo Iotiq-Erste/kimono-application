@@ -1,12 +1,11 @@
 package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
-import com.iotiq.application.domain.Cart;
-import com.iotiq.application.domain.CartItem;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.exception.orderexceptions.OrderNotFoundException;
+import com.iotiq.application.messages.cartitem.CartItemDto;
 import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
@@ -25,6 +24,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerService customerService;
     private final SellerService sellerService;
+    private final ProductService productService;
 
     public Order getOrder(UUID id) {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
@@ -40,9 +40,9 @@ public class OrderService {
 
     public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
         Order order =  ModelMapperUtil.map(createRequest, Order.class);
-        Cart cart = customerService.getCurrentCustomer().getCart();
+
         Order finalOrder = order;
-        order.setOrderedProducts(cart.getCartItems()
+        order.setOrderedProducts(createRequest.getCartItems()
                 .stream().map(cartItem -> convertToOrderedProduct(cartItem, finalOrder)).collect(Collectors.toList()));
         order.setCustomer(customerService.getCurrentCustomer());
 
@@ -62,8 +62,9 @@ public class OrderService {
         orderRepository.save(order);
     }
 
-    private OrderedProduct convertToOrderedProduct(CartItem cartItem, Order order) {
-        Product product = cartItem.getProduct();
+    private OrderedProduct convertToOrderedProduct(CartItemDto cartItemDto, Order order) {
+
+        Product product = productService.getOne(cartItemDto.getProductId());
         return new OrderedProduct(
                 product.getId(),
                 product.getTitle(),

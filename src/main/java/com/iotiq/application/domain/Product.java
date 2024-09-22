@@ -23,9 +23,8 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -140,8 +139,7 @@ public class Product extends AbstractPersistable<UUID> {
     @Embedded
     private Sustainability sustainability;
 
-    @OneToOne
-    @JoinColumn(name = "seller_id", referencedColumnName = "id")
+    @ManyToOne
     private Seller seller;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)

@@ -4,7 +4,7 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.exception.productexceptions.ProductNotFoundException;
 import com.iotiq.application.messages.product.ProductCreateRequest;
-import com.iotiq.application.messages.product.ProductCreateResponse;
+import com.iotiq.application.messages.product.ProductDto;
 import com.iotiq.application.messages.product.ProductFilter;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.repository.ProductRepository;
@@ -38,11 +38,12 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductCreateResponse createProduct (@Valid ProductCreateRequest request){
+    public ProductDto createProduct (@Valid ProductCreateRequest request){
 
         Product product =ModelMapperUtil.map(request, Product.class);
         product.setSeller(sellerService.getCurrentSeller());
-        return new ProductCreateResponse(productRepository.save(product).getId());
+        product = productRepository.save(product);
+        return ModelMapperUtil.map(product, ProductDto.class);
     }
 
     public void delete (UUID id){

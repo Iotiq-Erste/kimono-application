@@ -201,7 +201,13 @@ Content-Type: application/json
   "cargoPrice": 100,
   "deliveryType": "",
   "deliveryAddressType": "Home",
-  "deliveryAddress": ""
+  "deliveryAddress": "",
+   "cartItems": [
+   {
+     "productId":"{{newProductID1}}",
+     "quantity":1
+   }
+  ]
 }
 
 > {%
@@ -218,12 +224,6 @@ GET {{baseUrl}}/api/v1/orders/{{newOrderId}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
-{
-  "cargoPrice": 100,
-  "deliveryType": "",
-  "deliveryAddressType": "Home",
-  "deliveryAddress": ""
-}
 
 > {%
     client.test("Testing get order by id " ,function() {

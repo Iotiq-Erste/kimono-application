@@ -1,7 +1,7 @@
 package com.iotiq.application.controller;
 
 import com.iotiq.application.config.ModelMapperUtil;
-import com.iotiq.application.messages.seller.SellerDto;
+import com.iotiq.application.messages.seller.SellerResponse;
 import com.iotiq.application.messages.seller.SellerUpdateRequest;
 import com.iotiq.application.service.SellerService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ public class SellerController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(@SellerManagementAuth.VIEW)")
-    public SellerDto getSeller(){
-        return ModelMapperUtil.map(sellerService.getCurrentSeller(), SellerDto.class);
+    public SellerResponse getSeller(){
+        return ModelMapperUtil.map(sellerService.getCurrentSeller(), SellerResponse.class);
     }
 
     @PutMapping

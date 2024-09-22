@@ -2,7 +2,7 @@ package com.iotiq.application.controller;
 
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Customer;
-import com.iotiq.application.messages.customer.CustomerDto;
+import com.iotiq.application.messages.customer.CustomerResponse;
 import com.iotiq.application.messages.customer.CustomerUpdateRequest;
 import com.iotiq.application.service.CustomerService;
 import jakarta.validation.Valid;
@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/customers")
+@RequestMapping("/api/v1/customer")
 public class CustomerController {
 
     final private CustomerService customerService;
 
     @GetMapping
     @PreAuthorize("hasAuthority(@CustomerManagementAuth.VIEW)")
-    public CustomerDto getCustomer() {
+    public CustomerResponse getCustomer() {
         Customer customer = customerService.getCurrentCustomer();
-        return ModelMapperUtil.map(customer, CustomerDto.class);
+        return ModelMapperUtil.map(customer, CustomerResponse.class);
     }
 
     @PutMapping
