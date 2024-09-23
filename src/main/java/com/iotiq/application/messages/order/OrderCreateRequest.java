@@ -16,5 +16,6 @@ public class OrderCreateRequest {
     private String deliveryAddressType;
     private String deliveryAddress;
     private List<CartItemDto> cartItems;
+    private BigDecimal cartTotalPrice;
 
 }

@@ -31,4 +31,6 @@ public class OrderedProduct extends BaseAbstractAuditingEntity<UUID> {
 
     @ManyToOne
     private Order order;
+
+    private Long quantity;
 }

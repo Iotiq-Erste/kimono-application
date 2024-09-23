@@ -207,7 +207,8 @@ Content-Type: application/json
      "productId":"{{newProductID1}}",
      "quantity":1
    }
-  ]
+  ],
+  "cartTotalPrice":20
 }
 
 > {%

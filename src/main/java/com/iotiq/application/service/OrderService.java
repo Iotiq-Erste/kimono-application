@@ -13,6 +13,7 @@ import com.iotiq.application.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -45,6 +46,11 @@ public class OrderService {
         order.setOrderedProducts(createRequest.getCartItems()
                 .stream().map(cartItem -> convertToOrderedProduct(cartItem, finalOrder)).collect(Collectors.toList()));
         order.setCustomer(customerService.getCurrentCustomer());
+        order.setTotalPrice(calculateTotalAmount(order.getOrderedProducts()));
+
+        if(createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
+            throw new RuntimeException("Total prices did not match");
+        }
 
         order = orderRepository.save(order);
         return new OrderCreateResponse(order.getId(), order.getOrderNumber());
@@ -72,7 +78,14 @@ public class OrderService {
                 product.getImageUrl(),
                 product.getSeller().getShopName(),
                 product.getSeller().getId(),
-                order
+                order,
+                cartItemDto.getQuantity()
         );
+    }
+
+    private BigDecimal calculateTotalAmount(List<OrderedProduct> orderedProducts) {
+       return orderedProducts.stream().map(orderedProduct -> BigDecimal.valueOf(orderedProduct.getQuantity())
+                        .multiply(orderedProduct.getPrice().getAmount()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
