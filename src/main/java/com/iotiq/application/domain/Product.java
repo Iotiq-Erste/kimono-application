@@ -1,5 +1,6 @@
 package com.iotiq.application.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iotiq.application.domain.enums.Brand;
 import com.iotiq.application.domain.enums.Category;
 import com.iotiq.application.domain.enums.Certification;
@@ -16,11 +17,15 @@ import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -134,5 +139,12 @@ public class Product extends AbstractPersistable<UUID> {
 
     @Embedded
     private Sustainability sustainability;
+
+    @ManyToOne
+    private Seller seller;
+
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<CartItem> cartItemList;
 
 }

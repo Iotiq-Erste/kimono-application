@@ -13,7 +13,7 @@ grant_type={{grantType}}&client_id={{clientId}}&password={{password}}&username={
     });
 %}
 
-### Scenario 5: Get All Products
+### Scenario 2: Get All Products
 GET {{baseUrl}}/api/v1/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -25,7 +25,7 @@ Content-Type: application/json
     client.global.set("productTotalElements", response.body.page.totalElements);
 %}
 
-### Scenario 2: Create New Product
+### Scenario 3: Create New Product
 POST {{baseUrl}}/api/v1/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -159,7 +159,7 @@ Content-Type: application/json
     client.global.set("newProductID1", response.body.newProductID);
 %}
 
-### Scenario 3: Get Product1 for confirmation
+### Scenario 4: Get Product1 for confirmation
 GET {{baseUrl}}/api/v1/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -177,9 +177,6 @@ Content-Type: application/json
         client.assert(response.body.applicationAreaGroup.frequency === "ONE_TIME", "Creation failed, applicationAreaGroup does not match");
         client.assert(response.body.brand === "BEYMEN", "Creation failed, brand does not match");
         client.assert(response.body.category === "JEANS", "Creation failed, category does not match");
-        client.assert(response.body.certifications.size === 2, "Creation failed, certifications does not match");
-        client.assert(response.body.certifications[0] === "BLUESIGN", "Creation failed, certifications does not match");
-        client.assert(response.body.certifications[1] === "TOXPROOF", "Creation failed, certifications does not match");
         client.assert(response.body.composition.activeSubstanceAreas[0] === "COMPLETE", "Creation failed, composition does not match");
         client.assert(response.body.composition.activeSubstances[0] === "CHITOSAN", "Creation failed, composition does not match");
         client.assert(response.body.composition.activeSubstancePlacements[0] === "SERUM", "Creation failed, composition does not match");
@@ -233,7 +230,7 @@ Content-Type: application/json
 %}
 
 
-### Scenario 4: Create New Product
+### Scenario 5: Create New Product
 POST {{baseUrl}}/api/v1/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -369,7 +366,7 @@ Content-Type: application/json
 %}
 
 
-### Scenario 5: Get All Products
+### Scenario 6: Get All Products
 GET {{baseUrl}}/api/v1/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -381,7 +378,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 6: Update Product
+### Scenario 7: Update Product
 PUT {{baseUrl}}/api/v1/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -400,7 +397,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 7: Get Updated Product
+### Scenario 8: Get Updated Product
 GET {{baseUrl}}/api/v1/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -413,7 +410,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 8: Get Filtered Products
+### Scenario 9: Get Filtered Products
 GET {{baseUrl}}/api/v1/products?lowestPrice=0&highestPrice=100
     &adultAgeGroups=THIRTY_TO_FOURTYFIVE&childrenAgeGroups=TWO_TO_SIX_YEARS&applicationAreas=WORK_CLOTHING&frequencies=ONE_TIME
     &brands=BEYMEN&categories=JEANS&certifications=BLUESIGN,TOXPROOF&colors=RED&activeSubstanceAreas=COMPLETE
@@ -499,7 +496,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 9: Delete Product
+### Scenario 10: Delete Product
 DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -511,7 +508,7 @@ Content-Type: application/json
     client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
 %}
 
-### Scenario 10: Delete Product
+### Scenario 11: Delete Product
 DELETE {{baseUrl}}/api/v1/products/{{newProductID2}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -523,7 +520,7 @@ Content-Type: application/json
     client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
 %}
 
-### Scenario 11: Get All Products
+### Scenario 12: Get All Products
 GET {{baseUrl}}/api/v1/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json

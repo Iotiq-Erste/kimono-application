@@ -4,7 +4,7 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.exception.productexceptions.ProductNotFoundException;
 import com.iotiq.application.messages.product.ProductCreateRequest;
-import com.iotiq.application.messages.product.ProductCreateResponse;
+import com.iotiq.application.messages.product.ProductDto;
 import com.iotiq.application.messages.product.ProductFilter;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.repository.ProductRepository;
@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -20,13 +21,15 @@ import java.util.UUID;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final SellerService sellerService;
 
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, SellerService sellerService) {
         this.productRepository = productRepository;
+        this.sellerService = sellerService;
     }
 
 
-    public Page<Product> getAll(ProductFilter filter,Sort sort) {
+    public Page<Product> getAll(@RequestParam ProductFilter filter, Sort sort) {
         return productRepository.findAll(filter.buildSpecification(), filter.buildPageable(sort));
     }
 
@@ -35,12 +38,12 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductCreateResponse createProduct (@Valid ProductCreateRequest request){
+    public ProductDto createProduct (@Valid ProductCreateRequest request){
 
-        Product saved = productRepository.save(ModelMapperUtil.map(request, Product.class));
-
-        return new ProductCreateResponse(saved.getId());
-        //ID APPLICATION LAYER MI OLMALI DATABASE MI YAPMALIYIM
+        Product product =ModelMapperUtil.map(request, Product.class);
+        product.setSeller(sellerService.getCurrentSeller());
+        product = productRepository.save(product);
+        return ModelMapperUtil.map(product, ProductDto.class);
     }
 
     public void delete (UUID id){
