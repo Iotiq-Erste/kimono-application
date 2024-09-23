@@ -2,9 +2,11 @@ package com.iotiq.application.domain;
 
 import com.iotiq.application.domain.enums.DeliveryStatus;
 import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -52,7 +54,7 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
 
     private LocalDate orderDate;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderedProduct> orderedProducts;
 
     private boolean isVisible;
