@@ -15,7 +15,6 @@ import com.iotiq.application.domain.enums.Color;
 import com.iotiq.application.domain.enums.DesignBodyPart;
 import com.iotiq.application.domain.enums.FiberType;
 import com.iotiq.application.domain.enums.Gender;
-import com.iotiq.application.domain.enums.Material;
 import com.iotiq.application.domain.enums.MaterialParameter;
 import com.iotiq.application.domain.enums.Motif;
 import com.iotiq.application.domain.enums.Neurodermatitis;
@@ -57,7 +56,6 @@ public class ProductCreateRequest{
     private List<FiberType> fiberTypes;
     private Gender gender;
     private Haptics haptics;
-    private Material material;
     private MaterialBehavior materialBehavior;
     private MaterialParameter materialParameter;
     private Motif motif;

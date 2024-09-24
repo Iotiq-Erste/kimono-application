@@ -1,5 +1,6 @@
 package com.iotiq.application.service;
 
+import com.iotiq.application.config.CSVFieldConverter;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.exception.productexceptions.ProductNotFoundException;
@@ -10,11 +11,17 @@ import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -60,4 +67,36 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public void importCSVFile(MultipartFile file) throws IOException, IllegalAccessException {
+       List<ProductCreateRequest> productCreateRequestList = CSVFieldConverter.parseCsvToObjectList(file);
+       List<Product> productList = ModelMapperUtil.map(productCreateRequestList, Product.class);
+       productRepository.saveAll(productList);
+    }
+
+    public byte[] exportCSVFile() throws IOException {
+        Page<Product> products = getAll(new ProductFilter(),Sort.unsorted());
+
+
+
+        String[] HEADERS = CSVFieldConverter.getFieldNames(ProductCreateRequest.class);
+
+        StringWriter sw = new StringWriter();
+
+        CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
+                .setHeader(HEADERS)
+                .build();
+
+        try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
+            products.getContent().forEach(product -> {
+                try {
+                    printer.printRecord(CSVFieldConverter.getFieldValues(ModelMapperUtil.map(product, ProductCreateRequest.class)));
+                } catch (IOException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        String sww = sw.toString();
+
+       return sww.getBytes();
+    }
 }
