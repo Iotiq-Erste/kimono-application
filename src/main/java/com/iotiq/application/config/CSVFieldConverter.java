@@ -46,7 +46,7 @@ public class CSVFieldConverter {
         return getFieldValuesRecursively(obj, ";",null).toArray();
     }
 
-    public static List<Object> getFieldValuesRecursively(Object obj, String separator,String parentPrefix) throws IllegalAccessException {
+    public static List<Object> getFieldValuesRecursively(Object obj, String separator) throws IllegalAccessException {
         Field[] fields = obj.getClass().getDeclaredFields();
         List<Object> values = new java.util.ArrayList<>();
 
@@ -55,9 +55,8 @@ public class CSVFieldConverter {
             Object value = field.get(obj);
 
             if (isPrimitive(field.getType())) {
-                if (value instanceof List) {
+                if (value instanceof List<?> list) {
                     // Enum listelerini verilen ayırıcı ile string'e çevir
-                    List<?> list = (List<?>) value;
                     String enumListAsString = list.stream()
                             .map(Object::toString)
                             .collect(Collectors.joining(separator));  // Özel separator kullanılıyor
@@ -105,7 +104,7 @@ public class CSVFieldConverter {
         try {
             String[] fieldNames = fieldPath.split("\\.");  // "." ile ayırıyoruz
             Object currentObject = object;  // Ana objeyi tutuyoruz
-            Field field = null;
+            Field field;
 
             // Nokta ile ayrılmış field'ları sırayla çözüyoruz
             for (int i = 0; i < fieldNames.length; i++) {
@@ -140,13 +139,13 @@ public class CSVFieldConverter {
 
         if (fieldType.equals(String.class)) {
             return value;  // String olduğu gibi kalır
-        } else if (fieldType.equals(BigDecimal.class) || fieldType.equals(Double.class)) {
+        } else if (fieldType.equals(BigDecimal.class)) {
             return NumberUtils.parseNumber(value, BigDecimal.class);
-        } else if (fieldType.equals(double.class) || fieldType.equals(Double.class)) {
+        } else if (fieldType.equals(double.class)) {
             return Double.parseDouble(value);  // Double'a çevir
-        } else if (fieldType.equals(int.class) || fieldType.equals(Integer.class)) {
+        } else if (fieldType.equals(int.class)) {
             return Integer.parseInt(value);  // Integer'a çevir
-        } else if (fieldType.equals(boolean.class) || fieldType.equals(Boolean.class)) {
+        } else if (fieldType.equals(boolean.class)) {
             return Boolean.parseBoolean(value);  // Boolean'a çevir
         } else if (fieldType.isEnum()) {
             // Tek bir enum değeri için

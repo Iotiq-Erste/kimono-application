@@ -67,7 +67,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void importCSVFile(MultipartFile file) throws IOException, IllegalAccessException {
+    public void importCSVFile(MultipartFile file) throws IOException {
        List<ProductCreateRequest> productCreateRequestList = CSVFieldConverter.parseCsvToObjectList(file);
        List<Product> productList = ModelMapperUtil.map(productCreateRequestList, Product.class);
        productRepository.saveAll(productList);
