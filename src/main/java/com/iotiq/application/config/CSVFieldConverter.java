@@ -82,7 +82,9 @@ public class CSVFieldConverter {
         List<ProductCreateRequest> createRequestList = new ArrayList<>();
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8));
-             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
+
+             CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader().withIgnoreSurroundingSpaces()
+                     .withNullString(""))) {
 
             // CSV'deki her satırı oku
             for (CSVRecord csvRecord : csvParser) {
@@ -92,7 +94,6 @@ public class CSVFieldConverter {
                 for (String header : csvParser.getHeaderMap().keySet()) {
                     setField(createRequest, header, csvRecord.get(header));
                 }
-
                 createRequestList.add(createRequest);
             }
         }
@@ -149,7 +150,7 @@ public class CSVFieldConverter {
             return Boolean.parseBoolean(value);  // Boolean'a çevir
         } else if (fieldType.isEnum()) {
             // Tek bir enum değeri için
-            return Enum.valueOf((Class<Enum>) fieldType, value);
+            return value!=null ? Enum.valueOf((Class<Enum>) fieldType, value) : null;
         } else if (List.class.isAssignableFrom(fieldType)) {
             // Eğer alan bir Listeyse
             ParameterizedType listType = (ParameterizedType) field.getGenericType();

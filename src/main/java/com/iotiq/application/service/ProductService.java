@@ -3,6 +3,7 @@ package com.iotiq.application.service;
 import com.iotiq.application.config.CSVFieldConverter;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
+import com.iotiq.application.domain.Seller;
 import com.iotiq.application.exception.productexceptions.ProductNotFoundException;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductDto;
@@ -23,6 +24,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -40,42 +42,48 @@ public class ProductService {
         return productRepository.findAll(filter.buildSpecification(), filter.buildPageable(sort));
     }
 
-   public Product getOne(UUID id){
+    public Product getOne(UUID id) {
         return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
     }
 
     @Transactional
-    public ProductDto createProduct (@Valid ProductCreateRequest request){
+    public ProductDto createProduct(@Valid ProductCreateRequest request) {
 
-        Product product =ModelMapperUtil.map(request, Product.class);
+        Product product = ModelMapperUtil.map(request, Product.class);
         product.setSeller(sellerService.getCurrentSeller());
         product = productRepository.save(product);
         return ModelMapperUtil.map(product, ProductDto.class);
     }
 
-    public void delete (UUID id){
+    public void delete(UUID id) {
         productRepository.deleteById(id);
     }
 
     @Transactional
-    public void update(UUID id, ProductUpdateRequest request){
+    public void update(UUID id, ProductUpdateRequest request) {
         Product product = productRepository.findById(id).
                 orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
 
-        ModelMapperUtil.map(request,product);
+        ModelMapperUtil.map(request, product);
 
         productRepository.save(product);
     }
 
     public void importCSVFile(MultipartFile file) throws IOException {
-       List<ProductCreateRequest> productCreateRequestList = CSVFieldConverter.parseCsvToObjectList(file);
-       List<Product> productList = ModelMapperUtil.map(productCreateRequestList, Product.class);
-       productRepository.saveAll(productList);
+
+        List<ProductCreateRequest> productCreateRequestList = CSVFieldConverter.parseCsvToObjectList(file);
+        Seller seller = sellerService.getCurrentSeller();
+        List<Product> productList = ModelMapperUtil.map(productCreateRequestList, Product.class).stream()
+                .map(product -> {
+                    product.setSeller(seller);
+                    return product;
+                })
+                .collect(Collectors.toList());
+        productRepository.saveAll(productList);
     }
 
     public byte[] exportCSVFile() throws IOException {
-        Page<Product> products = getAll(new ProductFilter(),Sort.unsorted());
-
+        Page<Product> products = getAll(new ProductFilter(), Sort.unsorted());
 
 
         String[] HEADERS = CSVFieldConverter.getFieldNames(ProductCreateRequest.class);
@@ -97,6 +105,6 @@ public class ProductService {
         }
         String sww = sw.toString();
 
-       return sww.getBytes();
+        return sww.getBytes();
     }
 }
