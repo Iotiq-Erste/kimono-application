@@ -43,7 +43,7 @@ public class CSVFieldConverter {
     }
 
     public static Object[] getFieldValues(Object obj) throws IllegalAccessException {
-        return getFieldValuesRecursively(obj, ";",null).toArray();
+        return getFieldValuesRecursively(obj, ";").toArray();
     }
 
     public static List<Object> getFieldValuesRecursively(Object obj, String separator) throws IllegalAccessException {
@@ -66,7 +66,7 @@ public class CSVFieldConverter {
                 }
             } else {
 
-                values.addAll(getFieldValuesRecursively(value, separator, field.getName()));
+                values.addAll(getFieldValuesRecursively(value, separator));
             }
         }
         return values;
