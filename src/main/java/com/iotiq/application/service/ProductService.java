@@ -83,6 +83,8 @@ import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.NumberUtils;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -194,16 +196,19 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductCSVUploadResponse importCSVFile(MultipartFile file) {
+    public ResponseEntity<ProductCSVUploadResponse> importCSVFile(MultipartFile file) {
         String[] HEADERS = ProductCreateRequest.getCSVHeaders();
         List<ProductCreateRequest> createRequestList = new ArrayList<>();
         Seller currentSeller = sellerService.getCurrentSeller();
-        ProductCSVUploadResponse response = new ProductCSVUploadResponse();
+        ProductCSVUploadResponse productCSVUploadResponse = new ProductCSVUploadResponse();
         CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
                 .setHeader(HEADERS)
                 .setSkipHeaderRecord(true)
                 .build();
 
+        Set<ConstraintViolation<ProductCreateRequest>> violations = Set.of();
+        List<Product> productList = new ArrayList<>();
+        
         try (
                 Reader reader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
                 CSVParser csvParser = new CSVParser(reader, csvFormat)) {
@@ -286,29 +291,35 @@ public class ProductService {
 
                 createRequestList.add(productRequest);
 
-                Set<ConstraintViolation<ProductCreateRequest>> violations = validator.validate(productRequest);
+                violations = validator.validate(productRequest);
 
                 if (!violations.isEmpty()) {
-
+                    StringBuilder message = new StringBuilder(record.getRecordNumber() + " - " );
                     for (ConstraintViolation<ProductCreateRequest> violation : violations) {
-                        response.getMessages().add("Validation error in record: " + record.getRecordNumber() + " - " + violation.getPropertyPath().toString() + " - " + violation.getMessage());
-
+                        message.append(violation.getPropertyPath().toString()).append(" ").append(violation.getMessage()).append(". ");
                     }
+                    productCSVUploadResponse.getMessages().add(message.toString());
                 } else {
-                    List<Product> productList = ModelMapperUtil.map(createRequestList, Product.class).stream()
+                    productList = ModelMapperUtil.map(createRequestList, Product.class).stream()
                             .map(product -> {
                                 product.setSeller(currentSeller);
                                 return product;
                             })
                             .collect(Collectors.toList());
-                    productRepository.saveAll(productList);
-                    response.getMessages().add("Saved successfully.");
                 }
+            }
+            if(!violations.isEmpty()){
+                return ResponseEntity.badRequest().body(productCSVUploadResponse);
+            }
+            else {
+                productRepository.saveAll(productList);
+                return ResponseEntity.status(HttpStatus.CREATED).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return ResponseEntity.badRequest().body(productCSVUploadResponse);
         }
-        return response;
+
     }
 
 
@@ -317,7 +328,7 @@ public class ProductService {
         if (fieldType.equals(String.class)) {
             return (T) value;
         } else if (fieldType.equals(BigDecimal.class)) {
-            return (T) NumberUtils.parseNumber(value, BigDecimal.class);
+            return value != null && !value.isEmpty() ? (T) NumberUtils.parseNumber(value, BigDecimal.class) : null;
         } else if (fieldType.equals(double.class)) {
             return (T) Double.valueOf(value);
         } else if (fieldType.isEnum()) {
@@ -327,7 +338,7 @@ public class ProductService {
     }
 
     private <E extends Enum<E>> List<E> parseEnumList(Class<E> enumType, String value) {
-        return Arrays.stream(value.split(";"))
+        return value.isEmpty() ? List.of() : Arrays.stream(value.split(";"))
                 .map(v -> parse(enumType, v))
                 .collect(Collectors.toList());
     }

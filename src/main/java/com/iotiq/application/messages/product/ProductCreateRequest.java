@@ -25,6 +25,7 @@ import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -40,6 +41,7 @@ public class ProductCreateRequest{
     @NotEmpty
     private String description;
     @NotNull
+    @Valid
     private Price price;
     private String imageUrl;
     private AgeGroup ageGroup;
@@ -64,7 +66,7 @@ public class ProductCreateRequest{
     private OekotexStandard oekotexStandard;
     private PriceRange priceRange;
     private Rating rating;
-    @NotNull
+    @NotEmpty
     private List<Size> sizes;
     private List<SpecificBodyPart> specificBodyParts;
     private List<SpecificFunctionality> specificFunctionalities;

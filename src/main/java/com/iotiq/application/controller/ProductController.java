@@ -68,7 +68,7 @@ public class ProductController {
     }
 
     @PostMapping("/csv-upload")
-    public ProductCSVUploadResponse uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ProductCSVUploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
       return productService.importCSVFile(file);
     }
 
