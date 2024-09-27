@@ -2,6 +2,7 @@ package com.iotiq.application.controller;
 
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
+import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductCreateResponse;
 import com.iotiq.application.messages.product.ProductFilter;
@@ -51,16 +52,11 @@ public class ProductController {
 
         return PagedResponseBuilder.createResponse(page, responseList);
     }
-    @PostMapping("/csv-upload")
-    public void uploadFile(@RequestParam("file") MultipartFile file) throws IOException, IllegalAccessException {
-        productService.importCSVFile(file);
-    }
 
-        @GetMapping("/csv-export")
+    @GetMapping("/csv-export")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
     public ResponseEntity<byte[]> export() throws IOException {
-           byte[] csvBytes = productService.exportCSVFile();
-
+        byte[] csvBytes = productService.exportCSVFile();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -69,6 +65,11 @@ public class ProductController {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(csvBytes);
+    }
+
+    @PostMapping("/csv-upload")
+    public ProductCSVUploadResponse uploadFile(@RequestParam("file") MultipartFile file) {
+      return productService.importCSVFile(file);
     }
 
     @GetMapping("/{id}")

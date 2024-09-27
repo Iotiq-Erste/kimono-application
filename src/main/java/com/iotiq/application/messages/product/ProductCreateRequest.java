@@ -20,6 +20,7 @@ import com.iotiq.application.domain.enums.Motif;
 import com.iotiq.application.domain.enums.Neurodermatitis;
 import com.iotiq.application.domain.enums.OekotexStandard;
 import com.iotiq.application.domain.enums.PriceRange;
+import com.iotiq.application.domain.enums.ProductCSVHeader;
 import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
@@ -69,4 +70,65 @@ public class ProductCreateRequest{
     private List<SpecificFunctionality> specificFunctionalities;
     private Sustainability sustainability;
 
+    public static String[] getCSVHeaders() {
+        return new String[]{ProductCSVHeader.TITLE.value(),
+                ProductCSVHeader.DESCRIPTION.value(),
+                ProductCSVHeader.PRICE_AMOUNT.value(),
+                ProductCSVHeader.PRICE_CURRENCY.value(),
+                ProductCSVHeader.IMAGE_URL.value(),
+                ProductCSVHeader.AGE_GROUP_ADULT_AGE_GROUP.value(),
+                ProductCSVHeader.AGE_GROUP_CHILDREN_AGE_GROUP.value(),
+                ProductCSVHeader.APPLICATION_AREA_GROUP_APPLICATION_AREA.value(),
+                ProductCSVHeader.APPLICATION_AREA_GROUP_FREQUENCY.value(),
+                ProductCSVHeader.BRAND.value(),
+                ProductCSVHeader.CATEGORY.value(),
+                ProductCSVHeader.CERTIFICATIONS.value(),
+                ProductCSVHeader.COLOR.value(),
+                ProductCSVHeader.COMPOSITION_ACTIVE_SUBSTANCE_AREAS.value(),
+                ProductCSVHeader.COMPOSITION_ACTIVE_SUBSTANCES.value(),
+                ProductCSVHeader.COMPOSITION_ACTIVE_SUBSTANCE_PLACEMENTS.value(),
+                ProductCSVHeader.COMPOSITION_ACTIVE_SUBSTANCE_RELEASES.value(),
+                ProductCSVHeader.COMPOSITION_COMPOSITIONS.value(),
+                ProductCSVHeader.COMPOSITION_STAGGERINGS.value(),
+                ProductCSVHeader.DESIGN_DESIGN_APPEARANCE.value(),
+                ProductCSVHeader.DESIGN_DESIGN_COLOR.value(),
+                ProductCSVHeader.DESIGN_BODY_PARTS.value(),
+                ProductCSVHeader.FIBER_TYPES.value(),
+                ProductCSVHeader.GENDER.value(),
+                ProductCSVHeader.HAPTICS_ELASTICITY.value(),
+                ProductCSVHeader.HAPTICS_FINENESS.value(),
+                ProductCSVHeader.HAPTICS_LIGHTWEIGHT.value(),
+                ProductCSVHeader.HAPTICS_LINT_FREE.value(),
+                ProductCSVHeader.HAPTICS_SCRATCHY.value(),
+                ProductCSVHeader.HAPTICS_SEAM_FEELABLE.value(),
+                ProductCSVHeader.HAPTICS_SOFTNESS.value(),
+                ProductCSVHeader.HAPTICS_UNIFORM.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_ABRASSION_RESISTANT.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_ABSORBENCY.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_ANTISTATIC.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_BREATHABLE.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_COLORFAST.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_MOISTURE_TRANSPORTING.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_ODOR_NEUTRALIZING.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_SCRATCH_RESISTANT.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_SWEAT_WICKING.value(),
+                ProductCSVHeader.MATERIAL_BEHAVIOR_WASHABLE.value(),
+                ProductCSVHeader.MATERIAL_PARAMETER.value(),
+                ProductCSVHeader.MOTIF.value(),
+                ProductCSVHeader.NEURODERMATITIS.value(),
+                ProductCSVHeader.OEKOTEXSTANDARD.value(),
+                ProductCSVHeader.PRICE_RANGE.value(),
+                ProductCSVHeader.RATING.value(),
+                ProductCSVHeader.SIZES.value(),
+                ProductCSVHeader.SPECIFIC_BODY_PARTS.value(),
+                ProductCSVHeader.SPECIFIC_FUNCTIONALITIES.value(),
+                ProductCSVHeader.SUSTAINABILITY_ENVIRONMENTAL_COMPATIBILITIES.value(),
+                ProductCSVHeader.SUSTAINABILITY_LIFE_CYCLES.value(),
+                ProductCSVHeader.SUSTAINABILITY_REGIONALITY_LIST.value(),
+                ProductCSVHeader.SUSTAINABILITY_RESOURCE_CONSUMPTIONS.value(),
+                ProductCSVHeader.SUSTAINABILITY_SOCIAL_ETHICS.value(),
+                ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_COMPOSITIONS.value(),
+                ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS.value(),
+        };
+    }
 }
