@@ -21,9 +21,9 @@ import java.util.List;
 @Getter
 @Setter
 @Embeddable
-//Nachhaltigkeit
 @AllArgsConstructor
 @NoArgsConstructor
+//Nachhaltigkeit
 public class Sustainability {
 
     //Umweltvertraglichkeit
