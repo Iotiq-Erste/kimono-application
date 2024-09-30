@@ -208,7 +208,7 @@ public class ProductService {
 
         Set<ConstraintViolation<ProductCreateRequest>> violations = Set.of();
         List<Product> productList = new ArrayList<>();
-        
+
         try (
                 Reader reader = new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8);
                 CSVParser csvParser = new CSVParser(reader, csvFormat)) {
@@ -294,11 +294,16 @@ public class ProductService {
                 violations = validator.validate(productRequest);
 
                 if (!violations.isEmpty()) {
-                    StringBuilder message = new StringBuilder(record.getRecordNumber() + " - " );
+                    String message = record.getRecordNumber() + ", ";
+                    List<String> errorField = new ArrayList<>();
                     for (ConstraintViolation<ProductCreateRequest> violation : violations) {
-                        message.append(violation.getPropertyPath().toString()).append(" ").append(violation.getMessage()).append(". ");
+                        errorField.add(violation.getPropertyPath().toString());
                     }
-                    productCSVUploadResponse.getMessages().add(message.toString());
+                    message += errorField.stream().sorted()
+                                    .map(Object::toString)
+                                    .collect(Collectors.joining(", "));
+
+                    productCSVUploadResponse.getMessages().add(message);
                 } else {
                     productList = ModelMapperUtil.map(createRequestList, Product.class).stream()
                             .map(product -> {
@@ -308,7 +313,7 @@ public class ProductService {
                             .collect(Collectors.toList());
                 }
             }
-            if(!violations.isEmpty()){
+            if(!productCSVUploadResponse.getMessages().isEmpty()){
                 return ResponseEntity.badRequest().body(productCSVUploadResponse);
             }
             else {
