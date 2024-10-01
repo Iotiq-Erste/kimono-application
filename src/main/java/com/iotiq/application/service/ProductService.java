@@ -322,6 +322,7 @@ public class ProductService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            productCSVUploadResponse.getMessages().add("Das von Ihnen gesendete CSV-Dateiformat ist nicht geeignet.");
             return ResponseEntity.badRequest().body(productCSVUploadResponse);
         }
 
