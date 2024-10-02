@@ -1,4 +1,4 @@
-package com.iotiq.application.messages.customer.contact;
+package com.iotiq.application.domain.enums;
 
 import lombok.Getter;
 

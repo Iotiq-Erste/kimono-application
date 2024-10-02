@@ -1,7 +1,7 @@
 package com.iotiq.application.controller;
 
 import com.iotiq.application.config.ModelMapperUtil;
-import com.iotiq.application.domain.Customer;
+import com.iotiq.application.messages.customer.CustomerDto;
 import com.iotiq.application.messages.customer.CustomerResponse;
 import com.iotiq.application.messages.customer.CustomerUpdateRequest;
 import com.iotiq.application.service.CustomerService;
@@ -24,7 +24,7 @@ public class CustomerController {
     @GetMapping
     @PreAuthorize("hasAuthority(@CustomerManagementAuth.VIEW)")
     public CustomerResponse getCustomer() {
-        Customer customer = customerService.getCurrentCustomer();
+        CustomerDto customer = customerService.getCustomer();
         return ModelMapperUtil.map(customer, CustomerResponse.class);
     }
 
