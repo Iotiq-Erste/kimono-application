@@ -18,6 +18,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
@@ -51,19 +53,19 @@ public class CustomerService {
         CustomerDto customerDto = new CustomerDto();
 
         customerDto.setContactInfo(getContactInfo(customer));
-        customerDto.setSizeInfo(customer.getSizeInfo());
-        customerDto.setMedicalData(customer.getMedicalData());
+        customerDto.setSizeInfo(Objects.requireNonNullElseGet(customer.getSizeInfo(), SizeInfo::new));
+        customerDto.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
         customerDto.setCart(customerDto.getCart());
         customerDto.setOrders(ModelMapperUtil.map(customer.getOrders(), OrderDto.class));
         customerDto.setActive(customer.isActive());
 
-        return setNullField(customerDto);
+        return customerDto;
     }
 
     private ContactInfo getContactInfo(Customer customer) {
         ContactInfo contactInfo = new ContactInfo();
 
-        contactInfo.setAddress(customer.getAddress());
+        contactInfo.setAddress(Objects.requireNonNullElseGet(customer.getAddress(), Address::new));
         BasicInfo basicInfo = new BasicInfo();
         basicInfo.setFirstname(customer.getUser().getPersonalInfo().getFirstName());
         basicInfo.setLastname(customer.getUser().getPersonalInfo().getLastName());
@@ -81,24 +83,5 @@ public class CustomerService {
         customer.setMedicalData(new MedicalData());
         customer.setSizeInfo(new SizeInfo());
         return customerRepository.save(customer);
-    }
-
-    private CustomerDto setNullField(CustomerDto customerDto){
-        if(customerDto.getContactInfo() == null){
-            customerDto.setContactInfo(new ContactInfo());
-        }
-        if (customerDto.getContactInfo().getBasicInfo() == null){
-            customerDto.getContactInfo().setBasicInfo(new BasicInfo());
-        }
-        if(customerDto.getContactInfo().getAddress() == null){
-            customerDto.getContactInfo().setAddress(new Address());
-        }
-        if(customerDto.getSizeInfo() == null){
-            customerDto.setSizeInfo(new SizeInfo());
-        }
-        if (customerDto.getMedicalData() == null){
-            customerDto.setMedicalData(new MedicalData());
-        }
-        return customerDto;
     }
 }
