@@ -23,6 +23,4 @@ public class CustomerResponse {
     private CartDto cart;
 
     private List<OrderDto> orders;
-
-    private boolean isActive;
 }

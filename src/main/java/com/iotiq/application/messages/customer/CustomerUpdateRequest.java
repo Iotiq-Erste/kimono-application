@@ -12,5 +12,4 @@ public class CustomerUpdateRequest {
     private ContactInfo contactInfo;
     private MedicalData medicalData;
     private SizeInfo sizeInfo;
-    private String password;
 }

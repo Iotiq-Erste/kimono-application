@@ -35,8 +35,6 @@ public class CustomerService {
         customer.setMedicalData(request.getMedicalData());
         customer.setSizeInfo(request.getSizeInfo());
 
-        customer.getUser().setPassword(request.getPassword());
-
         customerRepository.save(customer);
     }
 
@@ -57,7 +55,6 @@ public class CustomerService {
         customerDto.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
         customerDto.setCart(customerDto.getCart());
         customerDto.setOrders(ModelMapperUtil.map(customer.getOrders(), OrderDto.class));
-        customerDto.setActive(customer.isActive());
 
         return customerDto;
     }
@@ -78,7 +75,6 @@ public class CustomerService {
     private Customer createCustomer(User currentUser) {
         Customer customer = new Customer();
         customer.setUser(currentUser);
-        customer.setActive(true);
         customer.setAddress(new Address());
         customer.setMedicalData(new MedicalData());
         customer.setSizeInfo(new SizeInfo());

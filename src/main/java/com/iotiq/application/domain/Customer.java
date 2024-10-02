@@ -36,8 +36,6 @@ public class Customer extends AbstractPersistable<UUID> {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
 
-    private boolean isActive;
-
     public Customer() {
         this.cart = new Cart();
         this.cart.setCustomer(this);
