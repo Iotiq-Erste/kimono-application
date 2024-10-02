@@ -1,6 +1,5 @@
 package com.iotiq.application.messages.customer;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.iotiq.application.domain.MedicalData;
 import com.iotiq.application.domain.SizeInfo;
 import com.iotiq.application.messages.cart.CartDto;
@@ -15,7 +14,6 @@ import java.util.List;
 @Setter
 public class CustomerDto {
 
-    @JsonInclude(JsonInclude.Include.ALWAYS)
     private ContactInfo contactInfo;
 
     private MedicalData medicalData;

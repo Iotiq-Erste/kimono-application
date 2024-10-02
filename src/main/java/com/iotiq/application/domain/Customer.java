@@ -2,7 +2,6 @@ package com.iotiq.application.domain;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.iotiq.application.messages.customer.contact.Address;
 import com.iotiq.user.domain.User;
@@ -45,7 +44,6 @@ public class Customer extends AbstractPersistable<UUID> {
     }
 
     @Embedded
-    @JsonInclude(JsonInclude.Include.ALWAYS)
     private Address address;
 
     @Embedded
