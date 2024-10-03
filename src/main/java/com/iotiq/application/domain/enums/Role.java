@@ -3,6 +3,7 @@ package com.iotiq.application.domain.enums;
 import com.iotiq.application.domain.authority.CartManagementAuthority;
 import com.iotiq.application.domain.authority.CustomerManagementAuthority;
 import com.iotiq.application.domain.authority.OrderManagementAuthority;
+import com.iotiq.application.domain.authority.ProductDemandManagementAuthority;
 import com.iotiq.application.domain.authority.ProductManagementAuthority;
 import com.iotiq.application.domain.authority.SellerManagementAuthority;
 import org.springframework.security.core.GrantedAuthority;
@@ -28,7 +29,8 @@ public enum Role implements com.iotiq.user.domain.authorities.Role {
             SellerManagementAuthority.UPDATE,
             SellerManagementAuthority.CREATE,
             SellerManagementAuthority.DELETE,
-            SellerManagementAuthority.VIEW
+            SellerManagementAuthority.VIEW,
+            ProductDemandManagementAuthority.VIEW
     ),
     CUSTOMER(
             new SimpleGrantedAuthority("ROLE_CUSTOMER"),
@@ -41,7 +43,11 @@ public enum Role implements com.iotiq.user.domain.authorities.Role {
             CustomerManagementAuthority.UPDATE,
             CustomerManagementAuthority.CREATE,
             CustomerManagementAuthority.DELETE,
-            CustomerManagementAuthority.VIEW
+            CustomerManagementAuthority.VIEW,
+            ProductDemandManagementAuthority.VIEW,
+            ProductDemandManagementAuthority.CREATE,
+            ProductDemandManagementAuthority.UPDATE,
+            ProductDemandManagementAuthority.DELETE
 
 
     ),
