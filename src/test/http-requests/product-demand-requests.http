@@ -23,11 +23,10 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 > {%
-    client.test("Testing total number of orders", function () {
+    client.test("Testing total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
     });
     client.global.set("totalDemands", response.body.length);
-    console.log("totalDemands"+response.body.length);
 %}
 
 ### Scenario 3: Get Current Customer's Product Demands
@@ -36,14 +35,13 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 > {%
-    client.test("Testing total number of orders", function () {
+    client.test("Testing customer's total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
     });
     client.global.set("customersTotalDemands", response.body.length);
-    console.log("customersTotalDemands"+response.body.length);
 %}
 
-### Scenario 4: Create First Product Demands
+### Scenario 4: Create First Product Demand
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -163,7 +161,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.test("Creating product demands", function () {
+    client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
     });
     client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
@@ -172,7 +170,7 @@ Content-Type: application/json
 
 %}
 
-### Scenario 5: Create Second Product Demands
+### Scenario 5: Create Second Product Demand
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -292,7 +290,7 @@ Content-Type: application/json
 }
 
 > {%
-    client.test("Creating product demands", function () {
+    client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
     });
     client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
@@ -307,10 +305,9 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 > {%
-    client.test("Testing total number of orders", function () {
+    client.test("Testing total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
         client.assert(client.global.get("totalDemands") == response.body.length);
-        console.log("totalDemands"+response.body.length);
     });
 %}
 
@@ -320,13 +317,13 @@ Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 > {%
-    client.test("Testing total number of orders", function () {
+    client.test("Testing customer's total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
         client.assert(client.global.get("customersTotalDemands") == response.body.length)
     });
 %}
 
-### Scenario 8: Get Created First Product Demands for confirmation
+### Scenario 8: Get Created First Product Demand for confirmation
 GET {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -394,7 +391,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 9: Update First Product Demands
+### Scenario 9: Update First Product Demand
 PUT {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -404,7 +401,7 @@ Content-Type: application/json
   "gender": "UNISEX"
 }
 > {%
-    client.test("Product has been updated" ,function() {
+    client.test("Product demand has been updated" ,function() {
         client.assert(response.status === 200, "Status code is 200");
     });
 %}
@@ -422,7 +419,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 11: Delete First Product Demands
+### Scenario 11: Delete First Product Demand
 DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -449,7 +446,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 13: Delete Second Product Demands
+### Scenario 13: Delete Second Product Demand
 DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID2}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -469,7 +466,7 @@ Content-Type: application/json
 
 
 > {%
-    client.test("Get all product demands" ,function() {
+    client.test("Get all product demand" ,function() {
         client.assert(response.status === 200, "Status code is 200");
         client.assert(response.body.length === client.global.get("totalDemands"), "Deletion failed, product demand total element didnt match");
     });
