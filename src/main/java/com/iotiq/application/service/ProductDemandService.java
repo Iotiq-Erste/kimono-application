@@ -7,7 +7,6 @@ import com.iotiq.application.exception.productdemandexceptions.ProductDemandNotF
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
 import com.iotiq.application.repository.ProductDemandRepository;
-import com.iotiq.application.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductDemandService {
     private final ProductDemandRepository productDemandRepository;
-    private final ProductRepository productRepository;
     private final CustomerService customerService;
 
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest) {
@@ -49,7 +47,6 @@ public class ProductDemandService {
 
     @Transactional
     public void updateProductDemand(UUID id, ProductDemandRequest productDemandRequest) {
-        Customer customer = customerService.getCurrentCustomer();
         ProductDemand productDemand = findByIdAndCustomerAndIsActiveTrue(id);
         ModelMapperUtil.map(productDemandRequest, productDemand);
         productDemandRepository.save(productDemand);
@@ -64,7 +61,7 @@ public class ProductDemandService {
 
     private ProductDemand findByIdAndCustomerAndIsActiveTrue(UUID id) {
         Customer customer = customerService.getCurrentCustomer();
-        return productDemandRepository.findByIdAndCustomerAndIsActiveTrue(id,customer).orElseThrow(() ->
+        return productDemandRepository.findByIdAndCustomerAndIsActiveTrue(id, customer).orElseThrow(() ->
                 new ProductDemandNotFoundException("Product demand could not found"));
     }
 }
