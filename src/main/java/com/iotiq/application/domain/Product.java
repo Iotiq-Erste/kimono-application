@@ -18,6 +18,7 @@ import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -42,6 +43,7 @@ public class Product extends AbstractPersistable<UUID> {
 
     private String title;
 
+    @Column(length = 2048)
     private String description;
 
     @Embedded
@@ -147,4 +149,19 @@ public class Product extends AbstractPersistable<UUID> {
     @JsonIgnore
     private List<CartItem> cartItemList;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Product that = (Product) o;
+        if(this.getId() != null && that.getId() != null) {
+            return this.getId().equals(that.getId());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 13;
+    }
 }
