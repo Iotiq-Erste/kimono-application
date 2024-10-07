@@ -40,6 +40,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Product extends AbstractPersistable<UUID> {
 
+    public static final String ENTITY_NAME = "product";
+
     private String title;
 
     private String description;
