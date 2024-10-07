@@ -1,70 +1,22 @@
 package com.iotiq.application.messages.product;
 
 import com.iotiq.application.domain.Product;
-import com.iotiq.application.domain.enums.AbrassionResistant;
-import com.iotiq.application.domain.enums.Absorbency;
-import com.iotiq.application.domain.enums.ActiveSubstance;
-import com.iotiq.application.domain.enums.ActiveSubstanceArea;
-import com.iotiq.application.domain.enums.ActiveSubstancePlacement;
-import com.iotiq.application.domain.enums.ActiveSubstanceRelease;
-import com.iotiq.application.domain.enums.AdultAgeGroup;
-import com.iotiq.application.domain.enums.Antistatic;
-import com.iotiq.application.domain.enums.ApplicationArea;
-import com.iotiq.application.domain.enums.Brand;
-import com.iotiq.application.domain.enums.Breathable;
-import com.iotiq.application.domain.enums.Category;
-import com.iotiq.application.domain.enums.Certification;
-import com.iotiq.application.domain.enums.ChildrenAgeGroup;
-import com.iotiq.application.domain.enums.Color;
-import com.iotiq.application.domain.enums.Colorfast;
-import com.iotiq.application.domain.enums.Currency;
-import com.iotiq.application.domain.enums.DesignAppearance;
-import com.iotiq.application.domain.enums.DesignBodyPart;
-import com.iotiq.application.domain.enums.DesignColor;
-import com.iotiq.application.domain.enums.Elasticity;
-import com.iotiq.application.domain.enums.EnvironmentalCompatibility;
-import com.iotiq.application.domain.enums.FiberType;
-import com.iotiq.application.domain.enums.Fineness;
-import com.iotiq.application.domain.enums.Frequency;
-import com.iotiq.application.domain.enums.Gender;
-import com.iotiq.application.domain.enums.LifeCycle;
-import com.iotiq.application.domain.enums.Lightweight;
-import com.iotiq.application.domain.enums.LintFree;
-import com.iotiq.application.domain.enums.Material;
-import com.iotiq.application.domain.enums.MaterialParameter;
-import com.iotiq.application.domain.enums.MoistureTransporting;
-import com.iotiq.application.domain.enums.Motif;
-import com.iotiq.application.domain.enums.Neurodermatitis;
-import com.iotiq.application.domain.enums.OdorNeutralizing;
-import com.iotiq.application.domain.enums.OekotexStandard;
-import com.iotiq.application.domain.enums.PriceRange;
-import com.iotiq.application.domain.enums.Rating;
-import com.iotiq.application.domain.enums.Regionality;
-import com.iotiq.application.domain.enums.ResourceConsumption;
-import com.iotiq.application.domain.enums.ScratchResistant;
-import com.iotiq.application.domain.enums.Scratchy;
-import com.iotiq.application.domain.enums.SeamFeelable;
-import com.iotiq.application.domain.enums.Size;
-import com.iotiq.application.domain.enums.SocialEthics;
-import com.iotiq.application.domain.enums.Softness;
-import com.iotiq.application.domain.enums.SpecificBodyPart;
-import com.iotiq.application.domain.enums.SpecificFunctionality;
-import com.iotiq.application.domain.enums.Staggering;
-import com.iotiq.application.domain.enums.SustainabilityComposition;
-import com.iotiq.application.domain.enums.SustainabilityLightweight;
-import com.iotiq.application.domain.enums.SweatWicking;
-import com.iotiq.application.domain.enums.Uniform;
-import com.iotiq.application.domain.enums.Washable;
+import com.iotiq.application.domain.Product_;
+import com.iotiq.application.domain.Seller_;
+import com.iotiq.application.domain.enums.*;
 import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.commons.message.request.SearchRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.jpa.domain.AbstractPersistable_;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 import static com.iotiq.application.service.ProductSpecification.isIn;
 import static com.iotiq.application.service.ProductSpecification.isInList;
@@ -76,8 +28,9 @@ import static com.iotiq.application.service.ProductSpecification.priceBetween;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
- public class ProductFilter extends PageableRequest implements SearchRequest<Product> {
+public class ProductFilter extends PageableRequest implements SearchRequest<Product> {
 
+    private List<UUID> sellerIds;
     private String search;
 
     private BigDecimal lowestPrice;
@@ -91,7 +44,7 @@ import static com.iotiq.application.service.ProductSpecification.priceBetween;
     private List<ApplicationArea> applicationAreas;
 
     private List<Frequency> frequencies;
- 
+
     //Composition
     private List<ActiveSubstanceArea> activeSubstanceAreas;
     private List<ActiveSubstance> activeSubstances;
@@ -151,47 +104,47 @@ import static com.iotiq.application.service.ProductSpecification.priceBetween;
     private List<SpecificFunctionality> specificFunctionalities;
 
     @Override
-    public Specification<Product> buildSpecification(){
-
-        return Specification.where(isLike("title", search))
+    public Specification<Product> buildSpecification() {
+        Specification<Product> specification = Specification
+                .where(isLike("title", search))
                 .and(priceBetween(lowestPrice, highestPrice))
                 .and(isIn("ageGroup", "adultAgeGroup", adultAgeGroups))
                 .and(isIn("ageGroup", "childrenAgeGroup", childrenAgeGroups))
-                .and(isIn("applicationAreaGroup","applicationArea", applicationAreas))
-                .and(isIn("applicationAreaGroup","frequency", frequencies))
-                .and(isInList("composition","activeSubstanceAreas", activeSubstanceAreas))
-                .and(isInList("composition","activeSubstances", activeSubstances))
-                .and(isInList("composition","activeSubstancePlacements", activeSubstancePlacements))
-                .and(isInList("composition","activeSubstanceReleases", activeSubstanceReleases))
-                .and(isInList("composition","compositions", compositions))
-                .and(isInList("composition","staggerings", staggerings))
-                .and(isIn("design","designAppearance", designAppearances))
-                .and(isIn("design","designColor", designColors))
-                .and(isIn("haptics","elasticity", elasticities))
-                .and(isIn("haptics","fineness", finenesses))
-                .and(isIn("haptics","lightweight", lightweights))
-                .and(isIn("haptics","lintFree", lintFrees))
-                .and(isIn("haptics","scratchy", schratchies))
-                .and(isIn("haptics","seamFeelable", seamFeelables))
-                .and(isIn("haptics","softness", softnesses))
-                .and(isIn("haptics","uniform", uniforms))
-                .and(isIn("materialBehavior","abrasionResistant", abrassionResistants))
-                .and(isIn("materialBehavior","absorbency", absorbencies))
-                .and(isIn("materialBehavior","antistatic", antistatics))
-                .and(isIn("materialBehavior","breathable", breathables))
-                .and(isIn("materialBehavior","colorfast", colorfasts))
-                .and(isIn("materialBehavior","moistureTransporting", moistureTransportings))
-                .and(isIn("materialBehavior","odorNeutralizing", odorNeutralizings))
-                .and(isIn("materialBehavior","scratchResistant", scratchResistants))
-                .and(isIn("materialBehavior","sweatWicking", sweatWickings))
-                .and(isIn("materialBehavior","washable", washables))
-                .and(isInList("sustainability","environmentalCompatibilities", environmentalCompatibilities))
-                .and(isInList("sustainability","lifeCycles", lifeCycles))
-                .and(isInList("sustainability","regionalityList", regionalityList))
-                .and(isInList("sustainability","resourceConsumptions", resourceConsumptions))
-                .and(isInList("sustainability","socialEthics", socialEthics))
-                .and(isInList("sustainability","sustainabilityCompositions", sustainabilityCompositions))
-                .and(isInList("sustainability","sustainabilityLightweights", sustainabilityLightweights))
+                .and(isIn("applicationAreaGroup", "applicationArea", applicationAreas))
+                .and(isIn("applicationAreaGroup", "frequency", frequencies))
+                .and(isInList("composition", "activeSubstanceAreas", activeSubstanceAreas))
+                .and(isInList("composition", "activeSubstances", activeSubstances))
+                .and(isInList("composition", "activeSubstancePlacements", activeSubstancePlacements))
+                .and(isInList("composition", "activeSubstanceReleases", activeSubstanceReleases))
+                .and(isInList("composition", "compositions", compositions))
+                .and(isInList("composition", "staggerings", staggerings))
+                .and(isIn("design", "designAppearance", designAppearances))
+                .and(isIn("design", "designColor", designColors))
+                .and(isIn("haptics", "elasticity", elasticities))
+                .and(isIn("haptics", "fineness", finenesses))
+                .and(isIn("haptics", "lightweight", lightweights))
+                .and(isIn("haptics", "lintFree", lintFrees))
+                .and(isIn("haptics", "scratchy", schratchies))
+                .and(isIn("haptics", "seamFeelable", seamFeelables))
+                .and(isIn("haptics", "softness", softnesses))
+                .and(isIn("haptics", "uniform", uniforms))
+                .and(isIn("materialBehavior", "abrasionResistant", abrassionResistants))
+                .and(isIn("materialBehavior", "absorbency", absorbencies))
+                .and(isIn("materialBehavior", "antistatic", antistatics))
+                .and(isIn("materialBehavior", "breathable", breathables))
+                .and(isIn("materialBehavior", "colorfast", colorfasts))
+                .and(isIn("materialBehavior", "moistureTransporting", moistureTransportings))
+                .and(isIn("materialBehavior", "odorNeutralizing", odorNeutralizings))
+                .and(isIn("materialBehavior", "scratchResistant", scratchResistants))
+                .and(isIn("materialBehavior", "sweatWicking", sweatWickings))
+                .and(isIn("materialBehavior", "washable", washables))
+                .and(isInList("sustainability", "environmentalCompatibilities", environmentalCompatibilities))
+                .and(isInList("sustainability", "lifeCycles", lifeCycles))
+                .and(isInList("sustainability", "regionalityList", regionalityList))
+                .and(isInList("sustainability", "resourceConsumptions", resourceConsumptions))
+                .and(isInList("sustainability", "socialEthics", socialEthics))
+                .and(isInList("sustainability", "sustainabilityCompositions", sustainabilityCompositions))
+                .and(isInList("sustainability", "sustainabilityLightweights", sustainabilityLightweights))
                 .and(isIn("brand", brands))
                 .and(isIn("category", categories))
                 .and(isInList("certifications", certifications))
@@ -209,6 +162,14 @@ import static com.iotiq.application.service.ProductSpecification.priceBetween;
                 .and(isInList("sizes", sizes))
                 .and(isInList("specificBodyParts", specificBodyParts))
                 .and(isInList("specificFunctionalities", specificFunctionalities));
+
+        if (!CollectionUtils.isEmpty(sellerIds)) {
+            specification = specification
+                    .and((root, query, criteriaBuilder) ->
+                            root.get(Product_.SELLER).get(AbstractPersistable_.ID).in(sellerIds));
+        }
+
+        return specification;
     }
 
 }

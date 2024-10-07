@@ -112,6 +112,10 @@ public class ProductService {
     private final Validator validator;
 
     public Page<Product> getAll(@RequestParam ProductFilter filter, Sort sort) {
+        Seller currentSeller = sellerService.getCurrentSeller();
+        if(currentSeller != null && currentSeller.getId() != null) {
+            filter.setSellerIds(List.of(currentSeller.getId()));
+        }
         return productRepository.findAll(filter.buildSpecification(), filter.buildPageable(sort));
     }
 

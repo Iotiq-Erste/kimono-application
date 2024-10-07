@@ -4,22 +4,26 @@ import com.iotiq.application.domain.Product;
 import com.iotiq.application.domain.enums.Certification;
 import jakarta.persistence.criteria.Join;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 public class ProductSpecification {
 
+    private ProductSpecification() {}
+
     public static Specification<Product> isLike(String attribute, String value) {
-        return (root, query, cb) -> value == null ? null : cb.like(cb.lower(root.get(attribute)), "%" + value.toLowerCase() + "%");
+        return (root, query, cb) -> !StringUtils.hasText(value) ? null : cb.like(cb.lower(root.get(attribute)), "%" + value.toLowerCase() + "%");
     }
 
     public static <E extends Enum<E>> Specification<Product> isIn(String attribute, String subAttribute, List<E> values) {
-        return (root, query, cb) -> values == null ? null : root.get(attribute).get(subAttribute).in(values);
+        return (root, query, cb) -> CollectionUtils.isEmpty(values) ? null : root.get(attribute).get(subAttribute).in(values);
     }
 
     public static <E extends Enum<E>> Specification<Product> isIn(String attribute, List<E> values) {
-        return (root, query, cb) -> values == null ? null : root.get(attribute).in(values);
+        return (root, query, cb) -> CollectionUtils.isEmpty(values) ? null : root.get(attribute).in(values);
     }
 
     public static <E extends Enum<E>> Specification<Product> isInList(String attribute, String subAttribute, List<E> values) {

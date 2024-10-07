@@ -532,3 +532,29 @@ Content-Type: application/json
         client.assert(response.body.page.totalElements === client.global.get("productTotalElements"), "Deletion failed, product total element didnt match");
     });
 %}
+
+### Scenario 13: Obtain Token for another company
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type={{grantType}}&client_id={{clientId}}&password={{company2Password}}&username={{company2Username}}&client_secret={{clientSecret}}
+
+> {%
+    client.global.set("auth_token2", response.body.access_token);
+    client.test("Obtain Token", function() {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 12: Get All Products
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token2}}
+Content-Type: application/json
+
+> {%
+    client.test("Get all products" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.page.totalElements === 0, "Deletion failed, product total element didnt match");
+    });
+%}
