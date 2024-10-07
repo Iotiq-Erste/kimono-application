@@ -2,6 +2,7 @@ package com.iotiq.application.controller;
 
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.messages.productdemand.ProductDemandCreateResponse;
+import com.iotiq.application.messages.productdemand.ProductDemandDetailResponse;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
 import com.iotiq.application.messages.productdemand.ProductDemandResponse;
 import com.iotiq.application.service.ProductDemandService;
@@ -32,19 +33,19 @@ public class ProductDemandController {
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDemandCreateResponse createProductDemand(@RequestBody ProductDemandRequest productDemandRequest) {
-       return new ProductDemandCreateResponse(productDemandService.createProductDemand(productDemandRequest).getId());
+        return new ProductDemandCreateResponse(productDemandService.createProductDemand(productDemandRequest).getId());
     }
 
     @GetMapping("/get-all")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW)")
-    public List<ProductDemandResponse> getProductDemands() {
-       return ModelMapperUtil.map(productDemandService.getProductDemands(), ProductDemandResponse.class);
+    public List<ProductDemandDetailResponse> getProductDemands() {
+        return ModelMapperUtil.map(productDemandService.getProductDemands(), ProductDemandDetailResponse.class);
     }
 
     @GetMapping()
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW)")
     public List<ProductDemandResponse> getProductDemandsForCurrentCustomer() {
-       return ModelMapperUtil.map(productDemandService.getProductDemandsForCurrentCustomer(), ProductDemandResponse.class);
+        return ModelMapperUtil.map(productDemandService.getProductDemandsForCurrentCustomer(), ProductDemandResponse.class);
     }
 
     @GetMapping("/{id}")

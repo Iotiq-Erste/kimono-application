@@ -64,8 +64,8 @@ public class CustomerService {
 
         contactInfo.setAddress(Objects.requireNonNullElseGet(customer.getAddress(), Address::new));
         BasicInfo basicInfo = new BasicInfo();
-        basicInfo.setFirstname(customer.getUser().getPersonalInfo().getFirstName());
-        basicInfo.setLastname(customer.getUser().getPersonalInfo().getLastName());
+        basicInfo.setFirstName(customer.getUser().getPersonalInfo().getFirstName());
+        basicInfo.setLastName(customer.getUser().getPersonalInfo().getLastName());
         basicInfo.setEmail(customer.getUser().getPersonalInfo().getEmail());
         basicInfo.setPhoneNumber(customer.getUser().getPersonalInfo().getPhoneNumber());
         contactInfo.setBasicInfo(basicInfo);

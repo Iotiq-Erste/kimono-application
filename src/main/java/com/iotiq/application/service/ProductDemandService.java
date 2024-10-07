@@ -4,6 +4,8 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.ProductDemand;
 import com.iotiq.application.exception.productdemandexceptions.ProductDemandNotFoundException;
+import com.iotiq.application.messages.customer.contact.BasicInfo;
+import com.iotiq.application.messages.productdemand.ProductDemandDetailDto;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
 import com.iotiq.application.repository.ProductDemandRepository;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +32,17 @@ public class ProductDemandService {
         return productDemandRepository.save(productDemand);
     }
 
-    public List<ProductDemandDto> getProductDemands() {
-        return ModelMapperUtil.map(productDemandRepository.findAllByIsActiveTrue(), ProductDemandDto.class);
+    public List<ProductDemandDetailDto> getProductDemands() {
+        return productDemandRepository.findAllByIsActiveTrue().stream().map(productDemand -> {
+            ProductDemandDetailDto detailDto = ModelMapperUtil.map(productDemand, ProductDemandDetailDto.class);
+            BasicInfo basicInfo = new BasicInfo();
+            basicInfo.setFirstName(productDemand.getCustomer().getUser().getPersonalInfo().getFirstName());
+            basicInfo.setLastName(productDemand.getCustomer().getUser().getPersonalInfo().getLastName());
+            basicInfo.setPhoneNumber(productDemand.getCustomer().getUser().getPersonalInfo().getPhoneNumber());
+            basicInfo.setEmail(productDemand.getCustomer().getUser().getPersonalInfo().getEmail());
+            detailDto.setCustomerBasicInfo(basicInfo);
+            return detailDto;
+        }).collect(Collectors.toList());
     }
 
     public List<ProductDemandDto> getProductDemandsForCurrentCustomer() {
