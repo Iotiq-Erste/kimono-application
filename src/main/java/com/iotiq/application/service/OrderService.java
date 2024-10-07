@@ -27,11 +27,12 @@ public class OrderService {
     private final SellerService sellerService;
     private final ProductService productService;
 
-    public Order getOrder(UUID id) {
-        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
+    public Order getOrderForCurrentCustomer(UUID id) {
+        return orderRepository.findByIdAndCustomer(id, customerService.getCurrentCustomer())
+                .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
     }
 
-    public List<Order> getOrders() {
+    public List<Order> getOrdersForCurrentCustomer() {
         return customerService.getCurrentCustomer().getOrders();
     }
 
@@ -57,13 +58,13 @@ public class OrderService {
     }
 
     public void visible(UUID id) {
-        Order order = getOrder(id);
+        Order order = getOrderForCurrentCustomer(id);
         order.setVisible(false);
         orderRepository.save(order);
     }
 
     public void update(UUID id, OrderUpdateRequest request) {
-        Order order = getOrder(id);
+        Order order = getOrderForCurrentCustomer(id);
         ModelMapperUtil.map(request, order);
         orderRepository.save(order);
     }
