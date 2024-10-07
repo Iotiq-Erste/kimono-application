@@ -16,8 +16,20 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: https://keycloak.iotiq.dev/realms/kimono
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info
 opentelemetry:
   enabled: false
+
 #logging:
 #  level:
 #    com:

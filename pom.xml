@@ -14,7 +14,7 @@
     <name>application</name>
     <description>application</description>
     <properties>
-        <java.version>20</java.version>
+        <java.version>21</java.version>
     </properties>
     <dependencies>
 
@@ -101,6 +101,15 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.10.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -125,11 +134,22 @@
                 <configuration>
                     <allowInsecureRegistries>true</allowInsecureRegistries>
                     <from>
-                        <image>eclipse-temurin:20.0.1_9-jre</image>
+                        <image>eclipse-temurin:21.0.2_13-jre</image>
                     </from>
                     <to>
-                        <image>iotiqdevops/culturati-backend</image>
+                        <image>iotiqdevops/kimono-backend</image>
+                        <tags>
+                            <tag>latest</tag>
+                            <tag>${env.APP_VERSION}</tag>
+                            <tag>${env.COMMIT_HASH}</tag>
+                        </tags>
                     </to>
+                    <container>
+                        <environment>
+                            <APP_VERSION>${env.APP_VERSION}</APP_VERSION>
+                            <GIT_COMMIT>${env.GIT_COMMIT}</GIT_COMMIT>
+                        </environment>
+                    </container>
                     <auth>
                         <username>${env.DOCKERHUB_USERNAME} ?: "username1"</username>
                         <password>${env.DOCKERHUB_PASSWORD} ?: "pass"</password>

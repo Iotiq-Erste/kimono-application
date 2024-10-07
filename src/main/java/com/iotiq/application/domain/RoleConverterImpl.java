@@ -9,9 +9,12 @@ public class RoleConverterImpl implements RoleConverter {
     @Override
     public Role convert(String role) {
         return switch (role) {
-            case "SUPER_ADMIN" -> com.iotiq.application.domain.Role.SUPER_ADMIN;
-            case "CURATOR" -> com.iotiq.application.domain.Role.CURATOR;
-            case "VISITOR" -> com.iotiq.application.domain.Role.VISITOR;
+            case "SUPER_ADMIN" -> com.iotiq.application.domain.enums.Role.SUPER_ADMIN;
+            case "CURATOR" -> com.iotiq.application.domain.enums.Role.CURATOR;
+            case "VISITOR" -> com.iotiq.application.domain.enums.Role.VISITOR;
+            case "ADMIN" -> com.iotiq.application.domain.enums.Role.ADMIN;
+            case "COMPANY" -> com.iotiq.application.domain.enums.Role.COMPANY;
+            case "CUSTOMER" -> com.iotiq.application.domain.enums.Role.CUSTOMER;
             default -> null;
         };
     }

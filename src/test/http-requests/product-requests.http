@@ -1,0 +1,560 @@
+### Scenario 1: Obtain Token
+
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type={{grantType}}&client_id={{clientId}}&password={{password}}&username={{username}}&client_secret={{clientSecret}}
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+    client.test("Obtain Token", function() {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 2: Get All Products
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing total number of products" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+    client.global.set("productTotalElements", response.body.page.totalElements);
+%}
+
+### Scenario 3: Create New Product
+POST {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Sample Product 1",
+  "description": "Sample Description",
+  "price": {
+    "amount": 20,
+    "currency": "EUR"
+  },
+  "imageUrl": "http://example.com/image.jpg",
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup": "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea": "WORK_CLOTHING",
+    "frequency": "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certifications": [
+    "BLUESIGN",
+    "TOXPROOF"
+  ],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": [
+      "COMPLETE"
+    ],
+    "activeSubstances": [
+      "CHITOSAN"
+    ],
+    "activeSubstancePlacements": [
+      "SERUM"
+    ],
+    "activeSubstanceReleases": [
+      "DIFFUSING"
+    ],
+    "compositions": [
+      "PATCHWORK"
+    ],
+    "staggerings": [
+      "TEMPORAL"
+    ]
+  },
+  "design": {
+    "designAppearance": "DYNAMIC",
+    "designColor": "COLORFUL"
+  },
+  "designBodyParts": [
+    "SEAMLESS"
+  ],
+  "fiberTypes": [
+    "COTTON",
+    "MODAL"
+  ],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity": "ELASTIC",
+    "fineness": "FINE",
+    "lightweight": "LIGHT",
+    "lintFree": "FREE",
+    "scratchy": "SMOOTH",
+    "seamFeelable": "FEELABLE",
+    "softness": "SOFT",
+    "uniform": "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant": "VERY",
+    "absorbency": "VERY",
+    "antistatic": "VERY",
+    "breathable": "VERY",
+    "colorfast": "VERY",
+    "moistureTransporting": "VERY",
+    "odorNeutralizing": "VERY",
+    "scratchResistant": "VERY",
+    "sweatWicking": "VERY",
+    "washable": "VERY"
+  },
+  "materialParameter": "THICKNESS",
+  "motif": "ANIMALS",
+  "neurodermatitis": "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange": "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": [
+    "XXS"
+  ],
+  "specificBodyParts": [
+    "SCALP",
+    "FACE"
+  ],
+  "specificFunctionalities": [
+    "ANTIBACTERIAL",
+    "ANTIVIRAL"
+  ],
+  "sustainability": {
+    "environmentalCompatibilities": [
+      "ENVIRONMENTAL_COMPATIBILITY",
+      "BIODEGRADABLE"
+    ],
+    "lifeCycles": [
+      "LIFE_CYCLE"
+    ],
+    "regionalityList": [
+      "MADE_IN_GERMANY"
+    ],
+    "resourceConsumptions": [
+      "LOW_USAGE"
+    ],
+    "socialEthics": [
+      "FAIR_WAGES"
+    ],
+    "sustainabilityCompositions": [
+      "RARE_MATERIALS"
+    ],
+    "sustainabilityLightweights": [
+      "LIGHTWEIGHT"
+    ]
+  }
+}
+> {%
+    client.test("Create new product" ,function() {
+        client.assert(response.status === 201, "Status code is 201");
+        client.assert(response.body.hasOwnProperty("newProductID"), "Product has been created");
+    });
+    client.global.set("productTotalElements", client.global.get("productTotalElements")+1);
+    client.global.set("newProductID1", response.body.newProductID);
+%}
+
+### Scenario 4: Get Product1 for confirmation
+GET {{baseUrl}}/api/v1/products/{{newProductID1}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Get product" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.title === "Sample Product 1", "Creation failed, title does not match");
+        client.assert(response.body.description === "Sample Description", "Creation failed, description does not match");
+        client.assert(response.body.price.amount === 20, "Creation failed, price amount does not match");
+        client.assert(response.body.imageUrl === "http://example.com/image.jpg", "Creation failed, imageUrl does not match");
+        client.assert(response.body.ageGroup.adultAgeGroup === "THIRTY_TO_FOURTYFIVE", "Creation failed, ageGroup does not match");
+        client.assert(response.body.ageGroup.childrenAgeGroup === "TWO_TO_SIX_YEARS", "Creation failed, ageGroup does not match");
+        client.assert(response.body.applicationAreaGroup.applicationArea === "WORK_CLOTHING", "Creation failed, applicationAreaGroup does not match");
+        client.assert(response.body.applicationAreaGroup.frequency === "ONE_TIME", "Creation failed, applicationAreaGroup does not match");
+        client.assert(response.body.brand === "BEYMEN", "Creation failed, brand does not match");
+        client.assert(response.body.category === "JEANS", "Creation failed, category does not match");
+        client.assert(response.body.composition.activeSubstanceAreas[0] === "COMPLETE", "Creation failed, composition does not match");
+        client.assert(response.body.composition.activeSubstances[0] === "CHITOSAN", "Creation failed, composition does not match");
+        client.assert(response.body.composition.activeSubstancePlacements[0] === "SERUM", "Creation failed, composition does not match");
+        client.assert(response.body.composition.activeSubstanceReleases[0] === "DIFFUSING", "Creation failed, composition does not match");
+        client.assert(response.body.composition.compositions[0] === "PATCHWORK", "Creation failed, composition does not match");
+        client.assert(response.body.composition.staggerings[0] === "TEMPORAL", "Creation failed, composition does not match");
+        client.assert(response.body.design.designAppearance === "DYNAMIC", "Creation failed, design does not match");
+        client.assert(response.body.design.designColor === "COLORFUL", "Creation failed, design does not match");
+        client.assert(response.body.designBodyParts[0] === "SEAMLESS", "Creation failed, design does not match");
+        client.assert(response.body.fiberTypes[0] === "COTTON", "Creation failed, fiberTypes does not match");
+        client.assert(response.body.fiberTypes[1] === "MODAL", "Creation failed, fiberTypes does not match");
+        client.assert(response.body.gender === "MALE", "Creation failed, gender does not match");
+        client.assert(response.body.haptics.elasticity === "ELASTIC", "Creation failed, haptics does not match");
+        client.assert(response.body.haptics.fineness === "FINE", "Creation failed, haptics does not match");
+        client.assert(response.body.haptics.lightweight === "LIGHT", "Creation failed, haptics does not match");
+        client.assert(response.body.haptics.lintFree === "FREE", "Creation failed, haptics does not match");
+        client.assert(response.body.haptics.scratchy === "SMOOTH", "Creation failed, haptics does not match");
+        client.assert(response.body.haptics.seamFeelable === "FEELABLE", "Creation failed, haptics does not match");
+        client.assert(response.body.haptics.softness === "SOFT", "Creation failed, haptics does not match");
+        client.assert(response.body.haptics.uniform === "MOSTLY", "Creation failed, haptics does not match");
+        client.assert(response.body.materialBehavior.abrasionResistant === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.absorbency === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.antistatic === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.breathable === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.colorfast === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.moistureTransporting === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.odorNeutralizing === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.scratchResistant === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.sweatWicking === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialBehavior.washable === "VERY", "Creation failed, materialBehavior does not match");
+        client.assert(response.body.materialParameter === "THICKNESS", "Creation failed, materialParameter does not match");
+        client.assert(response.body.motif === "ANIMALS", "Creation failed, motif does not match");
+        client.assert(response.body.neurodermatitis === "STAGE_ONE_DRY_SKIN", "Creation failed, neurodermatitis does not match");
+        client.assert(response.body.oekotexStandard === "PRODUCT_CLASS_1", "Creation failed, oekotexStandard does not match");
+        client.assert(response.body.priceRange === "STANDARD", "Creation failed, priceRange does not match");
+        client.assert(response.body.rating === "FOUR_POINT_AND_OVER", "Creation failed, rating does not match");
+        client.assert(response.body.sizes[0] === "XXS", "Creation failed, sizes does not match");
+        client.assert(response.body.specificBodyParts[0] === "SCALP", "Creation failed, specificBodyParts does not match");
+        client.assert(response.body.specificBodyParts[1] === "FACE", "Creation failed, specificBodyParts does not match");
+        client.assert(response.body.specificFunctionalities[0] === "ANTIBACTERIAL", "Creation failed, specificFunctionalities does not match");
+        client.assert(response.body.specificFunctionalities[1] === "ANTIVIRAL", "Creation failed, specificFunctionalities does not match");
+        client.assert(response.body.sustainability.environmentalCompatibilities[0] === "ENVIRONMENTAL_COMPATIBILITY", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.environmentalCompatibilities[1] === "BIODEGRADABLE", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.lifeCycles[0] === "LIFE_CYCLE", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.regionalityList[0] === "MADE_IN_GERMANY", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.resourceConsumptions[0] === "LOW_USAGE", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.socialEthics[0] === "FAIR_WAGES", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.sustainabilityCompositions[0] === "RARE_MATERIALS", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.sustainabilityLightweights[0] === "LIGHTWEIGHT", "Creation failed, sustainability does not match");
+    });
+%}
+
+
+### Scenario 5: Create New Product
+POST {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Sample Product 2",
+  "description": "Sample Description",
+  "price": {
+    "amount": 20,
+    "currency": "EUR"
+  },
+  "imageUrl": "http://example.com/image.jpg",
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup": "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea": "WORK_CLOTHING",
+    "frequency": "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certifications": [
+    "BLUESIGN",
+    "TOXPROOF"
+  ],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": [
+      "COMPLETE"
+    ],
+    "activeSubstances": [
+      "CHITOSAN"
+    ],
+    "activeSubstancePlacements": [
+      "SERUM"
+    ],
+    "activeSubstanceReleases": [
+      "DIFFUSING"
+    ],
+    "compositions": [
+      "PATCHWORK"
+    ],
+    "staggerings": [
+      "TEMPORAL"
+    ]
+  },
+  "design": {
+    "designAppearance": "DYNAMIC",
+    "designColor": "COLORFUL"
+  },
+  "designBodyParts": [
+    "SEAMLESS"
+  ],
+  "fiberTypes": [
+    "COTTON",
+    "MODAL"
+  ],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity": "ELASTIC",
+    "fineness": "FINE",
+    "lightweight": "LIGHT",
+    "lintFree": "FREE",
+    "scratchy": "SMOOTH",
+    "seamFeelable": "FEELABLE",
+    "softness": "SOFT",
+    "uniform": "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant": "VERY",
+    "absorbency": "VERY",
+    "antistatic": "VERY",
+    "breathable": "VERY",
+    "colorfast": "VERY",
+    "moistureTransporting": "VERY",
+    "odorNeutralizing": "VERY",
+    "scratchResistant": "VERY",
+    "sweatWicking": "VERY",
+    "washable": "VERY"
+  },
+  "materialParameter": "THICKNESS",
+  "motif": "ANIMALS",
+  "neurodermatitis": "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange": "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": [
+    "XXS"
+  ],
+  "specificBodyParts": [
+    "SCALP",
+    "FACE"
+  ],
+  "specificFunctionalities": [
+    "ANTIBACTERIAL",
+    "ANTIVIRAL"
+  ],
+  "sustainability": {
+    "environmentalCompatibilities": [
+      "ENVIRONMENTAL_COMPATIBILITY",
+      "BIODEGRADABLE"
+    ],
+    "lifeCycles": [
+      "LIFE_CYCLE"
+    ],
+    "regionalityList": [
+      "MADE_IN_GERMANY"
+    ],
+    "resourceConsumptions": [
+      "LOW_USAGE"
+    ],
+    "socialEthics": [
+      "FAIR_WAGES"
+    ],
+    "sustainabilityCompositions": [
+      "RARE_MATERIALS"
+    ],
+    "sustainabilityLightweights": [
+      "LIGHTWEIGHT"
+    ]
+  }
+}
+> {%
+
+    client.test("Create new product" ,function() {
+        client.assert(response.status === 201, "Status code is 201");
+        client.assert(response.body.hasOwnProperty("newProductID"), "Product has been created");
+    });
+    client.global.set("newProductID2", response.body.newProductID);
+    client.global.set("productTotalElements", client.global.get("productTotalElements")+1);
+%}
+
+
+### Scenario 6: Get All Products
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing total number of products" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.page.totalElements === client.global.get("productTotalElements"), "Total element didnt match");
+    });
+%}
+
+### Scenario 7: Update Product
+PUT {{baseUrl}}/api/v1/products/{{newProductID1}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Sample Product 1 has been updated",
+  "description": "Sample Description",
+  "price": {
+    "amount": 30,
+    "currency": "EUR"
+  }
+}
+> {%
+    client.test("Product has been updated" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+%}
+
+### Scenario 8: Get Updated Product
+GET {{baseUrl}}/api/v1/products/{{newProductID1}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing product updates" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.title === "Sample Product 1 has been updated", "Update failed, title does not match");
+        client.assert(response.body.price.amount === 30, "Update failed, price does not match");
+    });
+%}
+
+### Scenario 9: Get Filtered Products
+GET {{baseUrl}}/api/v1/products?lowestPrice=0&highestPrice=100
+    &adultAgeGroups=THIRTY_TO_FOURTYFIVE&childrenAgeGroups=TWO_TO_SIX_YEARS&applicationAreas=WORK_CLOTHING&frequencies=ONE_TIME
+    &brands=BEYMEN&categories=JEANS&certifications=BLUESIGN,TOXPROOF&colors=RED&activeSubstanceAreas=COMPLETE
+    &activeSubstances=CHITOSAN&activeSubstancePlacements=SERUM
+    &activeSubstanceReleases=DIFFUSING&compositions=PATCHWORK&staggerings=TEMPORAL&designAppearances=DYNAMIC
+    &designColors=COLORFUL&designBodyParts=SEAMLESS&fiberTypes=COTTON,MODAL&genders=MALE&elasticities=ELASTIC
+    &finenesses=FINE&lightweights=LIGHT&lintFrees=FREE&seamFeelables=FEELABLE&schratchies=SMOOTH&softnesses=SOFT
+    &uniforms=MOSTLY&abrassionResistants=VERY&absorbencies=VERY&antistatics=VERY&breathables=VERY&colorfasts=VERY
+    &moistureTransportings=VERY&odorNeutralizings=VERY&scratchResistants=VERY&sweatWickings=VERY&washables=VERY
+    &materialParameters=THICKNESS&motifs=ANIMALS&neurodermatitis=STAGE_ONE_DRY_SKIN&oekotexStandards=PRODUCT_CLASS_1
+    &priceRanges=STANDARD&ratings=FOUR_POINT_AND_OVER&sizes=XXS&specificBodyParts=SCALP
+    &specificFunctionalities=ANTIBACTERIAL,ANTIVIRAL&environmentalCompatibilities=ENVIRONMENTAL_COMPATIBILITY,BIODEGRADABLE
+    &lifeCycles=LIFE_CYCLE&regionalityList=MADE_IN_GERMANY&resourceConsumptions=LOW_USAGE
+    &socialEthics=FAIR_WAGES&sustainabilityCompositions=RARE_MATERIALS&sustainabilityLightweights=LIGHTWEIGHT
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Get Filtered products" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.content[1].price.amount >= 0  && response.body.content[0].price.amount <=100, "price filter failed, price does not match");
+        client.assert(response.body.content[1].description === "Sample Description", "description filter failed, description does not match");
+        client.assert(response.body.content[1].imageUrl === "http://example.com/image.jpg", "imageUrl filter failed, imageUrl does not match");
+        client.assert(response.body.content[1].ageGroup.adultAgeGroup === "THIRTY_TO_FOURTYFIVE", "adultAgeGroup filter failed, adultAgeGroup does not match");
+        client.assert(response.body.content[1].ageGroup.childrenAgeGroup === "TWO_TO_SIX_YEARS", "childrenAgeGroup filter failed, childrenAgeGroup does not match");
+        client.assert(response.body.content[1].applicationAreaGroup.applicationArea === "WORK_CLOTHING", "applicationArea filter failed, applicationArea does not match");
+        client.assert(response.body.content[1].applicationAreaGroup.frequency === "ONE_TIME", "frequency filter failed, frequency does not match");
+        client.assert(response.body.content[1].brand === "BEYMEN", "brand filter failed, brand does not match");
+        client.assert(response.body.content[1].category === "JEANS", "category filter failed, category does not match");
+        client.assert(response.body.content[1].certifications[0] === "BLUESIGN", "certifications filter failed, certifications does not match");
+        client.assert(response.body.content[1].certifications[1] === "TOXPROOF", "certifications filter failed, certifications does not match");
+        client.assert(response.body.content[1].composition.activeSubstanceAreas[0] === "COMPLETE", "activeSubstanceAreas filter failed, activeSubstanceAreas does not match");
+        client.assert(response.body.content[1].composition.activeSubstances[0] === "CHITOSAN", "activeSubstances filter failed, activeSubstances does not match");
+        client.assert(response.body.content[1].composition.activeSubstancePlacements[0] === "SERUM", "activeSubstancePlacements filter failed, activeSubstancePlacements does not match");
+        client.assert(response.body.content[1].composition.activeSubstanceReleases[0] === "DIFFUSING", "activeSubstanceReleases filter failed, activeSubstanceReleases does not match");
+        client.assert(response.body.content[1].composition.compositions[0] === "PATCHWORK", "staggerings filter failed, staggerings does not match");
+        client.assert(response.body.content[1].composition.staggerings[0] === "TEMPORAL", "staggerings filter failed, staggerings does not match");
+        client.assert(response.body.content[1].design.designAppearance === "DYNAMIC", "designAppearance filter failed, designAppearance does not match");
+        client.assert(response.body.content[1].design.designColor === "COLORFUL", "designColor filter failed, designColor does not match");
+        client.assert(response.body.content[1].designBodyParts[0] === "SEAMLESS", "designBodyParts filter failed, designBodyParts does not match");
+        client.assert(response.body.content[1].fiberTypes[0] === "COTTON", "fiberTypes filter failed, fiberTypes does not match");
+        client.assert(response.body.content[1].fiberTypes[1] === "MODAL", "fiberTypes filter failed, fiberTypes does not match");
+        client.assert(response.body.content[1].gender === "MALE", "gender filter failed, gender does not match");
+        client.assert(response.body.content[1].haptics.elasticity === "ELASTIC", "elasticity filter failed, elasticity does not match");
+        client.assert(response.body.content[1].haptics.fineness === "FINE", "fineness filter failed, fineness does not match");
+        client.assert(response.body.content[1].haptics.lightweight === "LIGHT", "lightweight filter failed, lightweight does not match");
+        client.assert(response.body.content[1].haptics.lintFree === "FREE", "lintFree filter failed, lintFree does not match");
+        client.assert(response.body.content[1].haptics.scratchy === "SMOOTH", "scratchy filter failed, scratchy does not match");
+        client.assert(response.body.content[1].haptics.seamFeelable === "FEELABLE", "Creation filter failed, seamFeelable does not match");
+        client.assert(response.body.content[1].haptics.softness === "SOFT", "softness filter failed, softness does not match");
+        client.assert(response.body.content[1].haptics.uniform === "MOSTLY", "uniform filter failed, uniform does not match");
+        client.assert(response.body.content[1].materialBehavior.abrasionResistant === "VERY", "abrasionResistant filter failed, abrasionResistant does not match");
+        client.assert(response.body.content[1].materialBehavior.absorbency === "VERY", "absorbency filter failed, absorbency does not match");
+        client.assert(response.body.content[1].materialBehavior.antistatic === "VERY", "antistatic filter failed, antistatic does not match");
+        client.assert(response.body.content[1].materialBehavior.breathable === "VERY", "breathable filter failed, breathable does not match");
+        client.assert(response.body.content[1].materialBehavior.colorfast === "VERY", "colorfast filter failed, colorfast does not match");
+        client.assert(response.body.content[1].materialBehavior.moistureTransporting === "VERY", "moistureTransporting filter failed, moistureTransporting does not match");
+        client.assert(response.body.content[1].materialBehavior.odorNeutralizing === "VERY", "odorNeutralizing filter failed, odorNeutralizing does not match");
+        client.assert(response.body.content[1].materialBehavior.scratchResistant === "VERY", "scratchResistant filter failed, scratchResistant does not match");
+        client.assert(response.body.content[1].materialBehavior.sweatWicking === "VERY", "sweatWicking filter failed, sweatWicking does not match");
+        client.assert(response.body.content[1].materialBehavior.washable === "VERY", "washable filter failed, washable does not match");
+        client.assert(response.body.content[1].materialParameter === "THICKNESS", "materialParameter filter failed, materialParameter does not match");
+        client.assert(response.body.content[1].motif === "ANIMALS", "motif filter failed, motif does not match");
+        client.assert(response.body.content[1].neurodermatitis === "STAGE_ONE_DRY_SKIN", "neurodermatitis filter failed, neurodermatitis does not match");
+        client.assert(response.body.content[1].oekotexStandard === "PRODUCT_CLASS_1", "oekotexStandard filter failed, oekotexStandard does not match");
+        client.assert(response.body.content[1].priceRange === "STANDARD", "priceRange filter failed, priceRange does not match");
+        client.assert(response.body.content[1].rating === "FOUR_POINT_AND_OVER", "rating filter failed, rating does not match");
+        client.assert(response.body.content[1].sizes[0] === "XXS", "sizes filter failed, sizes does not match");
+        client.assert(response.body.content[1].specificBodyParts[0] === "SCALP", "specificBodyParts filter failed, specificBodyParts does not match");
+        client.assert(response.body.content[1].specificBodyParts[1] === "FACE", "specificBodyParts filter failed, specificBodyParts does not match");
+        client.assert(response.body.content[1].specificFunctionalities[0] === "ANTIBACTERIAL", "specificFunctionalities filter failed, specificFunctionalities filter failed");
+        client.assert(response.body.content[1].specificFunctionalities[1] === "ANTIVIRAL", "specificFunctionalities filter failed, specificFunctionalities filter failed");
+        client.assert(response.body.content[1].sustainability.environmentalCompatibilities[0] === "ENVIRONMENTAL_COMPATIBILITY", "environmentalCompatibilities filter failed, environmentalCompatibilities filter failed");
+        client.assert(response.body.content[1].sustainability.environmentalCompatibilities[1] === "BIODEGRADABLE", "environmentalCompatibilities filter failed, environmentalCompatibilities filter failed");
+        client.assert(response.body.content[1].sustainability.lifeCycles[0] === "LIFE_CYCLE", "lifeCycles filter failed, lifeCycles filter failed");
+        client.assert(response.body.content[1].sustainability.regionalityList[0] === "MADE_IN_GERMANY", "regionalityList filter failed, regionalityList filter failed");
+        client.assert(response.body.content[1].sustainability.resourceConsumptions[0] === "LOW_USAGE", "resourceConsumptions filter failed, resourceConsumptions filter failed");
+        client.assert(response.body.content[1].sustainability.socialEthics[0] === "FAIR_WAGES", "socialEthics filter failed, socialEthics filter failed");
+        client.assert(response.body.content[1].sustainability.sustainabilityCompositions[0] === "RARE_MATERIALS", "sustainabilityCompositions filter failed, sustainabilityCompositions filter failed");
+        client.assert(response.body.content[1].sustainability.sustainabilityLightweights[0] === "LIGHTWEIGHT", "sustainabilityLightweights filter failed, sustainabilityLightweights filter failed");
+
+
+    });
+%}
+
+### Scenario 10: Delete Product
+DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Product has been deleted" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+    client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
+%}
+
+### Scenario 11: Delete Product
+DELETE {{baseUrl}}/api/v1/products/{{newProductID2}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Product has been deleted" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+    client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
+%}
+
+### Scenario 12: Get All Products
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+
+> {%
+    client.test("Get all products" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.page.totalElements === client.global.get("productTotalElements"), "Deletion failed, product total element didnt match");
+    });
+%}
+
+### Scenario 13: Obtain Token for another company
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type={{grantType}}&client_id={{clientId}}&password={{company2Password}}&username={{company2Username}}&client_secret={{clientSecret}}
+
+> {%
+    client.global.set("auth_token2", response.body.access_token);
+    client.test("Obtain Token", function() {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 12: Get All Products
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token2}}
+Content-Type: application/json
+
+> {%
+    client.test("Get all products" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.page.totalElements === 0, "Deletion failed, product total element didnt match");
+    });
+%}

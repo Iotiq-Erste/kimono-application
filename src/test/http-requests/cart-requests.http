@@ -1,0 +1,210 @@
+### Scenario 1: Obtain Token
+
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type={{grantType}}&client_id={{clientId}}&password={{password}}&username={{username}}&client_secret={{clientSecret}}
+
+> {%
+    client.global.set("auth_token", response.body.access_token);
+    client.test("Obtain Token", function() {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 2: Create New Product
+POST {{baseUrl}}/api/v1/products
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "title": "Sample Product 1",
+  "description": "Sample Description",
+  "price": {
+    "amount": 20,
+    "currency": "EUR"
+  },
+  "imageUrl": "http://example.com/image.jpg",
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup": "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea": "WORK_CLOTHING",
+    "frequency": "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certifications": [
+    "BLUESIGN",
+    "TOXPROOF"
+  ],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": [
+      "COMPLETE"
+    ],
+    "activeSubstances": [
+      "CHITOSAN"
+    ],
+    "activeSubstancePlacements": [
+      "SERUM"
+    ],
+    "activeSubstanceReleases": [
+      "DIFFUSING"
+    ],
+    "compositions": [
+      "PATCHWORK"
+    ],
+    "staggerings": [
+      "TEMPORAL"
+    ]
+  },
+  "design": {
+    "designAppearance": "DYNAMIC",
+    "designColor": "COLORFUL"
+  },
+  "designBodyParts": [
+    "SEAMLESS"
+  ],
+  "fiberTypes": [
+    "COTTON",
+    "MODAL"
+  ],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity": "ELASTIC",
+    "fineness": "FINE",
+    "lightweight": "LIGHT",
+    "lintFree": "FREE",
+    "scratchy": "SMOOTH",
+    "seamFeelable": "FEELABLE",
+    "softness": "SOFT",
+    "uniform": "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant": "VERY",
+    "absorbency": "VERY",
+    "antistatic": "VERY",
+    "breathable": "VERY",
+    "colorfast": "VERY",
+    "moistureTransporting": "VERY",
+    "odorNeutralizing": "VERY",
+    "scratchResistant": "VERY",
+    "sweatWicking": "VERY",
+    "washable": "VERY"
+  },
+  "materialParameter": "THICKNESS",
+  "motif": "ANIMALS",
+  "neurodermatitis": "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange": "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": [
+    "XXS"
+  ],
+  "specificBodyParts": [
+    "SCALP",
+    "FACE"
+  ],
+  "specificFunctionalities": [
+    "ANTIBACTERIAL",
+    "ANTIVIRAL"
+  ],
+  "sustainability": {
+    "environmentalCompatibilities": [
+      "ENVIRONMENTAL_COMPATIBILITY",
+      "BIODEGRADABLE"
+    ],
+    "lifeCycles": [
+      "LIFE_CYCLE"
+    ],
+    "regionalityList": [
+      "MADE_IN_GERMANY"
+    ],
+    "resourceConsumptions": [
+      "LOW_USAGE"
+    ],
+    "socialEthics": [
+      "FAIR_WAGES"
+    ],
+    "sustainabilityCompositions": [
+      "RARE_MATERIALS"
+    ],
+    "sustainabilityLightweights": [
+      "LIGHTWEIGHT"
+    ]
+  }
+}
+> {%
+    client.test("Create new product" ,function() {
+        client.assert(response.status === 201, "Status code is 201");
+        client.assert(response.body.hasOwnProperty("newProductID"), "Product has been created");
+    });
+    client.global.set("newProductID1", response.body.newProductID);
+%}
+
+### Scenario 3: Update Cart by Adding Cart Item
+PUT {{baseUrl}}/api/v1/cart
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "cartItems": [
+    {
+      "productId":"{{newProductID1}}",
+      "quantity":1
+    }
+  ]
+}
+> {%
+    client.test("Product has been updated" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+%}
+
+
+### Scenario 4: Get Updated Cart
+GET {{baseUrl}}/api/v1/cart
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing add cart item to cart " ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.cartItems[0].product.id == client.global.get("newProductID1"), "Update failed, added product did not match");
+    });
+%}
+
+### Scenario 5: Update Cart by Deleting Cart Item
+PUT {{baseUrl}}/api/v1/cart
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+{
+  "cartItems": []
+}
+> {%
+    client.test("Product has been updated" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+%}
+
+### Scenario 6: Get Updated Cart
+GET {{baseUrl}}/api/v1/cart
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing add cart item to cart " ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.cartItems.length === 0 , "Update failed, deleted product did not match");
+    });
+%}
+
+### Scenario 7: Delete Product
+DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
