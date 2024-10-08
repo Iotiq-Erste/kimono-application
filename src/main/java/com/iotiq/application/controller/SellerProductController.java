@@ -3,6 +3,7 @@ package com.iotiq.application.controller;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.domain.Seller;
+import com.iotiq.application.exception.auth.ForbiddenException;
 import com.iotiq.application.exception.auth.UnauthorizedException;
 import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
@@ -93,6 +94,7 @@ public class SellerProductController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.DELETE)")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID sellerId, @PathVariable("id") UUID id) {
         checkScope(sellerId);
         productService.delete(id);
@@ -100,6 +102,7 @@ public class SellerProductController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.UPDATE)")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable UUID sellerId, @PathVariable("id") UUID id, @RequestBody @Valid ProductUpdateRequest request) {
         checkScope(sellerId);
         productService.update(id, request);
@@ -107,8 +110,11 @@ public class SellerProductController {
 
     private void checkScope(UUID sellerId) {
         Seller currentSeller = sellerService.getCurrentSeller();
-        if(currentSeller == null || !Objects.equals(currentSeller.getId(), sellerId)) {
-            throw new UnauthorizedException(Seller.ENTITY_NAME, sellerId);
+        if (currentSeller == null) {
+            throw new UnauthorizedException(Seller.ENTITY_NAME, sellerId); // 401
+        }
+        if (!Objects.equals(currentSeller.getId(), sellerId)) {
+            throw new ForbiddenException(Seller.ENTITY_NAME, sellerId); // 403
         }
     }
 
