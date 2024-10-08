@@ -65,6 +65,6 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
 
     @PrePersist
     public void setOrderNumber() {
-        this.orderNumber = "ORD-" + StringUtils.left(String.valueOf(getId()), 5).toUpperCase();
+        this.orderNumber = StringUtils.left(String.valueOf(getId()), 5).toUpperCase();
     }
 }
