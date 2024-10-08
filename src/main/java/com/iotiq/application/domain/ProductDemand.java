@@ -36,6 +36,8 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ProductDemand extends AbstractPersistable<UUID> {
 
+    public static String ENTITY_NAME = "product_demand";
+
     @Embedded
     private AgeGroup ageGroup;
 

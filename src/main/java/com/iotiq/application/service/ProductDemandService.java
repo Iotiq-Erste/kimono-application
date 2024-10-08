@@ -3,12 +3,12 @@ package com.iotiq.application.service;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.ProductDemand;
-import com.iotiq.application.exception.productdemandexceptions.ProductDemandNotFoundException;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
 import com.iotiq.application.messages.productdemand.ProductDemandDetailDto;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
 import com.iotiq.application.repository.ProductDemandRepository;
+import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -74,6 +74,6 @@ public class ProductDemandService {
     private ProductDemand findByIdAndCustomerAndIsActiveTrue(UUID id) {
         Customer customer = customerService.getCurrentCustomer();
         return productDemandRepository.findByIdAndCustomerAndIsActiveTrue(id, customer).orElseThrow(() ->
-                new ProductDemandNotFoundException("Product demand could not found"));
+                new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
     }
 }
