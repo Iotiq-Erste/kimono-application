@@ -31,6 +31,8 @@ import java.util.UUID;
 @Table(name = "order_table")
 public class Order extends BaseAbstractAuditingEntity<UUID> {
 
+    public static final String ENTITY_NAME = "order";
+
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;

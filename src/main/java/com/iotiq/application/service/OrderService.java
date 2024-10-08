@@ -4,12 +4,13 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.Product;
-import com.iotiq.application.exception.orderexceptions.OrderNotFoundException;
+import com.iotiq.application.exception.PricesNotMatchException;
 import com.iotiq.application.messages.cartitem.CartItemDto;
 import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
 import com.iotiq.application.repository.OrderRepository;
+import com.iotiq.commons.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class OrderService {
 
     public Order getOrderForCurrentCustomer(UUID id) {
         return orderRepository.findByIdAndCustomer(id, customerService.getCurrentCustomer())
-                .orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException(Order.ENTITY_NAME, id));
     }
 
     public List<Order> getOrdersForCurrentCustomer() {
@@ -51,8 +52,8 @@ public class OrderService {
         order.setTotalPrice(calculateTotalAmount(order.getOrderedProducts()));
         order.setOrderDate(LocalDate.now());
 
-        if (createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
-            throw new RuntimeException("Total prices did not match");
+        if(createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
+            throw new PricesNotMatchException(createRequest.getCartTotalPrice(), order.getTotalPrice());
         }
 
         order = orderRepository.save(order);
