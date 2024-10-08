@@ -10,11 +10,13 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,7 +39,7 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
 
     private BigDecimal cargoPrice;
 
-    private BigDecimal totalDiscount;
+    private BigDecimal totalDiscount = BigDecimal.ZERO;
 
     private BigDecimal totalPrice;
 
@@ -57,6 +59,10 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderedProduct> orderedProducts;
 
-    private boolean isVisible;
+    private boolean isVisible = true;
 
+    @PrePersist
+    public void setOrderNumber() {
+        this.orderNumber = String.format("ORD-%s-%s", this.orderDate.toString().replace("-", ""), StringUtils.left(String.valueOf(getId()), 8).toUpperCase());
+    }
 }

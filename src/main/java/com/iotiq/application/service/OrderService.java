@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -41,15 +42,16 @@ public class OrderService {
     }
 
     public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
-        Order order =  ModelMapperUtil.map(createRequest, Order.class);
+        Order order = ModelMapperUtil.map(createRequest, Order.class);
 
         Order finalOrder = order;
         order.setOrderedProducts(createRequest.getCartItems()
                 .stream().map(cartItem -> convertToOrderedProduct(cartItem, finalOrder)).collect(Collectors.toList()));
         order.setCustomer(customerService.getCurrentCustomer());
         order.setTotalPrice(calculateTotalAmount(order.getOrderedProducts()));
+        order.setOrderDate(LocalDate.now());
 
-        if(createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
+        if (createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
             throw new RuntimeException("Total prices did not match");
         }
 
@@ -57,7 +59,7 @@ public class OrderService {
         return new OrderCreateResponse(order.getId(), order.getOrderNumber());
     }
 
-    public void visible(UUID id) {
+    public void invisible(UUID id) {
         Order order = getOrderForCurrentCustomer(id);
         order.setVisible(false);
         orderRepository.save(order);
@@ -85,7 +87,7 @@ public class OrderService {
     }
 
     private BigDecimal calculateTotalAmount(List<OrderedProduct> orderedProducts) {
-       return orderedProducts.stream().map(orderedProduct -> BigDecimal.valueOf(orderedProduct.getQuantity())
+        return orderedProducts.stream().map(orderedProduct -> BigDecimal.valueOf(orderedProduct.getQuantity())
                         .multiply(orderedProduct.getPrice().getAmount()))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
