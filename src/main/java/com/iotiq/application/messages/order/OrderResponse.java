@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +23,7 @@ public class OrderResponse {
     private String deliveryAddressType;
     private String deliveryAddress;
     private DeliveryStatus deliveryStatus;
-    private LocalDate orderDate;
+    private LocalDateTime orderDate;
     private List<OrderedProduct> orderedProducts;
     private boolean isVisible;
 }

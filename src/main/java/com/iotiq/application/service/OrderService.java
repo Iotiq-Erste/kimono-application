@@ -15,7 +15,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -50,7 +51,7 @@ public class OrderService {
                 .stream().map(cartItem -> convertToOrderedProduct(cartItem, finalOrder)).collect(Collectors.toList()));
         order.setCustomer(customerService.getCurrentCustomer());
         order.setTotalPrice(calculateTotalAmount(order.getOrderedProducts()));
-        order.setOrderDate(LocalDate.now());
+        order.setOrderDate(LocalDateTime.now(ZoneOffset.UTC));
 
         if(createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
             throw new PricesNotMatchException(createRequest.getCartTotalPrice(), order.getTotalPrice());
