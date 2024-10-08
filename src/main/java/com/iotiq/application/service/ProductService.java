@@ -142,8 +142,8 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public byte[] exportCSVFile() throws IOException {
-        Page<Product> products = getAll(new ProductFilter(), Sort.unsorted());
+    public byte[] exportCSVFile(UUID sellerId) throws IOException {
+        Page<Product> products = getAll(new ProductFilter().withSellerId(sellerId), Sort.unsorted());
 
         StringWriter sw = new StringWriter();
 
