@@ -43,7 +43,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_COMPANY')")
-@RequestMapping("/api/v1/company/{companyId}/products")
+@RequestMapping("/api/v1/seller/{sellerId}/products")
 public class SellerProductController {
 
     private ProductService productService;
@@ -51,10 +51,10 @@ public class SellerProductController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public PagedResponse<ProductResponse> getAll(@PathVariable UUID companyId, ProductFilter filter, Sort sort) {
-        checkScope(companyId);
+    public PagedResponse<ProductResponse> getAll(@PathVariable UUID sellerId, ProductFilter filter, Sort sort) {
+        checkScope(sellerId);
 
-        filter.setSellerIds(List.of(companyId));
+        filter.setSellerIds(List.of(sellerId));
         Page<Product> page = productService.getAll(filter, sort);
         List<ProductResponse> responseList = ModelMapperUtil.map(page.getContent(), ProductResponse.class);
 
@@ -63,10 +63,10 @@ public class SellerProductController {
 
     @GetMapping("/csv-export")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public ResponseEntity<byte[]> export(@PathVariable UUID companyId) throws IOException {
-        checkScope(companyId);
+    public ResponseEntity<byte[]> export(@PathVariable UUID sellerId) throws IOException {
+        checkScope(sellerId);
 
-        byte[] csvBytes = productService.exportCSVFile();
+        byte[] csvBytes = productService.exportCSVFile(sellerId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -78,37 +78,37 @@ public class SellerProductController {
     }
 
     @PostMapping("/csv-upload")
-    public ResponseEntity<ProductCSVUploadResponse> uploadFile(@PathVariable UUID companyId, @RequestParam("file") MultipartFile file) {
-        checkScope(companyId);
+    public ResponseEntity<ProductCSVUploadResponse> uploadFile(@PathVariable UUID sellerId, @RequestParam("file") MultipartFile file) {
+        checkScope(sellerId);
         return productService.importCSVFile(file);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductCreateResponse createProduct(@PathVariable UUID companyId, @RequestBody @Valid ProductCreateRequest request) {
-        checkScope(companyId);
+    public ProductCreateResponse createProduct(@PathVariable UUID sellerId, @RequestBody @Valid ProductCreateRequest request) {
+        checkScope(sellerId);
         return new ProductCreateResponse(productService.createProduct(request).getId());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.DELETE)")
-    public void delete(@PathVariable UUID companyId, @PathVariable("id") UUID id) {
-        checkScope(companyId);
+    public void delete(@PathVariable UUID sellerId, @PathVariable("id") UUID id) {
+        checkScope(sellerId);
         productService.delete(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.UPDATE)")
-    public void update(@PathVariable UUID companyId, @PathVariable("id") UUID id, @RequestBody @Valid ProductUpdateRequest request) {
-        checkScope(companyId);
+    public void update(@PathVariable UUID sellerId, @PathVariable("id") UUID id, @RequestBody @Valid ProductUpdateRequest request) {
+        checkScope(sellerId);
         productService.update(id, request);
     }
 
-    private void checkScope(UUID companyId) {
+    private void checkScope(UUID sellerId) {
         Seller currentSeller = sellerService.getCurrentSeller();
-        if(currentSeller == null || !Objects.equals(currentSeller.getId(), companyId)) {
-            throw new UnauthorizedException(Seller.ENTITY_NAME, companyId);
+        if(currentSeller == null || !Objects.equals(currentSeller.getId(), sellerId)) {
+            throw new UnauthorizedException(Seller.ENTITY_NAME, sellerId);
         }
     }
 
