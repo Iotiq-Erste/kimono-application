@@ -65,13 +65,13 @@ import com.iotiq.application.domain.enums.SustainabilityLightweight;
 import com.iotiq.application.domain.enums.SweatWicking;
 import com.iotiq.application.domain.enums.Uniform;
 import com.iotiq.application.domain.enums.Washable;
-import com.iotiq.application.exception.productexceptions.ProductNotFoundException;
 import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductDto;
 import com.iotiq.application.messages.product.ProductFilter;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.repository.ProductRepository;
+import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
@@ -112,11 +112,15 @@ public class ProductService {
     private final Validator validator;
 
     public Page<Product> getAll(@RequestParam ProductFilter filter, Sort sort) {
+        Seller currentSeller = sellerService.getCurrentSeller();
+        if(currentSeller != null && currentSeller.getId() != null) {
+            filter.setSellerIds(List.of(currentSeller.getId()));
+        }
         return productRepository.findAll(filter.buildSpecification(), filter.buildPageable(sort));
     }
 
     public Product getOne(UUID id) {
-        return productRepository.findById(id).orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
+        return productRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(Product.ENTITY_NAME, id));
     }
 
     @Transactional
@@ -135,7 +139,7 @@ public class ProductService {
     @Transactional
     public void update(UUID id, ProductUpdateRequest request) {
         Product product = productRepository.findById(id).
-                orElseThrow(() -> new ProductNotFoundException("Product not found with ID: " + id));
+                orElseThrow(() -> new EntityNotFoundException(Product.ENTITY_NAME, id));
 
         ModelMapperUtil.map(request, product);
 

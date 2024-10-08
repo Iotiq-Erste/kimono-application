@@ -4,12 +4,13 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.Product;
-import com.iotiq.application.exception.orderexceptions.OrderNotFoundException;
+import com.iotiq.application.exception.PricesNotMatchException;
 import com.iotiq.application.messages.cartitem.CartItemDto;
 import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
 import com.iotiq.application.repository.OrderRepository;
+import com.iotiq.commons.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,11 +28,12 @@ public class OrderService {
     private final SellerService sellerService;
     private final ProductService productService;
 
-    public Order getOrder(UUID id) {
-        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException("Order not found with ID: " + id));
+    public Order getOrderForCurrentCustomer(UUID id) {
+        return orderRepository.findByIdAndCustomer(id, customerService.getCurrentCustomer())
+                .orElseThrow(() -> new EntityNotFoundException(Order.ENTITY_NAME, id));
     }
 
-    public List<Order> getOrders() {
+    public List<Order> getOrdersForCurrentCustomer() {
         return customerService.getCurrentCustomer().getOrders();
     }
 
@@ -49,7 +51,7 @@ public class OrderService {
         order.setTotalPrice(calculateTotalAmount(order.getOrderedProducts()));
 
         if(createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
-            throw new RuntimeException("Total prices did not match");
+            throw new PricesNotMatchException(createRequest.getCartTotalPrice(), order.getTotalPrice());
         }
 
         order = orderRepository.save(order);
@@ -57,13 +59,13 @@ public class OrderService {
     }
 
     public void visible(UUID id) {
-        Order order = getOrder(id);
+        Order order = getOrderForCurrentCustomer(id);
         order.setVisible(false);
         orderRepository.save(order);
     }
 
     public void update(UUID id, OrderUpdateRequest request) {
-        Order order = getOrder(id);
+        Order order = getOrderForCurrentCustomer(id);
         ModelMapperUtil.map(request, order);
         orderRepository.save(order);
     }

@@ -34,14 +34,14 @@ public class OrderController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
     public OrderResponse getOne(@PathVariable UUID id) {
-        Order order = orderService.getOrder(id);
+        Order order = orderService.getOrderForCurrentCustomer(id);
         return ModelMapperUtil.map(order, OrderResponse.class);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
     public List<OrderResponse> getOrders() {
-        List<Order> orders = orderService.getOrders();
+        List<Order> orders = orderService.getOrdersForCurrentCustomer();
         return ModelMapperUtil.map(orders, OrderResponse.class);
     }
 
