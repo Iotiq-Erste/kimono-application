@@ -71,6 +71,7 @@ import com.iotiq.application.messages.product.ProductDto;
 import com.iotiq.application.messages.product.ProductFilter;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.repository.ProductRepository;
+import com.iotiq.application.repository.SellerRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
@@ -109,6 +110,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final SellerService sellerService;
+    private final SellerRepository sellerRepository;
     private final Validator validator;
 
     public Page<Product> getAll(@RequestParam ProductFilter filter, Sort sort) {
@@ -196,10 +198,12 @@ public class ProductService {
     }
 
     @Transactional
-    public ResponseEntity<ProductCSVUploadResponse> importCSVFile(MultipartFile file) {
+    public ResponseEntity<ProductCSVUploadResponse> importCSVFile(UUID sellerId, MultipartFile file) {
+        Seller seller = sellerRepository.findById(sellerId)
+                .orElseThrow(() -> new EntityNotFoundException(Seller.ENTITY_NAME));
+
         String[] HEADERS = ProductCreateRequest.getCSVHeaders();
         List<ProductCreateRequest> createRequestList = new ArrayList<>();
-        Seller currentSeller = sellerService.getCurrentSeller();
         ProductCSVUploadResponse productCSVUploadResponse = new ProductCSVUploadResponse();
         CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
                 .setHeader(HEADERS)
@@ -307,7 +311,7 @@ public class ProductService {
                 } else {
                     productList = ModelMapperUtil.map(createRequestList, Product.class).stream()
                             .map(product -> {
-                                product.setSeller(currentSeller);
+                                product.setSeller(seller);
                                 return product;
                             })
                             .collect(Collectors.toList());

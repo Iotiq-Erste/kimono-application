@@ -80,7 +80,7 @@ public class SellerProductController {
     @PostMapping("/csv-upload")
     public ResponseEntity<ProductCSVUploadResponse> uploadFile(@PathVariable UUID sellerId, @RequestParam("file") MultipartFile file) {
         checkScope(sellerId);
-        return productService.importCSVFile(file);
+        return productService.importCSVFile(sellerId, file);
     }
 
     @PostMapping
