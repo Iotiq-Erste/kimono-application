@@ -45,7 +45,14 @@ public class CustomerService {
         }
         if (request.getMedicalData() != null) {
             customer.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
+            customer.getMedicalData().getClothingSelection().clear();
+            customer.getMedicalData().getBodyRegions().clear();
+            customer.getMedicalData().getAllergiesSensitivities().clear();
+            customer.getMedicalData().getPastHealthIssues().clear();
+            customer.getMedicalData().getTreatmentWithMedications().clear();
+            customer.getMedicalData().getMedicalHistory().clear();
             ModelMapperUtil.map(request.getMedicalData(), customer.getMedicalData());
+
         }
         if (request.getSizeInfo() != null) {
             customer.setSizeInfo(Objects.requireNonNullElseGet(customer.getSizeInfo(), SizeInfo::new));
