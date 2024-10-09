@@ -8,6 +8,6 @@ import java.util.List;
 public class ForbiddenException extends ApplicationException {
 
     public ForbiddenException(String entityName, Object... args) {
-        super(HttpStatus.NOT_FOUND, "fobidden", List.of(entityName), args);
+        super(HttpStatus.FORBIDDEN, "forbidden", List.of(entityName), args);
     }
 }
