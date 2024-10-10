@@ -4,14 +4,11 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Seller;
 import com.iotiq.application.messages.seller.SellerUpdateRequest;
 import com.iotiq.application.repository.SellerRepository;
-import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,9 +36,5 @@ public class SellerService {
         ModelMapperUtil.map(request,currentSeller);
 
         sellerRepository.save(currentSeller);
-    }
-
-    public Seller getSellerByID(UUID sellerId){
-        return sellerRepository.findById(sellerId).orElseThrow(() -> new EntityNotFoundException(Seller.ENTITY_NAME, sellerId));
     }
 }
