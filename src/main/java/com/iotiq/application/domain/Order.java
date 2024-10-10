@@ -59,6 +59,8 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
 
     private LocalDateTime orderDate;
 
+    private LocalDateTime orderUtcDate;
+
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderedProduct> orderedProducts;
 

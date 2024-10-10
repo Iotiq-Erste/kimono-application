@@ -51,7 +51,8 @@ public class OrderService {
                 .stream().map(cartItem -> convertToOrderedProduct(cartItem, finalOrder)).collect(Collectors.toList()));
         order.setCustomer(customerService.getCurrentCustomer());
         order.setTotalPrice(calculateTotalAmount(order.getOrderedProducts()));
-        order.setOrderDate(LocalDateTime.now(ZoneOffset.UTC));
+        order.setOrderUtcDate(LocalDateTime.now(ZoneOffset.UTC));
+        order.setOrderDate(LocalDateTime.now());
 
         if(createRequest.getCartTotalPrice().compareTo(order.getTotalPrice()) != 0) {
             throw new PricesNotMatchException(createRequest.getCartTotalPrice(), order.getTotalPrice());
