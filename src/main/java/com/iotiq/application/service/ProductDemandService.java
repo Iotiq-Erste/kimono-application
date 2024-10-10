@@ -30,6 +30,7 @@ public class ProductDemandService {
     private final CustomerService customerService;
     private final SellerService sellerService;
 
+    @Transactional
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest) {
         ProductDemand productDemand = ModelMapperUtil.map(productDemandRequest, ProductDemand.class);
         productDemand.setCustomer(customerService.getCurrentCustomer());
@@ -65,11 +66,6 @@ public class ProductDemandService {
         Customer customer = customerService.getCurrentCustomer();
         List<ProductDemand> demands = productDemandRepository.findAllByCustomerAndIsActiveTrue(customer).orElse(new ArrayList<>());
         return ModelMapperUtil.map(demands, ProductDemandDto.class);
-    }
-
-    public ProductDemandDto getProductDemandForCurrentCustomer(UUID id) {
-        ProductDemand productDemand = findByIdAndCustomerAndIsActiveTrue(id);
-        return ModelMapperUtil.map(productDemand, ProductDemandDto.class);
     }
 
     @Transactional
