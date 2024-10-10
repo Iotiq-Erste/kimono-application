@@ -22,7 +22,6 @@ import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
-import com.iotiq.application.messages.customer.contact.BasicInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,9 +30,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class ProductDemandDetailDto {
-
-    private UUID id;
+public class ProductDemandUpdateRequest {
 
     private AgeGroup ageGroup;
 
@@ -81,7 +78,5 @@ public class ProductDemandDetailDto {
 
     private Sustainability sustainability;
 
-    private boolean isActive;
-
-    private BasicInfo customerBasicInfo;
+    private UUID sellerID;
 }

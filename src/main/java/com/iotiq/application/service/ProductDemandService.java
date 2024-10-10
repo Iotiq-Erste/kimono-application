@@ -3,17 +3,22 @@ package com.iotiq.application.service;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.ProductDemand;
+import com.iotiq.application.domain.Seller;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
-import com.iotiq.application.messages.productdemand.ProductDemandDetailDto;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
+import com.iotiq.application.messages.productdemand.ProductDemandUpdateRequest;
 import com.iotiq.application.repository.ProductDemandRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.RoleNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,18 +28,29 @@ import java.util.stream.Collectors;
 public class ProductDemandService {
     private final ProductDemandRepository productDemandRepository;
     private final CustomerService customerService;
+    private final SellerService sellerService;
 
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest) {
-        Customer customer = customerService.getCurrentCustomer();
         ProductDemand productDemand = ModelMapperUtil.map(productDemandRequest, ProductDemand.class);
-        productDemand.setCustomer(customer);
-        productDemand.setActive(true);
+        productDemand.setCustomer(customerService.getCurrentCustomer());
         return productDemandRepository.save(productDemand);
     }
 
-    public List<ProductDemandDetailDto> getProductDemands() {
-        return productDemandRepository.findAllByIsActiveTrue().stream().map(productDemand -> {
-            ProductDemandDetailDto detailDto = ModelMapperUtil.map(productDemand, ProductDemandDetailDto.class);
+    public List<ProductDemandDto> getProductDemands(Authentication authentication) throws RoleNotFoundException {
+        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+
+        if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_COMPANY"))) {
+            return getProductDemandsForSeller();
+        } else if (authorities.stream().anyMatch(a -> a.getAuthority().equals("ROLE_CUSTOMER"))) {
+            return getProductDemandsForCurrentCustomer();
+        }
+        throw new RoleNotFoundException("Inappropriate role");
+    }
+
+
+    public List<ProductDemandDto> getProductDemandsForSeller() {
+        return productDemandRepository.findAllByIsActiveTrueAndSellerIsNull().stream().map(productDemand -> {
+            ProductDemandDto detailDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
             BasicInfo basicInfo = new BasicInfo();
             basicInfo.setFirstName(productDemand.getCustomer().getUser().getPersonalInfo().getFirstName());
             basicInfo.setLastName(productDemand.getCustomer().getUser().getPersonalInfo().getLastName());
@@ -53,14 +69,18 @@ public class ProductDemandService {
 
     public ProductDemandDto getProductDemandForCurrentCustomer(UUID id) {
         ProductDemand productDemand = findByIdAndCustomerAndIsActiveTrue(id);
-
         return ModelMapperUtil.map(productDemand, ProductDemandDto.class);
     }
 
     @Transactional
-    public void updateProductDemand(UUID id, ProductDemandRequest productDemandRequest) {
+    public void updateProductDemand(UUID id, ProductDemandUpdateRequest updateRequest) {
+
+        if (sellerService.getCurrentSeller().getId() != updateRequest.getSellerID()) {
+            throw new EntityNotFoundException(Seller.ENTITY_NAME, updateRequest.getSellerID());
+        }
         ProductDemand productDemand = findByIdAndCustomerAndIsActiveTrue(id);
-        ModelMapperUtil.map(productDemandRequest, productDemand);
+        ModelMapperUtil.map(updateRequest, productDemand);
+        productDemand.setSeller(sellerService.getCurrentSeller());
         productDemandRepository.save(productDemand);
     }
 
@@ -75,5 +95,9 @@ public class ProductDemandService {
         Customer customer = customerService.getCurrentCustomer();
         return productDemandRepository.findByIdAndCustomerAndIsActiveTrue(id, customer).orElseThrow(() ->
                 new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
+    }
+
+    public ProductDemandDto getProductDemandByID(UUID id) {
+        return ModelMapperUtil.map(productDemandRepository.findById(id), ProductDemandDto.class);
     }
 }

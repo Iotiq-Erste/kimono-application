@@ -12,5 +12,5 @@ public interface ProductDemandRepository extends JpaRepository<ProductDemand, UU
 
     Optional<List<ProductDemand>> findAllByCustomerAndIsActiveTrue(Customer customer);
     Optional<ProductDemand> findByIdAndCustomerAndIsActiveTrue(UUID id, Customer customer);
-    List<ProductDemand> findAllByIsActiveTrue();
+    List<ProductDemand> findAllByIsActiveTrueAndSellerIsNull();
 }

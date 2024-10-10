@@ -12,9 +12,11 @@ import com.iotiq.application.domain.enums.Neurodermatitis;
 import com.iotiq.application.domain.enums.OekotexStandard;
 import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.Rating;
+import com.iotiq.application.domain.enums.RequestStatus;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
+import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -25,7 +27,6 @@ import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.util.List;
 import java.util.UUID;
@@ -34,7 +35,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @NoArgsConstructor
-public class ProductDemand extends AbstractPersistable<UUID> {
+public class ProductDemand extends BaseAbstractAuditingEntity<UUID> {
 
     public static String ENTITY_NAME = "product_demand";
 
@@ -132,5 +133,11 @@ public class ProductDemand extends AbstractPersistable<UUID> {
     @JoinColumn(nullable = false)
     private Customer customer;
 
-    private boolean isActive;
+    private boolean isActive = true;
+
+    private RequestStatus status = RequestStatus.PENDING;
+
+    @ManyToOne
+    private Seller seller;
+
 }

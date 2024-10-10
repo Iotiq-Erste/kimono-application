@@ -19,12 +19,16 @@ import com.iotiq.application.domain.enums.Neurodermatitis;
 import com.iotiq.application.domain.enums.OekotexStandard;
 import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.Rating;
+import com.iotiq.application.domain.enums.RequestStatus;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
+import com.iotiq.application.messages.customer.contact.BasicInfo;
+import com.iotiq.application.messages.seller.SellerDto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,5 +83,15 @@ import java.util.UUID;
     private List<SpecificFunctionality> specificFunctionalities;
 
     private Sustainability sustainability;
+
+    private BasicInfo customerBasicInfo;
+
+    private SellerDto seller;
+
+    private RequestStatus status;
+
+    private Instant lastModifiedDate;
+
+    private Instant createdDate;
 
 }
