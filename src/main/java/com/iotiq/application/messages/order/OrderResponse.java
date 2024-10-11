@@ -1,12 +1,13 @@
 package com.iotiq.application.messages.order;
 
+import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.enums.DeliveryStatus;
-import com.iotiq.application.messages.cart.CartDto;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -22,7 +23,7 @@ public class OrderResponse {
     private String deliveryAddressType;
     private String deliveryAddress;
     private DeliveryStatus deliveryStatus;
-    private Date orderDate;
-    private CartDto cart;
-    private Boolean isVisible;
+    private LocalDateTime orderDate;
+    private List<OrderedProduct> orderedProducts;
+    private boolean isVisible;
 }

@@ -172,4 +172,9 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
         return specification;
     }
 
+    public ProductFilter withSellerId(UUID sellerId) {
+        this.setSellerIds(List.of(sellerId));
+        return this;
+    }
+
 }

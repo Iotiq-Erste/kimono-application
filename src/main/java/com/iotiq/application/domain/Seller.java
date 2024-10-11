@@ -18,6 +18,8 @@ import java.util.UUID;
 @Setter
 public class Seller extends AbstractPersistable<UUID> {
 
+    public static final String ENTITY_NAME = "seller";
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
