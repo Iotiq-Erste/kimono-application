@@ -62,7 +62,7 @@ public class OrderController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(@OrderManagementAuth.DELETE)")
     public void invisible(@PathVariable("id") UUID id) {
-        orderService.visible(id);
+        orderService.invisible(id);
     }
 
     @PutMapping("/{id}")
