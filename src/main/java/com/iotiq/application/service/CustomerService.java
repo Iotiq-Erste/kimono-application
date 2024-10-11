@@ -45,12 +45,12 @@ public class CustomerService {
         }
         if (request.getMedicalData() != null) {
             customer.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
-            customer.getMedicalData().getClothingSelection().clear();
-            customer.getMedicalData().getBodyRegions().clear();
-            customer.getMedicalData().getAllergiesSensitivities().clear();
-            customer.getMedicalData().getPastHealthIssues().clear();
-            customer.getMedicalData().getTreatmentWithMedications().clear();
-            customer.getMedicalData().getMedicalHistory().clear();
+            if(customer.getMedicalData().getClothingSelection() != null) customer.getMedicalData().getClothingSelection().clear();
+            if(customer.getMedicalData().getBodyRegions() != null) customer.getMedicalData().getBodyRegions().clear();
+            if(customer.getMedicalData().getAllergiesSensitivities() != null) customer.getMedicalData().getAllergiesSensitivities().clear();
+            if(customer.getMedicalData().getPastHealthIssues() != null) customer.getMedicalData().getPastHealthIssues().clear();
+            if(customer.getMedicalData().getTreatmentWithMedications() != null) customer.getMedicalData().getTreatmentWithMedications().clear();
+            if(customer.getMedicalData().getMedicalHistory() != null) customer.getMedicalData().getMedicalHistory().clear();
             ModelMapperUtil.map(request.getMedicalData(), customer.getMedicalData());
 
         }
