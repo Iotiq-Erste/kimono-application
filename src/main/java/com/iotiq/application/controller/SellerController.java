@@ -22,7 +22,7 @@ public class SellerController {
     @GetMapping
     @PreAuthorize("hasAuthority(@SellerManagementAuth.VIEW)")
     public SellerResponse getSeller(){
-        return ModelMapperUtil.map(sellerService.getCurrentSeller(), SellerResponse.class);
+        return ModelMapperUtil.map(sellerService.getSeller(), SellerResponse.class);
     }
 
     @PutMapping
