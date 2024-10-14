@@ -6,6 +6,7 @@ import com.iotiq.application.messages.productdemand.ProductDemandRequest;
 import com.iotiq.application.messages.productdemand.ProductDemandResponse;
 import com.iotiq.application.messages.productdemand.ProductDemandUpdateRequest;
 import com.iotiq.application.service.ProductDemandService;
+import com.iotiq.application.service.SellerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +31,7 @@ import java.util.UUID;
 public class ProductDemandController {
 
     private final ProductDemandService productDemandService;
+    private final SellerService sellerService;
 
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.CREATE)")
@@ -53,7 +55,7 @@ public class ProductDemandController {
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.UPDATE)")
     public void updateProductDemand(@PathVariable("id") UUID id, @RequestBody ProductDemandUpdateRequest updateRequest) {
-        productDemandService.updateProductDemand(id, updateRequest);
+        productDemandService.updateProductDemand(id, updateRequest, sellerService.getCurrentSellerOrCreate());
     }
 
     @DeleteMapping("/{id}")

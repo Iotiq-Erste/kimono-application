@@ -28,7 +28,6 @@ import java.util.stream.Collectors;
 public class ProductDemandService {
     private final ProductDemandRepository productDemandRepository;
     private final CustomerService customerService;
-    private final SellerService sellerService;
 
     @Transactional
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest) {
@@ -69,14 +68,14 @@ public class ProductDemandService {
     }
 
     @Transactional
-    public void updateProductDemand(UUID id, ProductDemandUpdateRequest updateRequest) {
+    public void updateProductDemand(UUID id, ProductDemandUpdateRequest updateRequest, Seller currentSeller) {
 
-        if (sellerService.getCurrentSeller().getId() != updateRequest.getSellerID()) {
+        if (currentSeller.getId() != updateRequest.getSellerID()) {
             throw new EntityNotFoundException(Seller.ENTITY_NAME, updateRequest.getSellerID());
         }
         ProductDemand productDemand = findByIdAndCustomerAndIsActiveTrue(id);
         ModelMapperUtil.map(updateRequest, productDemand);
-        productDemand.setSeller(sellerService.getCurrentSeller());
+        productDemand.setSeller(currentSeller);
         productDemandRepository.save(productDemand);
     }
 
