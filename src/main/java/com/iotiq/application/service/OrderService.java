@@ -40,7 +40,7 @@ public class OrderService {
     }
 
     public List<Order> getOrdersBySeller() {
-        return orderRepository.findAllByOrderedProductsSellerId(sellerService.getCurrentSeller().getId());
+        return orderRepository.findAllByOrderedProductsSellerId(sellerService.getCurrentSellerOrCreate().getId());
     }
 
     public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
