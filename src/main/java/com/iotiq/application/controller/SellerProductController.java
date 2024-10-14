@@ -3,7 +3,6 @@ package com.iotiq.application.controller;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.domain.Seller;
-import com.iotiq.application.exception.auth.UnauthorizedException;
 import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductCreateResponse;
@@ -37,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RestController
@@ -51,9 +51,7 @@ public class SellerProductController {
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
     public PagedResponse<ProductResponse> getAll(ProductFilter filter, Sort sort) {
-        checkScope();
-
-        filter.setSellerIds(List.of(sellerService.getCurrentSeller().getId()));
+        filter.setSellerIds(List.of(Objects.requireNonNull(sellerService.getCurrentSellerOrCreate().getId())));
         Page<Product> page = productService.getAll(filter, sort);
         List<ProductResponse> responseList = ModelMapperUtil.map(page.getContent(), ProductResponse.class);
 
@@ -63,9 +61,8 @@ public class SellerProductController {
     @GetMapping("/csv-export")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
     public ResponseEntity<byte[]> export() throws IOException {
-        checkScope();
 
-        byte[] csvBytes = productService.exportCSVFile(sellerService.getCurrentSeller().getId());
+        byte[] csvBytes = productService.exportCSVFile(sellerService.getCurrentSellerOrCreate().getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -78,23 +75,21 @@ public class SellerProductController {
 
     @PostMapping("/csv-upload")
     public ResponseEntity<ProductCSVUploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
-        checkScope();
-        return productService.importCSVFile(sellerService.getCurrentSeller().getId(), file);
+        return productService.importCSVFile(sellerService.getCurrentSellerOrCreate().getId(), file);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request) {
-        checkScope();
-        return new ProductCreateResponse(productService.createProduct(request).getId());
+        Seller currentSeller = sellerService.getCurrentSellerOrCreate();
+        return new ProductCreateResponse(productService.createProductForSeller(request, currentSeller).getId());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.DELETE)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable("id") UUID id) {
-        checkScope();
         productService.delete(id);
     }
 
@@ -102,15 +97,6 @@ public class SellerProductController {
     @PreAuthorize("hasAuthority(@ProductManagementAuth.UPDATE)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable("id") UUID id, @RequestBody @Valid ProductUpdateRequest request) {
-        checkScope();
         productService.update(id, request);
     }
-
-    private void checkScope() {
-        Seller currentSeller = sellerService.getCurrentSeller();
-        if (currentSeller == null) {
-            throw new UnauthorizedException(Seller.ENTITY_NAME);
-        }
-    }
-
 }

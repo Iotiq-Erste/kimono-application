@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ROLE_COMPANY')")
 @RequestMapping("/api/v1/seller")
 public class SellerController {
 
@@ -22,7 +23,7 @@ public class SellerController {
     @GetMapping
     @PreAuthorize("hasAuthority(@SellerManagementAuth.VIEW)")
     public SellerResponse getSeller(){
-        return ModelMapperUtil.map(sellerService.getCurrentSeller(), SellerResponse.class);
+        return ModelMapperUtil.map(sellerService.getCurrentSellerOrCreate(), SellerResponse.class);
     }
 
     @PutMapping
