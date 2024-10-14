@@ -10,6 +10,7 @@ import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
 import com.iotiq.application.repository.OrderRepository;
+import com.iotiq.application.repository.OrderedProductRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class OrderService {
     private final CustomerService customerService;
     private final SellerService sellerService;
     private final ProductService productService;
+    private final OrderedProductRepository orderedProductRepository;
 
     public Order getOrderForCurrentCustomer(UUID id) {
         return orderRepository.findByIdAndCustomer(id, customerService.getCurrentCustomer())
@@ -82,8 +84,7 @@ public class OrderService {
                 product.getTitle(),
                 product.getPrice(),
                 product.getImageUrl(),
-                product.getSeller().getShopName(),
-                product.getSeller().getId(),
+                product.getSeller(),
                 order,
                 cartItemDto.getQuantity()
         );

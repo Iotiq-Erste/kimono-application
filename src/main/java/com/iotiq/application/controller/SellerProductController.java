@@ -47,8 +47,8 @@ import java.util.UUID;
 @RequestMapping("/api/v1/seller/{sellerId}/products")
 public class SellerProductController {
 
-    private ProductService productService;
-    private SellerService sellerService;
+    private final ProductService productService;
+    private final SellerService sellerService;
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")

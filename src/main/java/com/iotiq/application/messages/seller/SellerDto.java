@@ -1,11 +1,9 @@
 package com.iotiq.application.messages.seller;
 
-import com.iotiq.application.domain.Order;
-import com.iotiq.application.domain.Product;
 import com.iotiq.application.domain.enums.ApplicationArea;
 import com.iotiq.application.domain.enums.Capacity;
 import com.iotiq.application.domain.enums.Skill;
-import com.iotiq.user.domain.User;
+import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,8 +12,6 @@ import java.util.List;
 @Getter
 @Setter
 public class SellerDto {
-
-    private User user;
 
     private String shopName;
 
@@ -29,7 +25,5 @@ public class SellerDto {
 
     private ApplicationArea applicationArea;
 
-    private List<Product> product;
-
-    private List<Order> orders;
+    private List<OrderedProductDto> orderedProducts;
 }
