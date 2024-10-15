@@ -4,6 +4,7 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.ProductDemand;
 import com.iotiq.application.domain.Seller;
+import com.iotiq.application.domain.enums.RequestStatus;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
@@ -11,11 +12,10 @@ import com.iotiq.application.messages.productdemand.ProductDemandUpdateRequest;
 import com.iotiq.application.messages.productdemand.SellerProductDemandUpdateRequest;
 import com.iotiq.application.repository.ProductDemandRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
-import com.iotiq.commons.message.request.PageableRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -34,18 +34,16 @@ public class ProductDemandService {
         return productDemandRepository.save(productDemand);
     }
 
-    public Page<ProductDemandDto> getProductDemandsForSeller(Sort sort) {
-        PageableRequest pageableRequest = new PageableRequest();
-        return productDemandRepository.findAllByIsActiveTrueAndSellerIsNull(pageableRequest.buildPageable(sort)).map(productDemand -> {
+    public Page<ProductDemandDto> getProductDemandsForSeller(Pageable pageable) {
+        return productDemandRepository.findAllByIsActiveTrueAndSellerIsNull(pageable).map(productDemand -> {
             ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
             demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
             return demandDto;
         });
     }
 
-    public Page<ProductDemandDto> getProductDemandsForCurrentCustomer(Sort sort, Customer customer) {
-        PageableRequest pageableRequest = new PageableRequest();
-        return productDemandRepository.findAllByCustomerAndIsActiveTrue(customer, pageableRequest.buildPageable(sort)).map(
+    public Page<ProductDemandDto> getProductDemandsForCurrentCustomer(Pageable pageable, Customer customer) {
+        return productDemandRepository.findAllByCustomerAndIsActiveTrue(customer, pageable).map(
                 productDemand -> {
                     ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
                     demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
@@ -68,7 +66,8 @@ public class ProductDemandService {
         if (productDemand.isEmpty() || seller.getId() != updateRequest.getSellerID()) {
             throw new EntityNotFoundException(Seller.ENTITY_NAME, updateRequest.getSellerID());
         }
-        productDemand.get().setSeller(seller);
+
+        productDemand.get().setSeller(updateRequest.getRequestStatus().equals(RequestStatus.CANCELLED) ? null : seller);
         productDemand.get().setStatus(updateRequest.getRequestStatus());
         productDemandRepository.save(productDemand.get());
     }
