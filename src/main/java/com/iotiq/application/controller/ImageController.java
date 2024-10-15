@@ -18,14 +18,18 @@ import java.io.IOException;
 @RequestMapping("/api/v1/images")
 public class ImageController {
 
-    @Value("${imageDirectory}")
-    private String imageDirectory;
+    @Value("${image.upload-path}")
+    private String imageUploadPath;
 
     private final ImageService imageService;
 
     @PostMapping
     public ImageResponse uploadImage(@RequestParam("file") MultipartFile image) throws IOException {
-        ImageDto createdImageDto = imageService.saveImageToStorage(imageDirectory, image);
+        if (image.isEmpty()) {
+            throw new IllegalArgumentException("File must not be empty");
+        }
+
+        ImageDto createdImageDto = imageService.upload(imageUploadPath, image);
         return ImageResponse.from(createdImageDto);
     }
 }
