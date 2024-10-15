@@ -1,9 +1,11 @@
 package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
+import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.Product;
+import com.iotiq.application.domain.Seller;
 import com.iotiq.application.exception.PricesNotMatchException;
 import com.iotiq.application.messages.cartitem.CartItemDto;
 import com.iotiq.application.messages.order.OrderCreateRequest;
@@ -26,30 +28,28 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final CustomerService customerService;
-    private final SellerService sellerService;
     private final ProductService productService;
 
-    public Order getOrderForCurrentCustomer(UUID id) {
-        return orderRepository.findByIdAndCustomer(id, customerService.getCurrentCustomer())
+    public Order getOrderForCurrentCustomer(UUID id, Customer customer) {
+        return orderRepository.findByIdAndCustomer(id, customer)
                 .orElseThrow(() -> new EntityNotFoundException(Order.ENTITY_NAME, id));
     }
 
-    public List<Order> getOrdersForCurrentCustomer() {
-        return customerService.getCurrentCustomer().getOrders();
+    public List<Order> getOrdersForCurrentCustomer(Customer customer) {
+        return customer.getOrders();
     }
 
-    public List<Order> getOrdersBySeller() {
-        return orderRepository.findAllByOrderedProductsSellerId(sellerService.getCurrentSellerOrCreate().getId());
+    public List<Order> getOrdersBySeller(Seller seller) {
+        return orderRepository.findAllByOrderedProductsSellerId(seller.getId());
     }
 
-    public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
+    public OrderCreateResponse createOrder(OrderCreateRequest createRequest, Customer customer) {
         Order order = ModelMapperUtil.map(createRequest, Order.class);
 
         Order finalOrder = order;
         order.setOrderedProducts(createRequest.getCartItems()
                 .stream().map(cartItem -> convertToOrderedProduct(cartItem, finalOrder)).collect(Collectors.toList()));
-        order.setCustomer(customerService.getCurrentCustomer());
+        order.setCustomer(customer);
         order.setTotalPrice(calculateTotalAmount(order.getOrderedProducts()));
         order.setOrderUtcDate(LocalDateTime.now(ZoneOffset.UTC));
         order.setOrderDate(LocalDateTime.now());
@@ -62,14 +62,14 @@ public class OrderService {
         return new OrderCreateResponse(order.getId(), order.getOrderNumber());
     }
 
-    public void invisible(UUID id) {
-        Order order = getOrderForCurrentCustomer(id);
+    public void invisible(UUID id, Customer customer) {
+        Order order = getOrderForCurrentCustomer(id, customer);
         order.setVisible(false);
         orderRepository.save(order);
     }
 
-    public void update(UUID id, OrderUpdateRequest request) {
-        Order order = getOrderForCurrentCustomer(id);
+    public void update(UUID id, OrderUpdateRequest request, Customer customer) {
+        Order order = getOrderForCurrentCustomer(id, customer);
         ModelMapperUtil.map(request, order);
         orderRepository.save(order);
     }

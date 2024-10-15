@@ -29,7 +29,7 @@ public class CustomerService {
 
     @Transactional
     public void update(CustomerUpdateRequest request) {
-        Customer customer = getCurrentCustomer();
+        Customer customer = getCurrentCustomerOrCreate();
         customer.getUser().setPersonalInfo(ModelMapperUtil.map(request.getContactInfo().getBasicInfo(), Person.class));
         customer.setAddress(request.getContactInfo().getAddress());
         customer.setMedicalData(request.getMedicalData());
@@ -39,14 +39,14 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer getCurrentCustomer() {
+    public Customer getCurrentCustomerOrCreate() {
         User currentUser = userService.getCurrentUser();
         return customerRepository.findByUser(currentUser).orElseGet(() -> createCustomer(currentUser));
     }
 
     @Transactional
     public CustomerDto getCustomer() {
-        Customer customer = getCurrentCustomer();
+        Customer customer = getCurrentCustomerOrCreate();
 
         CustomerDto customerDto = new CustomerDto();
 
