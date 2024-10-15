@@ -33,7 +33,7 @@ public class CustomerService {
 
     @Transactional
     public void update(CustomerUpdateRequest request) {
-        Customer customer = getCurrentCustomer();
+        Customer customer = getCurrentCustomerOrCreate();
         if (request.getContactInfo() != null) {
             if (request.getContactInfo().getBasicInfo() != null) {
                 customer.getUser().setPersonalInfo(Objects.requireNonNullElseGet(customer.getUser().getPersonalInfo(), Person::new));
