@@ -27,6 +27,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CustomerService customerService;
+    private final SellerService sellerService;
     private final ProductService productService;
 
     public Order getOrderForCurrentCustomer(UUID id) {

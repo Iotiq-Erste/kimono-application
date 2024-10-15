@@ -3,8 +3,6 @@ package com.iotiq.application.controller;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.domain.Seller;
-import com.iotiq.application.exception.auth.ForbiddenException;
-import com.iotiq.application.exception.auth.UnauthorizedException;
 import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductCreateResponse;
@@ -44,7 +42,7 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ROLE_COMPANY')")
-@RequestMapping("/api/v1/seller/{sellerId}/products")
+@RequestMapping("/api/v1/seller/products")
 public class SellerProductController {
 
     private final ProductService productService;
@@ -52,10 +50,8 @@ public class SellerProductController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public PagedResponse<ProductResponse> getAll(@PathVariable UUID sellerId, ProductFilter filter, Sort sort) {
-        checkScope(sellerId);
-
-        filter.setSellerIds(List.of(sellerId));
+    public PagedResponse<ProductResponse> getAll(ProductFilter filter, Sort sort) {
+        filter.setSellerIds(List.of(Objects.requireNonNull(sellerService.getCurrentSellerOrCreate().getId())));
         Page<Product> page = productService.getAll(filter, sort);
         List<ProductResponse> responseList = ModelMapperUtil.map(page.getContent(), ProductResponse.class);
 
@@ -64,10 +60,9 @@ public class SellerProductController {
 
     @GetMapping("/csv-export")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
-    public ResponseEntity<byte[]> export(@PathVariable UUID sellerId) throws IOException {
-        checkScope(sellerId);
+    public ResponseEntity<byte[]> export() throws IOException {
 
-        byte[] csvBytes = productService.exportCSVFile(sellerId);
+        byte[] csvBytes = productService.exportCSVFile(sellerService.getCurrentSellerOrCreate().getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -79,43 +74,29 @@ public class SellerProductController {
     }
 
     @PostMapping("/csv-upload")
-    public ResponseEntity<ProductCSVUploadResponse> uploadFile(@PathVariable UUID sellerId, @RequestParam("file") MultipartFile file) {
-        checkScope(sellerId);
-        return productService.importCSVFile(sellerId, file);
+    public ResponseEntity<ProductCSVUploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
+        return productService.importCSVFile(sellerService.getCurrentSellerOrCreate().getId(), file);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductCreateResponse createProduct(@PathVariable UUID sellerId, @RequestBody @Valid ProductCreateRequest request) {
-        checkScope(sellerId);
-        return new ProductCreateResponse(productService.createProduct(request).getId());
+    public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request) {
+        Seller currentSeller = sellerService.getCurrentSellerOrCreate();
+        return new ProductCreateResponse(productService.createProductForSeller(request, currentSeller).getId());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.DELETE)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable UUID sellerId, @PathVariable("id") UUID id) {
-        checkScope(sellerId);
+    public void delete(@PathVariable("id") UUID id) {
         productService.delete(id);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.UPDATE)")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable UUID sellerId, @PathVariable("id") UUID id, @RequestBody @Valid ProductUpdateRequest request) {
-        checkScope(sellerId);
+    public void update(@PathVariable("id") UUID id, @RequestBody @Valid ProductUpdateRequest request) {
         productService.update(id, request);
     }
-
-    private void checkScope(UUID sellerId) {
-        Seller currentSeller = sellerService.getCurrentSeller();
-        if (currentSeller == null) {
-            throw new UnauthorizedException(Seller.ENTITY_NAME, sellerId); // 401
-        }
-        if (!Objects.equals(currentSeller.getId(), sellerId)) {
-            throw new ForbiddenException(Seller.ENTITY_NAME, sellerId); // 403
-        }
-    }
-
 }

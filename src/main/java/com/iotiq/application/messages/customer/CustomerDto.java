@@ -24,6 +24,4 @@ public class CustomerDto {
 
     private List<OrderDto> orders;
 
-    private boolean isActive;
-
 }

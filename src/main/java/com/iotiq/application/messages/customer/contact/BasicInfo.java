@@ -11,8 +11,8 @@ import lombok.Setter;
 public class BasicInfo {
 
     @NotEmpty(message = "First name is mandatory.")
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     @Pattern(
             regexp = "^((\\+49|0)[1-9][0-9]{1,14})$",
             message = "Invalid phone number format. Please provide a valid German phone number."

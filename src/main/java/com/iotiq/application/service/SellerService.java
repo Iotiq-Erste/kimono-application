@@ -25,7 +25,7 @@ public class SellerService {
     private final OrderedProductService orderedProductService;
 
     @Transactional
-    public Seller getCurrentSeller() {
+    public Seller getCurrentSellerOrCreate() {
         User currentUser = userService.getCurrentUser();
         return sellerRepository.findByUser(currentUser).orElseGet(() -> createDefaultSeller(currentUser));
     }
@@ -37,6 +37,7 @@ public class SellerService {
         return sellerDto;
     }
 
+    @Transactional
     public Seller createDefaultSeller(User currentUser) {
         Seller seller = new Seller();
         seller.setUser(currentUser);
@@ -46,7 +47,7 @@ public class SellerService {
 
     @Transactional
     public void update(SellerUpdateRequest request) {
-        Seller currentSeller = getCurrentSeller();
+        Seller currentSeller = getCurrentSellerOrCreate();
         ModelMapperUtil.map(request, currentSeller);
 
         sellerRepository.save(currentSeller);

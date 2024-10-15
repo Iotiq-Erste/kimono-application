@@ -18,7 +18,11 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -30,10 +34,31 @@ public class CustomerService {
     @Transactional
     public void update(CustomerUpdateRequest request) {
         Customer customer = getCurrentCustomer();
-        customer.getUser().setPersonalInfo(ModelMapperUtil.map(request.getContactInfo().getBasicInfo(), Person.class));
-        customer.setAddress(request.getContactInfo().getAddress());
-        customer.setMedicalData(request.getMedicalData());
-        customer.setSizeInfo(request.getSizeInfo());
+        if (request.getContactInfo() != null) {
+            if (request.getContactInfo().getBasicInfo() != null) {
+                customer.getUser().setPersonalInfo(Objects.requireNonNullElseGet(customer.getUser().getPersonalInfo(), Person::new));
+                ModelMapperUtil.map(request.getContactInfo().getBasicInfo(), customer.getUser().getPersonalInfo());
+            }
+            if (request.getContactInfo().getAddress() != null) {
+                customer.setAddress(Objects.requireNonNullElseGet(customer.getAddress(), Address::new));
+                ModelMapperUtil.map(request.getContactInfo().getAddress(), customer.getAddress());
+            }
+        }
+        if (request.getMedicalData() != null) {
+            customer.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
+            if(customer.getMedicalData().getClothingSelection() != null) customer.getMedicalData().getClothingSelection().clear();
+            if(customer.getMedicalData().getBodyRegions() != null) customer.getMedicalData().getBodyRegions().clear();
+            if(customer.getMedicalData().getAllergiesSensitivities() != null) customer.getMedicalData().getAllergiesSensitivities().clear();
+            if(customer.getMedicalData().getPastHealthIssues() != null) customer.getMedicalData().getPastHealthIssues().clear();
+            if(customer.getMedicalData().getTreatmentWithMedications() != null) customer.getMedicalData().getTreatmentWithMedications().clear();
+            if(customer.getMedicalData().getMedicalHistory() != null) customer.getMedicalData().getMedicalHistory().clear();
+            ModelMapperUtil.map(request.getMedicalData(), customer.getMedicalData());
+
+        }
+        if (request.getSizeInfo() != null) {
+            customer.setSizeInfo(Objects.requireNonNullElseGet(customer.getSizeInfo(), SizeInfo::new));
+            ModelMapperUtil.map(request.getSizeInfo(), customer.getSizeInfo());
+        }
 
         customerRepository.save(customer);
     }
@@ -54,7 +79,7 @@ public class CustomerService {
         customerDto.setSizeInfo(Objects.requireNonNullElseGet(customer.getSizeInfo(), SizeInfo::new));
         customerDto.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
         customerDto.setCart(customerDto.getCart());
-        customerDto.setOrders(ModelMapperUtil.map(customer.getOrders(), OrderDto.class));
+        customerDto.setOrders(getLastTwoOrders(customerDto.getOrders()));
 
         return customerDto;
     }
@@ -64,8 +89,8 @@ public class CustomerService {
 
         contactInfo.setAddress(Objects.requireNonNullElseGet(customer.getAddress(), Address::new));
         BasicInfo basicInfo = new BasicInfo();
-        basicInfo.setFirstname(customer.getUser().getPersonalInfo().getFirstName());
-        basicInfo.setLastname(customer.getUser().getPersonalInfo().getLastName());
+        basicInfo.setFirstName(customer.getUser().getPersonalInfo().getFirstName());
+        basicInfo.setLastName(customer.getUser().getPersonalInfo().getLastName());
         basicInfo.setEmail(customer.getUser().getPersonalInfo().getEmail());
         basicInfo.setPhoneNumber(customer.getUser().getPersonalInfo().getPhoneNumber());
         contactInfo.setBasicInfo(basicInfo);
@@ -79,5 +104,12 @@ public class CustomerService {
         customer.setMedicalData(new MedicalData());
         customer.setSizeInfo(new SizeInfo());
         return customerRepository.save(customer);
+    }
+
+    private List<OrderDto> getLastTwoOrders(List<OrderDto> orderDtoList) {
+        if (orderDtoList == null || orderDtoList.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return orderDtoList.stream().sorted(Comparator.comparing(OrderDto::getOrderDate).reversed()).limit(2).collect(Collectors.toList());
     }
 }
