@@ -122,10 +122,9 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDto createProduct(@Valid ProductCreateRequest request) {
-
+    public ProductDto createProductForSeller(@Valid ProductCreateRequest request, Seller seller) {
         Product product = ModelMapperUtil.map(request, Product.class);
-        product.setSeller(sellerService.getCurrentSeller());
+        product.setSeller(seller);
         product = productRepository.save(product);
         return ModelMapperUtil.map(product, ProductDto.class);
     }
