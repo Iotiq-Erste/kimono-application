@@ -10,7 +10,7 @@ import com.iotiq.commons.message.response.PagedResponse;
 import com.iotiq.commons.message.response.PagedResponseBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,8 +33,8 @@ public class SellerProductDemandController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW)")
-    public PagedResponse<ProductDemandResponse> getProductDemands(Sort sort) {
-        Page<ProductDemandDto> page = productDemandService.getProductDemandsForSeller(sort);
+    public PagedResponse<ProductDemandResponse> getProductDemands(Pageable pageable) {
+        Page<ProductDemandDto> page = productDemandService.getProductDemandsForSeller(pageable);
         List<ProductDemandResponse> productDemandResponses = ModelMapperUtil.map(page.getContent(), ProductDemandResponse.class);
 
         return PagedResponseBuilder.createResponse(page, productDemandResponses);
