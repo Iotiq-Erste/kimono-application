@@ -18,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -78,8 +79,7 @@ public class CustomerService {
         customerDto.setSizeInfo(Objects.requireNonNullElseGet(customer.getSizeInfo(), SizeInfo::new));
         customerDto.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
         customerDto.setCart(customerDto.getCart());
-        customerDto.setOrders(ModelMapperUtil.map(customer.getOrders(), OrderDto.class));
-        customerDto.setOrders(setLastTwoOrders(customerDto.getOrders()));
+        customerDto.setOrders(getLastTwoOrders(customerDto.getOrders()));
 
         return customerDto;
     }
@@ -106,9 +106,9 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    private List<OrderDto> setLastTwoOrders(List<OrderDto> orderDtoList) {
+    private List<OrderDto> getLastTwoOrders(List<OrderDto> orderDtoList) {
         if (orderDtoList == null || orderDtoList.isEmpty()) {
-            return orderDtoList;
+            return Collections.emptyList();
         }
         return orderDtoList.stream().sorted(Comparator.comparing(OrderDto::getOrderDate).reversed()).limit(2).collect(Collectors.toList());
     }
