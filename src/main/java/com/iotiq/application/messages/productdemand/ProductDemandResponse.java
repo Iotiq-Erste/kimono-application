@@ -84,6 +84,8 @@ import java.util.UUID;
 
     private Sustainability sustainability;
 
+    private boolean isActive;
+
     private BasicInfo customerBasicInfo;
 
     private SellerDto seller;
