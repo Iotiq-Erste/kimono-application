@@ -32,7 +32,7 @@ public class SellerService {
 
     @Transactional
     public SellerDto getSeller() {
-        SellerDto sellerDto = ModelMapperUtil.map(getCurrentSeller(), SellerDto.class);
+        SellerDto sellerDto = ModelMapperUtil.map(getCurrentSellerOrCreate(), SellerDto.class);
         sellerDto.setOrderedProducts(getLastTwoOrder());
         return sellerDto;
     }
@@ -53,8 +53,9 @@ public class SellerService {
         sellerRepository.save(currentSeller);
     }
 
+    @Transactional
     public List<OrderedProductDto> getLastTwoOrder() {
-        return orderedProductService.getOrderedProducts().stream()
+        return orderedProductService.getOrderedProducts(getCurrentSellerOrCreate()).stream()
                 .sorted(Comparator.comparing(OrderedProductDto::getOrderDate).reversed())
                 .limit(2)
                 .collect(Collectors.toList());

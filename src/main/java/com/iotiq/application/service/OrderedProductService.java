@@ -1,28 +1,24 @@
 package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
+import com.iotiq.application.domain.Seller;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
 import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import com.iotiq.application.repository.OrderedProductRepository;
-import org.springframework.context.annotation.Lazy;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderedProductService {
 
     private final OrderedProductRepository orderedProductRepository;
-    private final SellerService sellerService;
 
-    public OrderedProductService(OrderedProductRepository orderedProductRepository, @Lazy SellerService sellerService) {
-        this.orderedProductRepository = orderedProductRepository;
-        this.sellerService = sellerService;
-    }
-
-    public List<OrderedProductDto> getOrderedProducts() {
-        return orderedProductRepository.findAllBySeller(sellerService.getCurrentSeller()).stream().map(
+    public List<OrderedProductDto> getOrderedProducts(Seller seller) {
+        return orderedProductRepository.findAllBySeller(seller).stream().map(
                 orderedProduct -> {
                     OrderedProductDto orderedProductDto = ModelMapperUtil.map(orderedProduct, OrderedProductDto.class);
                     orderedProductDto.setOrderDate(orderedProduct.getOrder().getOrderDate());
