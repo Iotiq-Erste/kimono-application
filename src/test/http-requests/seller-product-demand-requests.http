@@ -1,0 +1,527 @@
+### Scenario 1: Obtain Token For Customer
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{customerPassword}} &
+username = {{customerUsername}} &
+client_secret = {{clientSecret}}
+
+> {%
+    client.global.set("customer_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 2: Obtain Token For Company
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{password}} &
+username = {{username}} &
+client_secret = {{clientSecret}}
+
+> {%
+    client.global.set("company_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 3: Get Current Customer's Product Demands
+GET {{baseUrl}}/api/v1/product-demands
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing customer's total number of product demand", function () {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+    client.global.set("customersTotalDemands", response.body.page.totalElements);
+%}
+
+### Scenario 4: Create First Product Demand
+POST {{baseUrl}}/api/v1/product-demands
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+{
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup": "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea": "WORK_CLOTHING",
+    "frequency": "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certifications": [
+    "BLUESIGN",
+    "TOXPROOF"
+  ],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": [
+      "COMPLETE"
+    ],
+    "activeSubstances": [
+      "CHITOSAN"
+    ],
+    "activeSubstancePlacements": [
+      "SERUM"
+    ],
+    "activeSubstanceReleases": [
+      "DIFFUSING"
+    ],
+    "compositions": [
+      "PATCHWORK"
+    ],
+    "staggerings": [
+      "TEMPORAL"
+    ]
+  },
+  "design": {
+    "designAppearance": "DYNAMIC",
+    "designColor": "COLORFUL"
+  },
+  "designBodyParts": [
+    "SEAMLESS"
+  ],
+  "fiberTypes": [
+    "COTTON",
+    "MODAL"
+  ],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity": "ELASTIC",
+    "fineness": "FINE",
+    "lightweight": "LIGHT",
+    "lintFree": "FREE",
+    "scratchy": "SMOOTH",
+    "seamFeelable": "FEELABLE",
+    "softness": "SOFT",
+    "uniform": "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant": "VERY",
+    "absorbency": "VERY",
+    "antistatic": "VERY",
+    "breathable": "VERY",
+    "colorfast": "VERY",
+    "moistureTransporting": "VERY",
+    "odorNeutralizing": "VERY",
+    "scratchResistant": "VERY",
+    "sweatWicking": "VERY",
+    "washable": "VERY"
+  },
+  "materialParameter": "THICKNESS",
+  "motif": "ANIMALS",
+  "neurodermatitis": "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange": "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": [
+    "XXS"
+  ],
+  "specificBodyParts": [
+    "SCALP",
+    "FACE"
+  ],
+  "specificFunctionalities": [
+    "ANTIBACTERIAL",
+    "ANTIVIRAL"
+  ],
+  "sustainability": {
+    "environmentalCompatibilities": [
+      "ENVIRONMENTAL_COMPATIBILITY",
+      "BIODEGRADABLE"
+    ],
+    "lifeCycles": [
+      "LIFE_CYCLE"
+    ],
+    "regionalityList": [
+      "MADE_IN_GERMANY"
+    ],
+    "resourceConsumptions": [
+      "LOW_USAGE"
+    ],
+    "socialEthics": [
+      "FAIR_WAGES"
+    ],
+    "sustainabilityCompositions": [
+      "RARE_MATERIALS"
+    ],
+    "sustainabilityLightweights": [
+      "LIGHTWEIGHT"
+    ]
+  }
+}
+
+
+> {%
+    client.test("Creating product demand", function () {
+        client.assert(response.status === 201, "Status code is 201");
+    });
+    client.global.set("newProductDemandID1", response.body.newProductDemandID);
+
+%}
+
+### Scenario 5: Create Second Product Demand
+POST {{baseUrl}}/api/v1/product-demands
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+{
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup": "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea": "WORK_CLOTHING",
+    "frequency": "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certifications": [
+    "BLUESIGN",
+    "TOXPROOF"
+  ],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": [
+      "COMPLETE"
+    ],
+    "activeSubstances": [
+      "CHITOSAN"
+    ],
+    "activeSubstancePlacements": [
+      "SERUM"
+    ],
+    "activeSubstanceReleases": [
+      "DIFFUSING"
+    ],
+    "compositions": [
+      "PATCHWORK"
+    ],
+    "staggerings": [
+      "TEMPORAL"
+    ]
+  },
+  "design": {
+    "designAppearance": "DYNAMIC",
+    "designColor": "COLORFUL"
+  },
+  "designBodyParts": [
+    "SEAMLESS"
+  ],
+  "fiberTypes": [
+    "COTTON",
+    "MODAL"
+  ],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity": "ELASTIC",
+    "fineness": "FINE",
+    "lightweight": "LIGHT",
+    "lintFree": "FREE",
+    "scratchy": "SMOOTH",
+    "seamFeelable": "FEELABLE",
+    "softness": "SOFT",
+    "uniform": "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant": "VERY",
+    "absorbency": "VERY",
+    "antistatic": "VERY",
+    "breathable": "VERY",
+    "colorfast": "VERY",
+    "moistureTransporting": "VERY",
+    "odorNeutralizing": "VERY",
+    "scratchResistant": "VERY",
+    "sweatWicking": "VERY",
+    "washable": "VERY"
+  },
+  "materialParameter": "THICKNESS",
+  "motif": "ANIMALS",
+  "neurodermatitis": "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange": "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": [
+    "XXS"
+  ],
+  "specificBodyParts": [
+    "SCALP",
+    "FACE"
+  ],
+  "specificFunctionalities": [
+    "ANTIBACTERIAL",
+    "ANTIVIRAL"
+  ],
+  "sustainability": {
+    "environmentalCompatibilities": [
+      "ENVIRONMENTAL_COMPATIBILITY",
+      "BIODEGRADABLE"
+    ],
+    "lifeCycles": [
+      "LIFE_CYCLE"
+    ],
+    "regionalityList": [
+      "MADE_IN_GERMANY"
+    ],
+    "resourceConsumptions": [
+      "LOW_USAGE"
+    ],
+    "socialEthics": [
+      "FAIR_WAGES"
+    ],
+    "sustainabilityCompositions": [
+      "RARE_MATERIALS"
+    ],
+    "sustainabilityLightweights": [
+      "LIGHTWEIGHT"
+    ]
+  }
+}
+
+> {%
+    client.test("Creating product demand", function () {
+        client.assert(response.status === 201, "Status code is 201");
+    });
+    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+    client.global.set("newProductDemandID2", response.body.newProductDemandID);
+%}
+
+### Scenario 6: Create Product Demand By Seller
+POST {{baseUrl}}/api/v1/product-demands
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+{
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup": "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea": "WORK_CLOTHING",
+    "frequency": "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certifications": [
+    "BLUESIGN",
+    "TOXPROOF"
+  ],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": [
+      "COMPLETE"
+    ],
+    "activeSubstances": [
+      "CHITOSAN"
+    ],
+    "activeSubstancePlacements": [
+      "SERUM"
+    ],
+    "activeSubstanceReleases": [
+      "DIFFUSING"
+    ],
+    "compositions": [
+      "PATCHWORK"
+    ],
+    "staggerings": [
+      "TEMPORAL"
+    ]
+  },
+  "design": {
+    "designAppearance": "DYNAMIC",
+    "designColor": "COLORFUL"
+  },
+  "designBodyParts": [
+    "SEAMLESS"
+  ],
+  "fiberTypes": [
+    "COTTON",
+    "MODAL"
+  ],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity": "ELASTIC",
+    "fineness": "FINE",
+    "lightweight": "LIGHT",
+    "lintFree": "FREE",
+    "scratchy": "SMOOTH",
+    "seamFeelable": "FEELABLE",
+    "softness": "SOFT",
+    "uniform": "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant": "VERY",
+    "absorbency": "VERY",
+    "antistatic": "VERY",
+    "breathable": "VERY",
+    "colorfast": "VERY",
+    "moistureTransporting": "VERY",
+    "odorNeutralizing": "VERY",
+    "scratchResistant": "VERY",
+    "sweatWicking": "VERY",
+    "washable": "VERY"
+  },
+  "materialParameter": "THICKNESS",
+  "motif": "ANIMALS",
+  "neurodermatitis": "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange": "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": [
+    "XXS"
+  ],
+  "specificBodyParts": [
+    "SCALP",
+    "FACE"
+  ],
+  "specificFunctionalities": [
+    "ANTIBACTERIAL",
+    "ANTIVIRAL"
+  ],
+  "sustainability": {
+    "environmentalCompatibilities": [
+      "ENVIRONMENTAL_COMPATIBILITY",
+      "BIODEGRADABLE"
+    ],
+    "lifeCycles": [
+      "LIFE_CYCLE"
+    ],
+    "regionalityList": [
+      "MADE_IN_GERMANY"
+    ],
+    "resourceConsumptions": [
+      "LOW_USAGE"
+    ],
+    "socialEthics": [
+      "FAIR_WAGES"
+    ],
+    "sustainabilityCompositions": [
+      "RARE_MATERIALS"
+    ],
+    "sustainabilityLightweights": [
+      "LIGHTWEIGHT"
+    ]
+  }
+}
+
+> {%
+    client.test("Creating product demand by seller", function () {
+        client.assert(response.status === 403, "Status code is 403");
+    });
+%}
+
+### Scenario 7: Get Current Customer's Product Demands
+GET {{baseUrl}}/api/v1/product-demands
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing customer's total number of product demand", function () {
+        client.assert(response.status === 403, "Status code is 403");
+    });
+%}
+
+### Scenario 8: Get Product Demands
+GET {{baseUrl}}/api/v1/seller/product-demands
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing customer's total number of product demand", function () {
+        client.global.set("sellersTotalDemands", response.body.page.totalElements);
+    });
+%}
+
+### Scenario 9: Update First Product Demand
+PUT {{baseUrl}}/api/v1/seller/product-demands/{{newProductDemandID1}}
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+{
+  "requestStatus": "COMPLETED"
+}
+> {%
+    client.test("Seller can not change status to COMPLETED on demand that it does not have", function () {
+        client.assert(response.status === 404, "Status code is 404");
+    });
+%}
+
+### Scenario 10: Update First Product Demand
+PUT {{baseUrl}}/api/v1/seller/product-demands/{{newProductDemandID1}}
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+{
+  "requestStatus": "IN_PROGRESS"
+}
+> {%
+    client.test("Product demand status has been updated", function () {
+        client.assert(response.status === 200, "Status code is 200");
+        client.global.set("sellersTotalDemands", client.global.get("sellersTotalDemands") -1);
+    });
+%}
+
+### Scenario 11: Get Product Demands
+GET {{baseUrl}}/api/v1/seller/product-demands
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing seller's total number of product demand", function () {
+        client.assert( client.global.get("sellersTotalDemands"), response.body.page.totalElements);
+    });
+%}
+
+### Scenario 12: Update First Product Demand
+PUT {{baseUrl}}/api/v1/seller/product-demands/{{newProductDemandID1}}
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+{
+  "requestStatus": "CANCELLED"
+}
+> {%
+    client.test("Product demand status has been updated", function () {
+        client.assert(response.status === 200, "Status code is 200");
+        client.global.set("sellersTotalDemands", client.global.get("sellersTotalDemands") +1);
+    });
+%}
+
+
+### Scenario 13: Get Product Demands
+GET {{baseUrl}}/api/v1/seller/product-demands
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing customer's total number of product demand", function () {
+        client.assert( client.global.get("sellersTotalDemands"), response.body.page.totalElements);
+    });
+%}
+
+
+### Scenario 14: Delete First Product Demand
+DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+### Scenario 15: Delete Second Product Demand
+DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID2}}
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
