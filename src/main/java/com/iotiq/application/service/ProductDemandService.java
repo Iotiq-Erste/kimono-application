@@ -62,14 +62,18 @@ public class ProductDemandService {
 
     @Transactional
     public void updateDemandStatusBySeller(UUID id, SellerProductDemandUpdateRequest updateRequest, Seller seller) {
-        Optional<ProductDemand> productDemand = productDemandRepository.findById(id);
-        if (productDemand.isEmpty() || seller.getId() != updateRequest.getSellerID()) {
-            throw new EntityNotFoundException(Seller.ENTITY_NAME, updateRequest.getSellerID());
+        ProductDemand productDemand = productDemandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
+
+        if (productDemand.getSeller() == null && updateRequest.getRequestStatus().equals(RequestStatus.IN_PROGRESS)) {
+            productDemand.setSeller(seller);
+        } else if (productDemand.getSeller() != null && Objects.requireNonNull(productDemand.getSeller().getId()).equals(seller.getId())) {
+            productDemand.setSeller(updateRequest.getRequestStatus().equals(RequestStatus.CANCELLED) ? null : seller);
+        } else {
+            throw new EntityNotFoundException(ProductDemand.ENTITY_NAME, id);
         }
 
-        productDemand.get().setSeller(updateRequest.getRequestStatus().equals(RequestStatus.CANCELLED) ? null : seller);
-        productDemand.get().setStatus(updateRequest.getRequestStatus());
-        productDemandRepository.save(productDemand.get());
+        productDemand.setStatus(updateRequest.getRequestStatus());
+        productDemandRepository.save(productDemand);
     }
 
     @Transactional
@@ -98,7 +102,7 @@ public class ProductDemandService {
                 new EntityNotFoundException(ProductDemand.ENTITY_NAME, id)), ProductDemandDto.class);
     }
 
-    private BasicInfo createBasicInfo(ProductDemand productDemand){
+    private BasicInfo createBasicInfo(ProductDemand productDemand) {
         BasicInfo basicInfo = new BasicInfo();
         basicInfo.setFirstName(productDemand.getCustomer().getUser().getPersonalInfo().getFirstName());
         basicInfo.setLastName(productDemand.getCustomer().getUser().getPersonalInfo().getLastName());

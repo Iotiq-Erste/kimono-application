@@ -24,7 +24,6 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ROLE_COMPANY')")
 @RequestMapping("/api/v1/seller/product-demands")
 public class SellerProductDemandController {
 
@@ -32,7 +31,7 @@ public class SellerProductDemandController {
     private final SellerService sellerService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW)")
+    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public PagedResponse<ProductDemandResponse> getProductDemands(Pageable pageable) {
         Page<ProductDemandDto> page = productDemandService.getProductDemandsForSeller(pageable);
         List<ProductDemandResponse> productDemandResponses = ModelMapperUtil.map(page.getContent(), ProductDemandResponse.class);
@@ -41,13 +40,13 @@ public class SellerProductDemandController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW)")
+    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public ProductDemandResponse getProductDemand(@PathVariable UUID id) {
         return ModelMapperUtil.map(productDemandService.getProductDemand(id), ProductDemandResponse.class);
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.UPDATE)")
+    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.UPDATE) and hasRole('ROLE_COMPANY')")
     public void updateDemandStatus(@PathVariable("id") UUID id, @RequestBody SellerProductDemandUpdateRequest updateRequest) {
         productDemandService.updateDemandStatusBySeller(id, updateRequest, sellerService.getCurrentSellerOrCreate());
     }
