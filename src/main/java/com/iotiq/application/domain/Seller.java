@@ -1,8 +1,14 @@
 package com.iotiq.application.domain;
 
+import com.iotiq.application.domain.enums.ApplicationArea;
+import com.iotiq.application.domain.enums.Capacity;
+import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.user.domain.User;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -30,6 +36,14 @@ public class Seller extends AbstractPersistable<UUID> {
 
     private boolean isActive;
 
+    private List<Skill> skills;
+
+    private Capacity capacity;
+
+    @ElementCollection(targetClass = ApplicationArea.class)
+    @Enumerated(EnumType.STRING)
+    private List<ApplicationArea> applicationAreas;
+
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Product> product;
+    private List<Product> products;
 }

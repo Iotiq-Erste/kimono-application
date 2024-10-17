@@ -45,13 +45,6 @@ public class OrderController {
         return ModelMapperUtil.map(orders, OrderResponse.class);
     }
 
-    @GetMapping("/getOrdersBySeller")
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
-    public List<OrderResponse> getOrderBySeller() {
-        List<Order> orders = orderService.getOrdersBySeller();
-        return ModelMapperUtil.map(orders, OrderResponse.class);
-    }
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority(@OrderManagementAuth.CREATE)")

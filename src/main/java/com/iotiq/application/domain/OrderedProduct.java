@@ -26,9 +26,9 @@ public class OrderedProduct extends BaseAbstractAuditingEntity<UUID> {
 
     private String imageUrl;
 
-    private String sellerName;
-
-    private UUID sellerId;
+    @ManyToOne
+    @JsonIgnore
+    private Seller seller;
 
     @ManyToOne
     @JsonIgnore

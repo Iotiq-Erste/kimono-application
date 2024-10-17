@@ -27,7 +27,6 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final CustomerService customerService;
-    private final SellerService sellerService;
     private final ProductService productService;
 
     public Order getOrderForCurrentCustomer(UUID id) {
@@ -37,10 +36,6 @@ public class OrderService {
 
     public List<Order> getOrdersForCurrentCustomer() {
         return customerService.getCurrentCustomer().getOrders();
-    }
-
-    public List<Order> getOrdersBySeller() {
-        return orderRepository.findAllByOrderedProductsSellerId(sellerService.getCurrentSellerOrCreate().getId());
     }
 
     public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
@@ -82,8 +77,7 @@ public class OrderService {
                 product.getTitle(),
                 product.getPrice(),
                 product.getImageUrl(),
-                product.getSeller().getShopName(),
-                product.getSeller().getId(),
+                product.getSeller(),
                 order,
                 cartItemDto.getQuantity()
         );
