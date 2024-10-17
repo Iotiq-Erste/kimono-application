@@ -3,6 +3,7 @@ package com.iotiq.application.service;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Cart;
 import com.iotiq.application.domain.CartItem;
+import com.iotiq.application.domain.Customer;
 import com.iotiq.application.messages.cart.CartDto;
 import com.iotiq.application.messages.cart.CartUpdateRequest;
 import com.iotiq.application.messages.cartitem.CartItemDto;
@@ -19,11 +20,10 @@ import java.util.List;
 public class CartService {
 
     private final CartRepository cartRepository;
-    private final CustomerService customerService;
     private final ProductService productService;
 
-    public CartDto getCart() {
-        Cart cart = customerService.getCurrentCustomer().getCart();
+    public CartDto getCart(Customer customer) {
+        Cart cart = customer.getCart();
         BigDecimal totalAmount = cart.getCartItems().stream()
                 .map(cartItem ->  BigDecimal.valueOf(cartItem.getQuantity())
                         .multiply(cartItem.getProduct().getPrice().getAmount()))
@@ -35,8 +35,8 @@ public class CartService {
     }
 
     @Transactional
-    public void update(CartUpdateRequest request) {
-        Cart cart = customerService.getCurrentCustomer().getCart();
+    public void update(CartUpdateRequest request, Customer customer) {
+        Cart cart = customer.getCart();
         cart.getCartItems().clear();
         cart.getCartItems().addAll(toCartItemList(request.getCartItems(), cart));
 

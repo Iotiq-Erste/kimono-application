@@ -1,5 +1,6 @@
 package com.iotiq.application.messages.customer.contact;
 
+import com.iotiq.application.domain.enums.Country;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,5 +12,5 @@ public class Address {
     private String state;
     private String street;
     private String zipCode;
-    private String country;
+    private Country country;
 }

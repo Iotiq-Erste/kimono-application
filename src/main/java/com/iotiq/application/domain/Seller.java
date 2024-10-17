@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,4 +33,7 @@ public class Seller extends AbstractPersistable<UUID> {
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> product;
+
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
+    private List<ProductDemand> productDemandList = new ArrayList<>();
 }

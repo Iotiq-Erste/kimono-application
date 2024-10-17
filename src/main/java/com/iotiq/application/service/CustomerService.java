@@ -33,7 +33,7 @@ public class CustomerService {
 
     @Transactional
     public void update(CustomerUpdateRequest request) {
-        Customer customer = getCurrentCustomer();
+        Customer customer = getCurrentCustomerOrCreate();
         if (request.getContactInfo() != null) {
             if (request.getContactInfo().getBasicInfo() != null) {
                 customer.getUser().setPersonalInfo(Objects.requireNonNullElseGet(customer.getUser().getPersonalInfo(), Person::new));
@@ -64,14 +64,14 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer getCurrentCustomer() {
+    public Customer getCurrentCustomerOrCreate() {
         User currentUser = userService.getCurrentUser();
         return customerRepository.findByUser(currentUser).orElseGet(() -> createCustomer(currentUser));
     }
 
     @Transactional
     public CustomerDto getCustomer() {
-        Customer customer = getCurrentCustomer();
+        Customer customer = getCurrentCustomerOrCreate();
 
         CustomerDto customerDto = new CustomerDto();
 
