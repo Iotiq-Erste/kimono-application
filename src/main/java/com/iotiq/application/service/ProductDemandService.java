@@ -60,20 +60,42 @@ public class ProductDemandService {
         productDemandRepository.save(productDemand);
     }
 
+    /**
+     * Updates the status of a product demand based on the provided seller's request.
+     *
+     * @param id the UUID of the product demand to be updated
+     * @param updateRequest the request containing the new status for the product demand
+     * @param seller the seller performing the update
+     * @throws EntityNotFoundException if the product demand with the given ID is not found
+     */
     @Transactional
     public void updateDemandStatusBySeller(UUID id, SellerProductDemandUpdateRequest updateRequest, Seller seller) {
-        ProductDemand productDemand = productDemandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
-
-        if (productDemand.getSeller() == null && updateRequest.getRequestStatus().equals(RequestStatus.IN_PROGRESS)) {
-            productDemand.setSeller(seller);
-        } else if (productDemand.getSeller() != null && Objects.requireNonNull(productDemand.getSeller().getId()).equals(seller.getId())) {
-            productDemand.setSeller(updateRequest.getRequestStatus().equals(RequestStatus.CANCELLED) ? null : seller);
-        } else {
-            throw new EntityNotFoundException(ProductDemand.ENTITY_NAME, id);
-        }
-
+        ProductDemand productDemand = productDemandRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
+        updateSellerInfo(productDemand, updateRequest.getRequestStatus(), seller);
         productDemand.setStatus(updateRequest.getRequestStatus());
         productDemandRepository.save(productDemand);
+    }
+
+    /**
+     * Updates the seller information associated with a given product demand based on the request status.
+     *
+     * @param productDemand the product demand being updated
+     * @param status the current status of the request
+     * @param seller the seller information to be updated in the product demand
+     * @throws EntityNotFoundException if the product demand does not have an existing seller and the status is not in progress,
+     * or if the seller id does not match the existing seller id in the product demand.
+     */
+    private void updateSellerInfo(ProductDemand productDemand, RequestStatus status, Seller seller) {
+        UUID sellerId = productDemand.getSeller() == null ? null : productDemand.getSeller().getId();
+
+        if (sellerId == null && status.equals(RequestStatus.IN_PROGRESS)) {
+            productDemand.setSeller(seller);
+        } else if (sellerId != null && sellerId.equals(seller.getId())) {
+            productDemand.setSeller(status.equals(RequestStatus.CANCELLED) ? null : seller);
+        } else {
+            throw new EntityNotFoundException(ProductDemand.ENTITY_NAME, productDemand.getId());
+        }
     }
 
     @Transactional
