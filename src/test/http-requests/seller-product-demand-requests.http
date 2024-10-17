@@ -478,6 +478,17 @@ Content-Type: application/json
 %}
 
 ### Scenario 11: Get Product Demands
+GET {{baseUrl}}/api/v1/seller/product-demands/{{newProductDemandID1}}
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing the seller is assigned", function () {
+        client.assert(response.body.seller != null);
+    });
+%}
+
+### Scenario 12: Get Product Demands
 GET {{baseUrl}}/api/v1/seller/product-demands
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
@@ -488,7 +499,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 12: Update First Product Demand
+### Scenario 13: Update First Product Demand
 PUT {{baseUrl}}/api/v1/seller/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
@@ -504,7 +515,7 @@ Content-Type: application/json
 %}
 
 
-### Scenario 13: Get Product Demands
+### Scenario 14: Get Product Demands
 GET {{baseUrl}}/api/v1/seller/product-demands
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
@@ -516,12 +527,12 @@ Content-Type: application/json
 %}
 
 
-### Scenario 14: Delete First Product Demand
+### Scenario 15: Delete First Product Demand
 DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
-### Scenario 15: Delete Second Product Demand
+### Scenario 16: Delete Second Product Demand
 DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID2}}
 Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json

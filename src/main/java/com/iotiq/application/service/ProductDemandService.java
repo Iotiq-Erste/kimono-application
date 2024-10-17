@@ -12,6 +12,7 @@ import com.iotiq.application.messages.productdemand.ProductDemandUpdateRequest;
 import com.iotiq.application.messages.productdemand.SellerProductDemandUpdateRequest;
 import com.iotiq.application.repository.ProductDemandRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
+import com.iotiq.user.domain.Person;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -63,9 +64,9 @@ public class ProductDemandService {
     /**
      * Updates the status of a product demand based on the provided seller's request.
      *
-     * @param id the UUID of the product demand to be updated
+     * @param id            the UUID of the product demand to be updated
      * @param updateRequest the request containing the new status for the product demand
-     * @param seller the seller performing the update
+     * @param seller        the seller performing the update
      * @throws EntityNotFoundException if the product demand with the given ID is not found
      */
     @Transactional
@@ -81,10 +82,10 @@ public class ProductDemandService {
      * Updates the seller information associated with a given product demand based on the request status.
      *
      * @param productDemand the product demand being updated
-     * @param status the current status of the request
-     * @param seller the seller information to be updated in the product demand
+     * @param status        the current status of the request
+     * @param seller        the seller information to be updated in the product demand
      * @throws EntityNotFoundException if the product demand does not have an existing seller and the status is not in progress,
-     * or if the seller id does not match the existing seller id in the product demand.
+     *                                 or if the seller id does not match the existing seller id in the product demand.
      */
     private void updateSellerInfo(ProductDemand productDemand, RequestStatus status, Seller seller) {
         UUID sellerId = productDemand.getSeller() == null ? null : productDemand.getSeller().getId();
@@ -110,18 +111,25 @@ public class ProductDemandService {
                 new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
     }
 
-    public ProductDemand getProductDemandOfCustomerByID(UUID id, Customer customer) {
+    public ProductDemandDto getProductDemandOfCustomerByID(UUID id, Customer customer) {
         Optional<ProductDemand> productDemand = productDemandRepository.findById(id);
 
         if (productDemand.isEmpty() || !Objects.equals(productDemand.get().getCustomer().getId(), customer.getId())) {
             throw new EntityNotFoundException(ProductDemand.ENTITY_NAME, id);
         }
-        return productDemand.get();
+        ProductDemandDto productDemandDto = ModelMapperUtil.map(productDemand.get(), ProductDemandDto.class);
+        productDemandDto.setCustomerBasicInfo(ModelMapperUtil.map(Objects.requireNonNullElseGet(productDemand.get().getCustomer().getUser().getPersonalInfo(), Person::new), BasicInfo.class));
+
+        return productDemandDto;
     }
 
-    public ProductDemandDto getProductDemand(UUID id) {
-        return ModelMapperUtil.map(productDemandRepository.findByIdAndSellerIsNull(id).orElseThrow(() ->
-                new EntityNotFoundException(ProductDemand.ENTITY_NAME, id)), ProductDemandDto.class);
+    public ProductDemandDto getProductDemand(UUID id, Seller seller) {
+        ProductDemand productDemand = productDemandRepository.findByIdAndSellerIsNullOrSeller(id, seller).orElseThrow(() ->
+                new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
+        ProductDemandDto productDemandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
+        ModelMapperUtil.map(productDemand, ProductDemandDto.class);
+        productDemandDto.setCustomerBasicInfo(ModelMapperUtil.map(Objects.requireNonNullElseGet(productDemand.getCustomer().getUser().getPersonalInfo(), Person::new), BasicInfo.class));
+        return productDemandDto;
     }
 
     private BasicInfo createBasicInfo(ProductDemand productDemand) {

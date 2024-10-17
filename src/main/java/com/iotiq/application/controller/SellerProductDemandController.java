@@ -42,7 +42,7 @@ public class SellerProductDemandController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public ProductDemandResponse getProductDemand(@PathVariable UUID id) {
-        return ModelMapperUtil.map(productDemandService.getProductDemand(id), ProductDemandResponse.class);
+        return ModelMapperUtil.map(productDemandService.getProductDemand(id, sellerService.getCurrentSellerOrCreate()), ProductDemandResponse.class);
     }
 
     @PutMapping("/{id}")
