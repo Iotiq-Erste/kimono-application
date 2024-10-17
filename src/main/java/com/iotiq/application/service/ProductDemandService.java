@@ -64,15 +64,15 @@ public class ProductDemandService {
     public void updateDemandStatusBySeller(UUID id, SellerProductDemandUpdateRequest updateRequest, Seller seller) {
         ProductDemand productDemand = productDemandRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
 
-        if (productDemand.getSeller() == null && updateRequest.getRequestStatus().equals(RequestStatus.IN_PROGRESS)) {
+        if (productDemand.getSeller() == null && updateRequest.getStatus().equals(RequestStatus.IN_PROGRESS)) {
             productDemand.setSeller(seller);
         } else if (productDemand.getSeller() != null && Objects.requireNonNull(productDemand.getSeller().getId()).equals(seller.getId())) {
-            productDemand.setSeller(updateRequest.getRequestStatus().equals(RequestStatus.CANCELLED) ? null : seller);
+            productDemand.setSeller(updateRequest.getStatus().equals(RequestStatus.CANCELLED) ? null : seller);
         } else {
             throw new EntityNotFoundException(ProductDemand.ENTITY_NAME, id);
         }
 
-        productDemand.setStatus(updateRequest.getRequestStatus());
+        productDemand.setStatus(updateRequest.getStatus());
         productDemandRepository.save(productDemand);
     }
 
