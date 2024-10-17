@@ -454,7 +454,7 @@ Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 {
-  "requestStatus": "COMPLETED"
+  "status": "COMPLETED"
 }
 > {%
     client.test("Seller can not change status to COMPLETED on demand that it does not have", function () {
@@ -468,7 +468,7 @@ Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 {
-  "requestStatus": "IN_PROGRESS"
+  "status": "IN_PROGRESS"
 }
 > {%
     client.test("Product demand status has been updated", function () {
@@ -494,7 +494,7 @@ Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 {
-  "requestStatus": "CANCELLED"
+  "status": "CANCELLED"
 }
 > {%
     client.test("Product demand status has been updated", function () {

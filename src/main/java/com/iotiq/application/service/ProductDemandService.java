@@ -72,8 +72,8 @@ public class ProductDemandService {
     public void updateDemandStatusBySeller(UUID id, SellerProductDemandUpdateRequest updateRequest, Seller seller) {
         ProductDemand productDemand = productDemandRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
-        updateSellerInfo(productDemand, updateRequest.getRequestStatus(), seller);
-        productDemand.setStatus(updateRequest.getRequestStatus());
+        updateSellerInfo(productDemand, updateRequest.getStatus(), seller);
+        productDemand.setStatus(updateRequest.getStatus());
         productDemandRepository.save(productDemand);
     }
 

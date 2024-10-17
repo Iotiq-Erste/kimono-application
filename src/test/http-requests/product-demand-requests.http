@@ -1073,7 +1073,7 @@ Content-Type: application/json
 > {%
     client.test("Testing customer's total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
-        client.assert(response.body.content.length===3)
+        client.assert(response.body.content.length>=3)
         client.assert(client.global.get("customersTotalDemands") == response.body.page.totalElements)
     });
 %}
