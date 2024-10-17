@@ -4,8 +4,8 @@ Content-Type: application/x-www-form-urlencoded
 
 grant_type = {{grantType}} &
 client_id = {{clientId}} &
-password = {{password}} &
-username = {{username}} &
+password = {{customerPassword}} &
+username = {{customerUsername}} &
 client_secret = {{clientSecret}}
 
 > {%
