@@ -43,6 +43,14 @@ public class ProductDemandService {
         });
     }
 
+    public Page<ProductDemandDto> getAssignedProductDemandsForSeller(Pageable pageable, Seller seller) {
+        return productDemandRepository.findAllByIsActiveTrueAndSeller(pageable, seller).map(productDemand -> {
+            ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
+            demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
+            return demandDto;
+        });
+    }
+
     public Page<ProductDemandDto> getProductDemandsForCurrentCustomer(Pageable pageable, Customer customer) {
         return productDemandRepository.findAllByCustomerAndIsActiveTrue(customer, pageable).map(
                 productDemand -> {

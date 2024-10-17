@@ -474,6 +474,7 @@ Content-Type: application/json
     client.test("Product demand status has been updated", function () {
         client.assert(response.status === 200, "Status code is 200");
         client.global.set("sellersTotalDemands", client.global.get("sellersTotalDemands") -1);
+        client.global.set("totalDemandAssignedToSeller", 1)
     });
 %}
 
@@ -487,6 +488,18 @@ Content-Type: application/json
         client.assert(response.body.seller != null);
     });
 %}
+
+### Scenario 11: Get Product Demands
+GET {{baseUrl}}/api/v1/seller/product-demands/assigned
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing the seller is assigned", function () {
+        client.assert(response.body.page.totalElements != client.global.get("totalDemandAssignedToSeller"));
+    });
+%}
+
 
 ### Scenario 12: Get Product Demands
 GET {{baseUrl}}/api/v1/seller/product-demands
