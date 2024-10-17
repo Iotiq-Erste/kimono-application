@@ -23,7 +23,7 @@ public class SellerDto {
 
     private Capacity capacity;
 
-    private List<ApplicationArea> applicationArea;
+    private List<ApplicationArea> applicationAreas;
 
     private List<OrderedProductDto> orderedProducts;
 }

@@ -17,6 +17,6 @@ public class SellerResponse {
     private boolean isActive;
     private List<Skill> skills;
     private Capacity capacity;
-    private List<ApplicationArea> applicationArea;
+    private List<ApplicationArea> applicationAreas;
     private List<OrderedProductDto> orderedProducts;
 }
