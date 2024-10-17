@@ -48,6 +48,8 @@ public class SellerService {
     @Transactional
     public void update(SellerUpdateRequest request) {
         Seller currentSeller = getCurrentSellerOrCreate();
+        if(currentSeller.getApplicationAreas() != null) currentSeller.getApplicationAreas().clear();
+        if(currentSeller.getSkills() != null) currentSeller.getSkills().clear();
         ModelMapperUtil.map(request, currentSeller);
 
         sellerRepository.save(currentSeller);

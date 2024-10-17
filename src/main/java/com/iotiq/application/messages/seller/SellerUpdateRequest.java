@@ -15,5 +15,5 @@ public class SellerUpdateRequest {
     private String taxNumber;
     private List<Skill> skills;
     private Capacity capacity;
-    private ApplicationArea applicationArea;
+    private List<ApplicationArea> applicationAreas;
 }
