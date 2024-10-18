@@ -1,5 +1,6 @@
 package com.iotiq.application.messages.customer.contact;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,9 @@ import lombok.Setter;
 public class ContactInfo {
 
     private BasicInfo basicInfo;
+    @JsonInclude
     private Address address;
+
+
 
 }
