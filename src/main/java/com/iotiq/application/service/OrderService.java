@@ -39,11 +39,7 @@ public class OrderService {
         return customer.getOrders();
     }
 
-    public List<Order> getOrdersBySeller(Seller seller) {
-        return orderRepository.findAllByOrderedProductsSellerId(seller.getId());
-    }
-
-    public OrderCreateResponse createOrder(OrderCreateRequest createRequest, Customer customer) {
+    public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
         Order order = ModelMapperUtil.map(createRequest, Order.class);
 
         Order finalOrder = order;
@@ -82,8 +78,7 @@ public class OrderService {
                 product.getTitle(),
                 product.getPrice(),
                 product.getImageUrl(),
-                product.getSeller().getShopName(),
-                product.getSeller().getId(),
+                product.getSeller(),
                 order,
                 cartItemDto.getQuantity()
         );
