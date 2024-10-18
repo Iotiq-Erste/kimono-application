@@ -496,7 +496,7 @@ Content-Type: application/json
 
 > {%
     client.test("Testing the seller is assigned", function () {
-        client.assert(response.body.page.totalElements != client.global.get("totalDemandAssignedToSeller"));
+        client.assert(response.body.page.totalElements == client.global.get("totalDemandAssignedToSeller"));
     });
 %}
 
