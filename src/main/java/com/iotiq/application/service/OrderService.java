@@ -5,14 +5,16 @@ import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.Product;
-import com.iotiq.application.domain.Seller;
 import com.iotiq.application.exception.PricesNotMatchException;
 import com.iotiq.application.messages.cartitem.CartItemDto;
 import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
+import com.iotiq.application.messages.order.OrderDto;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
+import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import com.iotiq.application.repository.OrderRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,17 +31,23 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductService productService;
+    private final OrderedProductService orderedProductService;
 
     public Order getOrderForCurrentCustomer(UUID id, Customer customer) {
         return orderRepository.findByIdAndCustomer(id, customer)
                 .orElseThrow(() -> new EntityNotFoundException(Order.ENTITY_NAME, id));
     }
 
-    public List<Order> getOrdersForCurrentCustomer(Customer customer) {
-        return customer.getOrders();
+    public List<OrderDto> getOrdersForCurrentCustomer(Customer customer) {
+        return customer.getOrders().stream().map(order -> {
+            OrderDto orderDto = ModelMapperUtil.map(order, OrderDto.class);
+            orderDto.setOrderedProducts(ModelMapperUtil.map(order.getOrderedProducts(), OrderedProductDto.class));
+            return orderDto;
+        }).collect(Collectors.toList());
     }
 
-    public OrderCreateResponse createOrder(OrderCreateRequest createRequest) {
+    @Transactional
+    public OrderCreateResponse createOrder(OrderCreateRequest createRequest, Customer customer) {
         Order order = ModelMapperUtil.map(createRequest, Order.class);
 
         Order finalOrder = order;
@@ -58,6 +66,7 @@ public class OrderService {
         return new OrderCreateResponse(order.getId(), order.getOrderNumber());
     }
 
+    @Transactional
     public void invisible(UUID id, Customer customer) {
         Order order = getOrderForCurrentCustomer(id, customer);
         order.setVisible(false);

@@ -22,7 +22,7 @@ public class OrderedProductController {
     private final SellerService sellerService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority(@OrderedProductManagementAuth.VIEW)")
+    @PreAuthorize("hasRole('ROLE_COMPANY') && hasAuthority(@OrderedProductManagementAuth.VIEW)")
     public List<OrderedProductResponse> getOrderedProducts() {
         List<OrderedProductDto> orderedProduct = orderedProductService.getOrderedProducts(sellerService.getCurrentSellerOrCreate());
         return ModelMapperUtil.map(orderedProduct, OrderedProductResponse.class);

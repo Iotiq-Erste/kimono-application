@@ -16,7 +16,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

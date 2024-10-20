@@ -1,7 +1,7 @@
 package com.iotiq.application.messages.order;
 
-import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.enums.DeliveryStatus;
+import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -24,6 +24,6 @@ public class OrderResponse {
     private String deliveryAddress;
     private DeliveryStatus deliveryStatus;
     private LocalDateTime orderDate;
-    private List<OrderedProduct> orderedProducts;
+    private List<OrderedProductDto> orderedProducts;
     private boolean isVisible;
 }

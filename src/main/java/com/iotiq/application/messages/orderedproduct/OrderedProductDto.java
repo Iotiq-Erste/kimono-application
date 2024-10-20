@@ -12,6 +12,7 @@ import java.util.UUID;
 @Setter
 public class OrderedProductDto {
 
+    private UUID id;
     private UUID productId;
     private String title;
     private Price price;
