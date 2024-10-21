@@ -36,6 +36,8 @@ public class Seller extends AbstractPersistable<UUID> {
 
     private boolean isActive;
 
+    @ElementCollection(targetClass = Skill.class)
+    @Enumerated(EnumType.STRING)
     private List<Skill> skills;
 
     private Capacity capacity;

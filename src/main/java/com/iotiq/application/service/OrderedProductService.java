@@ -1,6 +1,7 @@
 package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
+import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.OrderedProduct;
 import com.iotiq.application.domain.Seller;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
@@ -24,13 +25,18 @@ public class OrderedProductService {
 
     public OrderedProductDto toOrderedProductDto(OrderedProduct orderedProduct) {
         OrderedProductDto orderedProductDto = ModelMapperUtil.map(orderedProduct, OrderedProductDto.class);
-        orderedProductDto.setOrderDate(orderedProduct.getOrder().getOrderDate());
-        orderedProductDto.setOrderNumber(orderedProduct.getOrder().getOrderNumber());
-        orderedProductDto.setDeliveryAddress(orderedProduct.getOrder().getDeliveryAddress());
-        orderedProductDto.setDeliveryType(orderedProduct.getOrder().getDeliveryType());
-        orderedProductDto.setDeliveryAddressType(orderedProduct.getOrder().getDeliveryAddressType());
-        orderedProductDto.setCustomerBasicInfo(ModelMapperUtil.map(orderedProduct.getOrder().getCustomer().getUser().getPersonalInfo(), BasicInfo.class));
+        Order order = orderedProduct.getOrder();
+        if (order != null) {
+            orderedProductDto.setOrderDate(order.getOrderDate());
+            orderedProductDto.setOrderNumber(order.getOrderNumber());
+            orderedProductDto.setDeliveryAddress(order.getDeliveryAddress());
+            orderedProductDto.setDeliveryType(order.getDeliveryType());
+            orderedProductDto.setDeliveryAddressType(order.getDeliveryAddressType());
+
+            if (order.getCustomer() != null && order.getCustomer().getUser() != null) {
+                orderedProductDto.setCustomerBasicInfo(ModelMapperUtil.map(order.getCustomer().getUser().getPersonalInfo(), BasicInfo.class));
+            }
+        }
         return orderedProductDto;
     }
-
 }
