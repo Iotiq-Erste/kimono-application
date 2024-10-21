@@ -17,6 +17,7 @@ import com.iotiq.user.internal.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -107,7 +108,7 @@ public class CustomerService {
     }
 
     private List<OrderDto> getLastTwoOrders(List<OrderDto> orderDtoList) {
-        if (orderDtoList == null || orderDtoList.isEmpty()) {
+        if (CollectionUtils.isEmpty(orderDtoList)) {
             return Collections.emptyList();
         }
         return orderDtoList.stream().sorted(Comparator.comparing(OrderDto::getOrderDate).reversed()).limit(2).collect(Collectors.toList());
