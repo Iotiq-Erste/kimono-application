@@ -1,5 +1,6 @@
 package com.iotiq.application.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iotiq.application.domain.enums.DeliveryStatus;
 import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
 import jakarta.persistence.CascadeType;
@@ -19,7 +20,6 @@ import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +36,7 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
     private String orderNumber;
@@ -55,7 +56,7 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
-    private LocalDate deliveryStatusDate;
+    private LocalDateTime deliveryStatusDate;
 
     private LocalDateTime orderDate;
 

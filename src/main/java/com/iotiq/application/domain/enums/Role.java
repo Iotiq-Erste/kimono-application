@@ -4,6 +4,7 @@ import com.iotiq.application.domain.authority.CartManagementAuthority;
 import com.iotiq.application.domain.authority.CustomerManagementAuthority;
 import com.iotiq.application.domain.authority.OrderManagementAuthority;
 import com.iotiq.application.domain.authority.ProductDemandManagementAuthority;
+import com.iotiq.application.domain.authority.OrderedProductManagementAuthority;
 import com.iotiq.application.domain.authority.ProductManagementAuthority;
 import com.iotiq.application.domain.authority.SellerManagementAuthority;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +31,8 @@ public enum Role implements com.iotiq.user.domain.authorities.Role {
             SellerManagementAuthority.CREATE,
             SellerManagementAuthority.DELETE,
             SellerManagementAuthority.VIEW,
-            ProductDemandManagementAuthority.VIEW
+            ProductDemandManagementAuthority.VIEW,
+            OrderedProductManagementAuthority.VIEW
     ),
     CUSTOMER(
             new SimpleGrantedAuthority("ROLE_CUSTOMER"),
