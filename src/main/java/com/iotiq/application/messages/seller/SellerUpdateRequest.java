@@ -11,8 +11,7 @@ import java.util.List;
 @Getter
 @Setter
 public class SellerUpdateRequest {
-    private String shopName;
-    private String taxNumber;
+
     private List<Skill> skills;
     private Capacity capacity;
     private List<ApplicationArea> applicationAreas;

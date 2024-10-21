@@ -12,9 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class SellerResponse {
-    private String shopName;
-    private String taxNumber;
-    private boolean isActive;
+
     private List<Skill> skills;
     private Capacity capacity;
     private List<ApplicationArea> applicationAreas;

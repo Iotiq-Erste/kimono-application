@@ -30,10 +30,6 @@ public class Seller extends AbstractPersistable<UUID> {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String shopName;
-
-    private String taxNumber;
-
     private boolean isActive;
 
     @ElementCollection(targetClass = Skill.class)

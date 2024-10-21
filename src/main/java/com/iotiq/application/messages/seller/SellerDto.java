@@ -13,12 +13,6 @@ import java.util.List;
 @Setter
 public class SellerDto {
 
-    private String shopName;
-
-    private String taxNumber;
-
-    private boolean isActive;
-
     private List<Skill> skills;
 
     private Capacity capacity;
