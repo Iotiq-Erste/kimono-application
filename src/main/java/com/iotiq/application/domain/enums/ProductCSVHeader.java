@@ -10,7 +10,7 @@ public enum ProductCSVHeader {
     AGE_GROUP_ADULT_AGE_GROUP("ageGroup.adultAgeGroup"),
     AGE_GROUP_CHILDREN_AGE_GROUP("ageGroup.childrenAgeGroup"),
     APPLICATION_AREA_GROUP_APPLICATION_AREA("applicationAreaGroup.applicationArea"),
-    APPLICATION_AREA_GROUP_FREQUENCY("applicationAreaGroup.frequency"),
+    APPLICATION_AREA_GROUP_USAGE_CYCLE("applicationAreaGroup.usageCycle"),
     BRAND("brand"),
     CATEGORY("category"),
     CERTIFICATIONS("certifications"),
@@ -59,7 +59,8 @@ public enum ProductCSVHeader {
     SUSTAINABILITY_RESOURCE_CONSUMPTIONS("sustainability.resourceConsumptions"),
     SUSTAINABILITY_SOCIAL_ETHICS("sustainability.socialEthics"),
     SUSTAINABILITY_SUSTAINABILITY_COMPOSITIONS("sustainability.sustainabilityCompositions"),
-    SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS("sustainability.sustainabilityLightweights");
+    SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS("sustainability.sustainabilityLightweights"),
+    SKILLS("skills");
 
     private final String header;
 

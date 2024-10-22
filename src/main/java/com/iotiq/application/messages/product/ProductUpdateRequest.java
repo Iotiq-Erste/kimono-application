@@ -8,14 +8,12 @@ import com.iotiq.application.domain.Haptics;
 import com.iotiq.application.domain.MaterialBehavior;
 import com.iotiq.application.domain.Price;
 import com.iotiq.application.domain.Sustainability;
-import com.iotiq.application.domain.enums.Brand;
 import com.iotiq.application.domain.enums.Category;
 import com.iotiq.application.domain.enums.Certification;
 import com.iotiq.application.domain.enums.Color;
 import com.iotiq.application.domain.enums.DesignBodyPart;
 import com.iotiq.application.domain.enums.FiberType;
 import com.iotiq.application.domain.enums.Gender;
-import com.iotiq.application.domain.enums.Material;
 import com.iotiq.application.domain.enums.MaterialParameter;
 import com.iotiq.application.domain.enums.Motif;
 import com.iotiq.application.domain.enums.Neurodermatitis;
@@ -23,6 +21,7 @@ import com.iotiq.application.domain.enums.OekotexStandard;
 import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
+import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import lombok.Getter;
@@ -40,7 +39,7 @@ public class ProductUpdateRequest {
     private String imageUrl;
     private AgeGroup ageGroup;
     private ApplicationAreaGroup applicationAreaGroup;
-    private Brand brand;
+    private String brand;
     private Category category;
     private List<Certification> certifications;
     private Color color;
@@ -50,7 +49,6 @@ public class ProductUpdateRequest {
     private List<FiberType> fiberTypes;
     private Gender gender;
     private Haptics haptics;
-    private Material material;
     private MaterialBehavior materialBehavior;
     private MaterialParameter materialParameter;
     private Motif motif;
@@ -62,4 +60,5 @@ public class ProductUpdateRequest {
     private List<SpecificBodyPart> specificBodyParts;
     private List<SpecificFunctionality> specificFunctionalities;
     private Sustainability sustainability;
+    private List<Skill> skills;
 }

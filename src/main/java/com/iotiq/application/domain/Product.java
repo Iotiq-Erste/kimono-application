@@ -1,7 +1,6 @@
 package com.iotiq.application.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.iotiq.application.domain.enums.Brand;
 import com.iotiq.application.domain.enums.Category;
 import com.iotiq.application.domain.enums.Certification;
 import com.iotiq.application.domain.enums.Color;
@@ -15,6 +14,7 @@ import com.iotiq.application.domain.enums.OekotexStandard;
 import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
+import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import jakarta.persistence.CascadeType;
@@ -60,8 +60,7 @@ public class Product extends AbstractPersistable<UUID> {
     private ApplicationAreaGroup applicationAreaGroup;
 
     //Marken
-    @Enumerated(EnumType.STRING)
-    private Brand brand;
+    private String brand;
 
     //Kategorien
     @Enumerated(EnumType.STRING)
@@ -150,6 +149,10 @@ public class Product extends AbstractPersistable<UUID> {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<CartItem> cartItemList;
+
+    @ElementCollection(targetClass = Skill.class)
+    @Enumerated(EnumType.STRING)
+    private List<Skill> skills;
 
     @Override
     public boolean equals(Object o) {

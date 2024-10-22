@@ -2,8 +2,59 @@ package com.iotiq.application.messages.product;
 
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.domain.Product_;
-import com.iotiq.application.domain.Seller_;
-import com.iotiq.application.domain.enums.*;
+import com.iotiq.application.domain.enums.AbrassionResistant;
+import com.iotiq.application.domain.enums.Absorbency;
+import com.iotiq.application.domain.enums.ActiveSubstance;
+import com.iotiq.application.domain.enums.ActiveSubstanceArea;
+import com.iotiq.application.domain.enums.ActiveSubstancePlacement;
+import com.iotiq.application.domain.enums.ActiveSubstanceRelease;
+import com.iotiq.application.domain.enums.AdultAgeGroup;
+import com.iotiq.application.domain.enums.Antistatic;
+import com.iotiq.application.domain.enums.ApplicationArea;
+import com.iotiq.application.domain.enums.Breathable;
+import com.iotiq.application.domain.enums.Category;
+import com.iotiq.application.domain.enums.Certification;
+import com.iotiq.application.domain.enums.ChildrenAgeGroup;
+import com.iotiq.application.domain.enums.Color;
+import com.iotiq.application.domain.enums.Colorfast;
+import com.iotiq.application.domain.enums.Currency;
+import com.iotiq.application.domain.enums.DesignAppearance;
+import com.iotiq.application.domain.enums.DesignBodyPart;
+import com.iotiq.application.domain.enums.DesignColor;
+import com.iotiq.application.domain.enums.Elasticity;
+import com.iotiq.application.domain.enums.EnvironmentalCompatibility;
+import com.iotiq.application.domain.enums.FiberType;
+import com.iotiq.application.domain.enums.Fineness;
+import com.iotiq.application.domain.enums.Gender;
+import com.iotiq.application.domain.enums.LifeCycle;
+import com.iotiq.application.domain.enums.Lightweight;
+import com.iotiq.application.domain.enums.LintFree;
+import com.iotiq.application.domain.enums.MaterialParameter;
+import com.iotiq.application.domain.enums.MoistureTransporting;
+import com.iotiq.application.domain.enums.Motif;
+import com.iotiq.application.domain.enums.Neurodermatitis;
+import com.iotiq.application.domain.enums.OdorNeutralizing;
+import com.iotiq.application.domain.enums.OekotexStandard;
+import com.iotiq.application.domain.enums.PriceRange;
+import com.iotiq.application.domain.enums.Rating;
+import com.iotiq.application.domain.enums.Regionality;
+import com.iotiq.application.domain.enums.ResourceConsumption;
+import com.iotiq.application.domain.enums.ScratchResistant;
+import com.iotiq.application.domain.enums.Scratchy;
+import com.iotiq.application.domain.enums.SeamFeelable;
+import com.iotiq.application.domain.enums.Size;
+import com.iotiq.application.domain.enums.Skill;
+import com.iotiq.application.domain.enums.SocialEthics;
+import com.iotiq.application.domain.enums.Softness;
+import com.iotiq.application.domain.enums.SpecificBodyPart;
+import com.iotiq.application.domain.enums.SpecificFunctionality;
+import com.iotiq.application.domain.enums.Staggering;
+import com.iotiq.application.domain.enums.SustainabilityComposition;
+import com.iotiq.application.domain.enums.SustainabilityLightweight;
+import com.iotiq.application.domain.enums.SweatWicking;
+import com.iotiq.application.domain.enums.Uniform;
+import com.iotiq.application.domain.enums.UsageCycle;
+import com.iotiq.application.domain.enums.Washable;
 import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.commons.message.request.SearchRequest;
 import lombok.AllArgsConstructor;
@@ -21,6 +72,7 @@ import java.util.UUID;
 import static com.iotiq.application.service.ProductSpecification.isIn;
 import static com.iotiq.application.service.ProductSpecification.isInList;
 import static com.iotiq.application.service.ProductSpecification.isLike;
+import static com.iotiq.application.service.ProductSpecification.listIn;
 import static com.iotiq.application.service.ProductSpecification.priceBetween;
 
 
@@ -43,7 +95,7 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
 
     private List<ApplicationArea> applicationAreas;
 
-    private List<Frequency> frequencies;
+    private List<UsageCycle> usageCycles;
 
     //Composition
     private List<ActiveSubstanceArea> activeSubstanceAreas;
@@ -85,14 +137,13 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
     private List<SustainabilityComposition> sustainabilityCompositions;
     private List<SustainabilityLightweight> sustainabilityLightweights;
 
-    private List<Brand> brands;
+    private List<String> brands;
     private List<Category> categories;
     private List<Certification> certifications;
     private List<Color> colors;
     private List<DesignBodyPart> designBodyParts;
     private List<FiberType> fiberTypes;
     private List<Gender> genders;
-    private List<Material> materials;
     private List<MaterialParameter> materialParameters;
     private List<Motif> motifs;
     private List<Neurodermatitis> neurodermatitis;
@@ -102,6 +153,7 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
     private List<Size> sizes;
     private List<SpecificBodyPart> specificBodyParts;
     private List<SpecificFunctionality> specificFunctionalities;
+    private List<Skill> skills;
 
     @Override
     public Specification<Product> buildSpecification() {
@@ -111,7 +163,7 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isIn("ageGroup", "adultAgeGroup", adultAgeGroups))
                 .and(isIn("ageGroup", "childrenAgeGroup", childrenAgeGroups))
                 .and(isIn("applicationAreaGroup", "applicationArea", applicationAreas))
-                .and(isIn("applicationAreaGroup", "frequency", frequencies))
+                .and(isIn("applicationAreaGroup", "usageCycle", usageCycles))
                 .and(isInList("composition", "activeSubstanceAreas", activeSubstanceAreas))
                 .and(isInList("composition", "activeSubstances", activeSubstances))
                 .and(isInList("composition", "activeSubstancePlacements", activeSubstancePlacements))
@@ -145,14 +197,13 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isInList("sustainability", "socialEthics", socialEthics))
                 .and(isInList("sustainability", "sustainabilityCompositions", sustainabilityCompositions))
                 .and(isInList("sustainability", "sustainabilityLightweights", sustainabilityLightweights))
-                .and(isIn("brand", brands))
+                .and(listIn("brand", brands))
                 .and(isIn("category", categories))
                 .and(isInList("certifications", certifications))
                 .and(isIn("color", colors))
                 .and(isInList("designBodyParts", designBodyParts))
                 .and(isInList("fiberTypes", fiberTypes))
                 .and(isIn("gender", genders))
-                .and(isIn("material", materials))
                 .and(isIn("materialParameter", materialParameters))
                 .and(isIn("motif", motifs))
                 .and(isIn("neurodermatitis", neurodermatitis))
@@ -161,7 +212,8 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isIn("rating", ratings))
                 .and(isInList("sizes", sizes))
                 .and(isInList("specificBodyParts", specificBodyParts))
-                .and(isInList("specificFunctionalities", specificFunctionalities));
+                .and(isInList("specificFunctionalities", specificFunctionalities))
+                .and(isInList("skills", skills));
 
         if (!CollectionUtils.isEmpty(sellerIds)) {
             specification = specification

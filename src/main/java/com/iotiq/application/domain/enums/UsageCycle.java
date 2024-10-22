@@ -1,6 +1,6 @@
 package com.iotiq.application.domain.enums;
 
-public enum Frequency {
+public enum UsageCycle {
     ONE_TIME, //Einmalig
     TWO_TO_NINE, //2-9
     TEN_TO_FOURTYNINE, //10-49
