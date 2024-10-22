@@ -145,6 +145,10 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public List<String> getBrands(){
+        return productRepository.findDistinctBrands();
+    }
+
     public byte[] exportCSVFile(UUID sellerId) throws IOException {
         Page<Product> products = getAll(new ProductFilter().withSellerId(sellerId), Sort.unsorted());
 

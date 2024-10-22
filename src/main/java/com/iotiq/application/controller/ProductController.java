@@ -42,4 +42,10 @@ public class ProductController {
         Product product = productService.getOne(id);
         return ModelMapperUtil.map(product, ProductResponse.class);
     }
+
+    @GetMapping("/brands")
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
+    public List<String> getBrandList(){
+        return productService.getBrands();
+    }
 }
