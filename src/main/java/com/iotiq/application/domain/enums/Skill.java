@@ -1,7 +1,6 @@
 package com.iotiq.application.domain.enums;
 
 public enum Skill {
-
     YARN_SUPPLY,
     WOVEN_FABRIC,
     FINISHING,

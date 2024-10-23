@@ -3,6 +3,7 @@ package com.iotiq.application.service;
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.MedicalData;
+import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.SizeInfo;
 import com.iotiq.application.messages.customer.CustomerDto;
 import com.iotiq.application.messages.customer.CustomerUpdateRequest;
@@ -80,7 +81,7 @@ public class CustomerService {
         customerDto.setSizeInfo(Objects.requireNonNullElseGet(customer.getSizeInfo(), SizeInfo::new));
         customerDto.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
         customerDto.setCart(customerDto.getCart());
-        customerDto.setOrders(getLastTwoOrders(customerDto.getOrders()));
+        customerDto.setOrders(getLastTwoOrders(customer.getOrders()));
 
         return customerDto;
     }
@@ -107,10 +108,10 @@ public class CustomerService {
         return customerRepository.save(customer);
     }
 
-    private List<OrderDto> getLastTwoOrders(List<OrderDto> orderDtoList) {
-        if (CollectionUtils.isEmpty(orderDtoList)) {
+    private List<OrderDto> getLastTwoOrders(List<Order> orderList) {
+        if (CollectionUtils.isEmpty(orderList)) {
             return Collections.emptyList();
         }
-        return orderDtoList.stream().sorted(Comparator.comparing(OrderDto::getOrderDate).reversed()).limit(2).collect(Collectors.toList());
+        return orderList.stream().map(order -> ModelMapperUtil.map(order, OrderDto.class)).sorted(Comparator.comparing(OrderDto::getOrderDate).reversed()).limit(2).collect(Collectors.toList());
     }
 }

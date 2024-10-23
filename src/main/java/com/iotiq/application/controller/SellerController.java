@@ -14,20 +14,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ROLE_COMPANY')")
 @RequestMapping("/api/v1/seller")
 public class SellerController {
 
     private final SellerService sellerService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority(@SellerManagementAuth.VIEW)")
+    @PreAuthorize("hasRole('ROLE_COMPANY') && hasAuthority(@SellerManagementAuth.VIEW)")
     public SellerResponse getSeller(){
-        return ModelMapperUtil.map(sellerService.getCurrentSellerOrCreate(), SellerResponse.class);
+        return ModelMapperUtil.map(sellerService.getSeller(), SellerResponse.class);
     }
 
     @PutMapping
-    @PreAuthorize("hasAuthority(@SellerManagementAuth.UPDATE)")
+    @PreAuthorize("hasRole('ROLE_COMPANY') && hasAuthority(@SellerManagementAuth.UPDATE)")
     public void updateSeller(@RequestBody SellerUpdateRequest request){
         sellerService.update(request);
     }

@@ -4,11 +4,11 @@ import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.messages.order.OrderCreateRequest;
 import com.iotiq.application.messages.order.OrderCreateResponse;
+import com.iotiq.application.messages.order.OrderDto;
 import com.iotiq.application.messages.order.OrderResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
 import com.iotiq.application.service.CustomerService;
 import com.iotiq.application.service.OrderService;
-import com.iotiq.application.service.SellerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,44 +33,36 @@ public class OrderController {
 
     private final OrderService orderService;
     private final CustomerService customerService;
-    private final SellerService sellerService;
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') && hasAuthority(@OrderManagementAuth.VIEW)")
     public OrderResponse getOne(@PathVariable UUID id) {
         Order order = orderService.getOrderForCurrentCustomer(id, customerService.getCurrentCustomerOrCreate());
         return ModelMapperUtil.map(order, OrderResponse.class);
     }
 
     @GetMapping
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') && hasAuthority(@OrderManagementAuth.VIEW)")
     public List<OrderResponse> getOrders() {
-        List<Order> orders = orderService.getOrdersForCurrentCustomer(customerService.getCurrentCustomerOrCreate());
-        return ModelMapperUtil.map(orders, OrderResponse.class);
-    }
-
-    @GetMapping("/getOrdersBySeller")
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
-    public List<OrderResponse> getOrderBySeller() {
-        List<Order> orders = orderService.getOrdersBySeller(sellerService.getCurrentSellerOrCreate());
-        return ModelMapperUtil.map(orders, OrderResponse.class);
+        List<OrderDto> orderDtoList = orderService.getOrdersForCurrentCustomer(customerService.getCurrentCustomerOrCreate());
+        return ModelMapperUtil.map(orderDtoList, OrderResponse.class);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.CREATE)")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') && hasAuthority(@OrderManagementAuth.CREATE)")
     public OrderCreateResponse createOrder(@RequestBody OrderCreateRequest request) {
         return orderService.createOrder(request, customerService.getCurrentCustomerOrCreate());
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.DELETE)")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') && hasAuthority(@OrderManagementAuth.DELETE)")
     public void invisible(@PathVariable("id") UUID id) {
         orderService.invisible(id, customerService.getCurrentCustomerOrCreate());
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority(@OrderManagementAuth.UPDATE)")
+    @PreAuthorize("hasRole('ROLE_CUSTOMER') && hasAuthority(@OrderManagementAuth.UPDATE)")
     public void update(@PathVariable("id") UUID id, @RequestBody @Valid OrderUpdateRequest request) {
         orderService.update(id, request, customerService.getCurrentCustomerOrCreate());
     }
