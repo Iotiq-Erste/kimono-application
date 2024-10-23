@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iotiq.application.domain.enums.DeliveryStatus;
 import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -39,6 +40,7 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
     @JsonIgnore
     private Customer customer;
 
+    @Column(nullable = false)
     private String orderNumber;
 
     private BigDecimal cargoPrice;
@@ -58,8 +60,10 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
 
     private LocalDateTime deliveryStatusDate;
 
+    @Column(nullable = false)
     private LocalDateTime orderDate;
 
+    @Column(nullable = false)
     private LocalDateTime orderUtcDate;
 
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
