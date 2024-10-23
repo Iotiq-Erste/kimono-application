@@ -8,13 +8,14 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 public class SellerResponse {
 
-    private List<Skill> skills;
+    private Set<Skill> skills;
     private Capacity capacity;
-    private List<ApplicationArea> applicationAreas;
+    private Set<ApplicationArea> applicationAreas;
     private List<OrderedProductDto> orderedProducts;
 }

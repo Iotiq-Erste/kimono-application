@@ -17,6 +17,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.AbstractPersistable;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -34,13 +35,13 @@ public class Seller extends AbstractPersistable<UUID> {
 
     @ElementCollection(targetClass = Skill.class)
     @Enumerated(EnumType.STRING)
-    private List<Skill> skills;
+    private Set<Skill> skills;
 
     private Capacity capacity;
 
     @ElementCollection(targetClass = ApplicationArea.class)
     @Enumerated(EnumType.STRING)
-    private List<ApplicationArea> applicationAreas;
+    private Set<ApplicationArea> applicationAreas;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
