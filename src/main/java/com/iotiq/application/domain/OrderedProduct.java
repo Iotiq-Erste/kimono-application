@@ -1,6 +1,5 @@
 package com.iotiq.application.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
@@ -26,12 +25,10 @@ public class OrderedProduct extends BaseAbstractAuditingEntity<UUID> {
 
     private String imageUrl;
 
-    private String sellerName;
-
-    private UUID sellerId;
+    @ManyToOne
+    private Seller seller;
 
     @ManyToOne
-    @JsonIgnore
     private Order order;
 
     private Long quantity;
