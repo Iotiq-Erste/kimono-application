@@ -5,6 +5,7 @@ import com.iotiq.application.messages.image.ImageResponse;
 import com.iotiq.application.service.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     public ImageResponse uploadImage(@RequestParam("file") MultipartFile image) throws IOException {
         if (image.isEmpty()) {
             throw new IllegalArgumentException("File must not be empty");

@@ -37,7 +37,7 @@ public class ProductDemandController {
     private final CustomerService customerService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.CREATE) and hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDemandCreateResponse createProductDemand(@RequestBody ProductDemandRequest productDemandRequest) {
         return new ProductDemandCreateResponse(productDemandService.createProductDemand(productDemandRequest, customerService.getCurrentCustomerOrCreate()).getId());
@@ -65,7 +65,7 @@ public class ProductDemandController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.DELETE) and hasRole('ROLE_CUSTOMER')")
+    @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.DELETE)")
     public void deleteProductDemand(@PathVariable UUID id) {
         productDemandService.deleteProductDemand(id, customerService.getCurrentCustomerOrCreate());
     }

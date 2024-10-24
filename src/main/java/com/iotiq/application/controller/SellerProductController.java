@@ -41,7 +41,6 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ROLE_COMPANY')")
 @RequestMapping("/api/v1/seller/products")
 public class SellerProductController {
 
@@ -49,7 +48,7 @@ public class SellerProductController {
     private final SellerService sellerService;
 
     @GetMapping
-    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public PagedResponse<ProductResponse> getAll(ProductFilter filter, Sort sort) {
         filter.setSellerIds(List.of(Objects.requireNonNull(sellerService.getCurrentSellerOrCreate().getId())));
         Page<Product> page = productService.getAll(filter, sort);
@@ -59,7 +58,7 @@ public class SellerProductController {
     }
 
     @GetMapping("/csv-export")
-    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public ResponseEntity<byte[]> export() throws IOException {
 
         byte[] csvBytes = productService.exportCSVFile(sellerService.getCurrentSellerOrCreate().getId());
@@ -74,6 +73,7 @@ public class SellerProductController {
     }
 
     @PostMapping("/csv-upload")
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     public ResponseEntity<ProductCSVUploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
         return productService.importCSVFile(sellerService.getCurrentSellerOrCreate().getId(), file);
     }
