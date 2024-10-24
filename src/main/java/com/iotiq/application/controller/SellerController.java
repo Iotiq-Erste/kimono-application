@@ -20,13 +20,13 @@ public class SellerController {
     private final SellerService sellerService;
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_COMPANY') && hasAuthority(@SellerManagementAuth.VIEW)")
+    @PreAuthorize("hasAuthority(@SellerManagementAuth.VIEW)")
     public SellerResponse getSeller(){
         return ModelMapperUtil.map(sellerService.getSeller(), SellerResponse.class);
     }
 
     @PutMapping
-    @PreAuthorize("hasRole('ROLE_COMPANY') && hasAuthority(@SellerManagementAuth.UPDATE)")
+    @PreAuthorize("hasAuthority(@SellerManagementAuth.UPDATE)")
     public void updateSeller(@RequestBody SellerUpdateRequest request){
         sellerService.update(request);
     }
