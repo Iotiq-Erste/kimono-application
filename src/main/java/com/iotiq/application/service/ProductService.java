@@ -194,7 +194,7 @@ public class ProductService {
                             separateWithSemicolon(product.getSustainability().getSocialEthics()),
                             separateWithSemicolon(product.getSustainability().getSustainabilityCompositions()),
                             separateWithSemicolon(product.getSustainability().getSustainabilityLightweights()),
-                            separateWithSemicolon(product.getSkills()));
+                            separateWithSemicolon(product.getSustainability().getSkills()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -296,9 +296,9 @@ public class ProductService {
                         parseEnumList(ResourceConsumption.class, record.get(ProductCSVHeader.SUSTAINABILITY_RESOURCE_CONSUMPTIONS.value())),
                         parseEnumList(SocialEthics.class, record.get(ProductCSVHeader.SUSTAINABILITY_SOCIAL_ETHICS.value())),
                         parseEnumList(SustainabilityComposition.class, record.get(ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_COMPOSITIONS.value())),
-                        parseEnumList(SustainabilityLightweight.class, record.get(ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS.value())));
+                        parseEnumList(SustainabilityLightweight.class, record.get(ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS.value())),
+                        parseEnumList(Skill.class, record.get(ProductCSVHeader.SKILLS.value())));
                 productRequest.setSustainability(sustainability);
-                productRequest.setSkills(parseEnumList(Skill.class, record.get(ProductCSVHeader.SKILLS.value())));
 
                 createRequestList.add(productRequest);
 

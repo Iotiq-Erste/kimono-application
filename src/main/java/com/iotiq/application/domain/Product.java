@@ -14,7 +14,6 @@ import com.iotiq.application.domain.enums.OekotexStandard;
 import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
-import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import jakarta.persistence.CascadeType;
@@ -154,10 +153,6 @@ public class Product extends AbstractPersistable<UUID> {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<CartItem> cartItemList;
-
-    @ElementCollection(targetClass = Skill.class)
-    @Enumerated(EnumType.STRING)
-    private List<Skill> skills;
 
     @Override
     public boolean equals(Object o) {
