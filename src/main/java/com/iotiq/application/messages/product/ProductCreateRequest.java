@@ -8,7 +8,6 @@ import com.iotiq.application.domain.Haptics;
 import com.iotiq.application.domain.MaterialBehavior;
 import com.iotiq.application.domain.Price;
 import com.iotiq.application.domain.Sustainability;
-import com.iotiq.application.domain.enums.Brand;
 import com.iotiq.application.domain.enums.Category;
 import com.iotiq.application.domain.enums.Certification;
 import com.iotiq.application.domain.enums.Color;
@@ -23,6 +22,7 @@ import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.ProductCSVHeader;
 import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
+import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import jakarta.validation.Valid;
@@ -46,8 +46,8 @@ public class ProductCreateRequest{
     private String imageUrl;
     private AgeGroup ageGroup;
     private ApplicationAreaGroup applicationAreaGroup;
-    @NotNull
-    private Brand brand;
+    @NotBlank
+    private String brand;
     @NotNull
     private Category category;
     private List<Certification> certifications;
@@ -71,6 +71,7 @@ public class ProductCreateRequest{
     private List<SpecificBodyPart> specificBodyParts;
     private List<SpecificFunctionality> specificFunctionalities;
     private Sustainability sustainability;
+    private List<Skill> skills;
 
     public static String[] getCSVHeaders() {
         return new String[]{ProductCSVHeader.TITLE.value(),
@@ -81,7 +82,7 @@ public class ProductCreateRequest{
                 ProductCSVHeader.AGE_GROUP_ADULT_AGE_GROUP.value(),
                 ProductCSVHeader.AGE_GROUP_CHILDREN_AGE_GROUP.value(),
                 ProductCSVHeader.APPLICATION_AREA_GROUP_APPLICATION_AREA.value(),
-                ProductCSVHeader.APPLICATION_AREA_GROUP_FREQUENCY.value(),
+                ProductCSVHeader.APPLICATION_AREA_GROUP_USAGE_CYCLE.value(),
                 ProductCSVHeader.BRAND.value(),
                 ProductCSVHeader.CATEGORY.value(),
                 ProductCSVHeader.CERTIFICATIONS.value(),
@@ -131,6 +132,7 @@ public class ProductCreateRequest{
                 ProductCSVHeader.SUSTAINABILITY_SOCIAL_ETHICS.value(),
                 ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_COMPOSITIONS.value(),
                 ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS.value(),
+                ProductCSVHeader.SKILLS.value(),
         };
     }
 }

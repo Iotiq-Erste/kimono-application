@@ -1,7 +1,6 @@
 package com.iotiq.application.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.iotiq.application.domain.enums.Brand;
 import com.iotiq.application.domain.enums.Category;
 import com.iotiq.application.domain.enums.Certification;
 import com.iotiq.application.domain.enums.Color;
@@ -25,8 +24,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,9 @@ import java.util.UUID;
 @Setter
 @Entity
 @NoArgsConstructor
+@Table(indexes = {
+        @Index(name = "brand_index", columnList = "brand")
+})
 public class Product extends AbstractPersistable<UUID> {
 
     public static final String ENTITY_NAME = "product";
@@ -60,8 +64,7 @@ public class Product extends AbstractPersistable<UUID> {
     private ApplicationAreaGroup applicationAreaGroup;
 
     //Marken
-    @Enumerated(EnumType.STRING)
-    private Brand brand;
+    private String brand;
 
     //Kategorien
     @Enumerated(EnumType.STRING)
@@ -165,5 +168,9 @@ public class Product extends AbstractPersistable<UUID> {
     @Override
     public int hashCode() {
         return 13;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand.toUpperCase();
     }
 }

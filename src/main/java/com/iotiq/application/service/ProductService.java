@@ -20,7 +20,6 @@ import com.iotiq.application.domain.enums.ActiveSubstanceRelease;
 import com.iotiq.application.domain.enums.AdultAgeGroup;
 import com.iotiq.application.domain.enums.Antistatic;
 import com.iotiq.application.domain.enums.ApplicationArea;
-import com.iotiq.application.domain.enums.Brand;
 import com.iotiq.application.domain.enums.Breathable;
 import com.iotiq.application.domain.enums.Category;
 import com.iotiq.application.domain.enums.Certification;
@@ -35,7 +34,6 @@ import com.iotiq.application.domain.enums.Elasticity;
 import com.iotiq.application.domain.enums.EnvironmentalCompatibility;
 import com.iotiq.application.domain.enums.FiberType;
 import com.iotiq.application.domain.enums.Fineness;
-import com.iotiq.application.domain.enums.Frequency;
 import com.iotiq.application.domain.enums.Gender;
 import com.iotiq.application.domain.enums.LifeCycle;
 import com.iotiq.application.domain.enums.Lightweight;
@@ -55,6 +53,7 @@ import com.iotiq.application.domain.enums.ScratchResistant;
 import com.iotiq.application.domain.enums.Scratchy;
 import com.iotiq.application.domain.enums.SeamFeelable;
 import com.iotiq.application.domain.enums.Size;
+import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SocialEthics;
 import com.iotiq.application.domain.enums.Softness;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
@@ -64,7 +63,9 @@ import com.iotiq.application.domain.enums.SustainabilityComposition;
 import com.iotiq.application.domain.enums.SustainabilityLightweight;
 import com.iotiq.application.domain.enums.SweatWicking;
 import com.iotiq.application.domain.enums.Uniform;
+import com.iotiq.application.domain.enums.UsageCycle;
 import com.iotiq.application.domain.enums.Washable;
+import com.iotiq.application.messages.brand.BrandProjection;
 import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductDto;
@@ -109,7 +110,6 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final SellerService sellerService;
     private final SellerRepository sellerRepository;
     private final Validator validator;
 
@@ -124,6 +124,7 @@ public class ProductService {
     @Transactional
     public ProductDto createProductForSeller(@Valid ProductCreateRequest request, Seller seller) {
         Product product = ModelMapperUtil.map(request, Product.class);
+
         product.setSeller(seller);
         product = productRepository.save(product);
         return ModelMapperUtil.map(product, ProductDto.class);
@@ -143,6 +144,10 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public List<BrandProjection> getBrands(){
+        return productRepository.findDistinctByBrandIsNotNull();
+    }
+
     public byte[] exportCSVFile(UUID sellerId) throws IOException {
         Page<Product> products = getAll(new ProductFilter().withSellerId(sellerId), Sort.unsorted());
 
@@ -160,7 +165,7 @@ public class ProductService {
                     printer.printRecord(product.getTitle(), product.getDescription(), product.getPrice().getAmount(),
                             product.getPrice().getCurrency(), product.getImageUrl(), product.getAgeGroup().getAdultAgeGroup(),
                             product.getAgeGroup().getChildrenAgeGroup(), product.getApplicationAreaGroup().getApplicationArea(),
-                            product.getApplicationAreaGroup().getFrequency(), product.getBrand(), product.getCategory(),
+                            product.getApplicationAreaGroup().getUsageCycle(), product.getBrand(), product.getCategory(),
                             separateWithSemicolon(product.getCertifications()), product.getColor(),
                             separateWithSemicolon(product.getComposition().getActiveSubstanceAreas()),
                             separateWithSemicolon(product.getComposition().getActiveSubstances()),
@@ -187,7 +192,8 @@ public class ProductService {
                             separateWithSemicolon(product.getSustainability().getResourceConsumptions()),
                             separateWithSemicolon(product.getSustainability().getSocialEthics()),
                             separateWithSemicolon(product.getSustainability().getSustainabilityCompositions()),
-                            separateWithSemicolon(product.getSustainability().getSustainabilityLightweights()));
+                            separateWithSemicolon(product.getSustainability().getSustainabilityLightweights()),
+                            separateWithSemicolon(product.getSustainability().getSkills()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -230,9 +236,9 @@ public class ProductService {
                         parse(ChildrenAgeGroup.class, record.get(ProductCSVHeader.AGE_GROUP_CHILDREN_AGE_GROUP.value())));
                 productRequest.setAgeGroup(ageGroup);
                 ApplicationAreaGroup applicationAreaGroup = new ApplicationAreaGroup(parse(ApplicationArea.class, record.get(ProductCSVHeader.APPLICATION_AREA_GROUP_APPLICATION_AREA.value())),
-                        parse(Frequency.class, record.get(ProductCSVHeader.APPLICATION_AREA_GROUP_FREQUENCY.value())));
+                        parse(UsageCycle.class, record.get(ProductCSVHeader.APPLICATION_AREA_GROUP_USAGE_CYCLE.value())));
                 productRequest.setApplicationAreaGroup(applicationAreaGroup);
-                productRequest.setBrand(parse(Brand.class, record.get(ProductCSVHeader.BRAND.value())));
+                productRequest.setBrand(parse(String.class, record.get(ProductCSVHeader.BRAND.value())));
                 productRequest.setCategory(parse(Category.class, record.get(ProductCSVHeader.CATEGORY.value())));
                 productRequest.setCertifications(parseEnumList(Certification.class, record.get(ProductCSVHeader.CERTIFICATIONS.value())));
                 productRequest.setColor(parse(Color.class, record.get(ProductCSVHeader.COLOR.value())));
@@ -289,7 +295,8 @@ public class ProductService {
                         parseEnumList(ResourceConsumption.class, record.get(ProductCSVHeader.SUSTAINABILITY_RESOURCE_CONSUMPTIONS.value())),
                         parseEnumList(SocialEthics.class, record.get(ProductCSVHeader.SUSTAINABILITY_SOCIAL_ETHICS.value())),
                         parseEnumList(SustainabilityComposition.class, record.get(ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_COMPOSITIONS.value())),
-                        parseEnumList(SustainabilityLightweight.class, record.get(ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS.value())));
+                        parseEnumList(SustainabilityLightweight.class, record.get(ProductCSVHeader.SUSTAINABILITY_SUSTAINABILITY_LIGHTWEIGHTS.value())),
+                        parseEnumList(Skill.class, record.get(ProductCSVHeader.SKILLS.value())));
                 productRequest.setSustainability(sustainability);
 
                 createRequestList.add(productRequest);

@@ -1,7 +1,7 @@
 package com.iotiq.application.domain;
 
 import com.iotiq.application.domain.enums.ApplicationArea;
-import com.iotiq.application.domain.enums.Frequency;
+import com.iotiq.application.domain.enums.UsageCycle;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -24,5 +24,5 @@ public class ApplicationAreaGroup {
 
     //Häufigkeit
     @Enumerated(EnumType.STRING)
-    private Frequency frequency;
+    private UsageCycle usageCycle;
 }
