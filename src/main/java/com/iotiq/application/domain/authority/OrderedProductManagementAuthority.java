@@ -10,7 +10,6 @@ public class OrderedProductManagementAuthority {
     private OrderedProductManagementAuthority() {
     }
 
-    public static final GrantedAuthority VIEW = new SimpleGrantedAuthority("USER_MANAGEMENT_VIEW");
-    public static final GrantedAuthority UPDATE = new SimpleGrantedAuthority("USER_MANAGEMENT_UPDATE");
+    public static final GrantedAuthority VIEW = new SimpleGrantedAuthority("ORDERED_PRODUCT_MANAGEMENT_VIEW");
 }
 

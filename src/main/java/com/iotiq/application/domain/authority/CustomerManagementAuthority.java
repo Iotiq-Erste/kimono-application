@@ -10,8 +10,6 @@ public class CustomerManagementAuthority {
     private CustomerManagementAuthority() {
     }
 
-    public static final GrantedAuthority VIEW = new SimpleGrantedAuthority("USER_MANAGEMENT_VIEW");
-    public static final GrantedAuthority CREATE = new SimpleGrantedAuthority("USER_MANAGEMENT_CREATE");
-    public static final GrantedAuthority UPDATE = new SimpleGrantedAuthority("USER_MANAGEMENT_UPDATE");
-    public static final GrantedAuthority DELETE = new SimpleGrantedAuthority("USER_MANAGEMENT_DELETE");
+    public static final GrantedAuthority VIEW = new SimpleGrantedAuthority("CUSTOMER_MANAGEMENT_VIEW");
+    public static final GrantedAuthority UPDATE = new SimpleGrantedAuthority("CUSTOMER_MANAGEMENT_UPDATE");
 }
