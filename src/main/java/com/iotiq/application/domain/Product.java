@@ -40,7 +40,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @NoArgsConstructor
-@Table(name = "product", indexes = {
+@Table(indexes = {
         @Index(name = "brand_index", columnList = "brand")
 })
 public class Product extends AbstractPersistable<UUID> {
@@ -168,5 +168,9 @@ public class Product extends AbstractPersistable<UUID> {
     @Override
     public int hashCode() {
         return 13;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand.toUpperCase();
     }
 }

@@ -65,6 +65,7 @@ import com.iotiq.application.domain.enums.SweatWicking;
 import com.iotiq.application.domain.enums.Uniform;
 import com.iotiq.application.domain.enums.UsageCycle;
 import com.iotiq.application.domain.enums.Washable;
+import com.iotiq.application.messages.brand.BrandProjection;
 import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
 import com.iotiq.application.messages.product.ProductDto;
@@ -124,7 +125,6 @@ public class ProductService {
     public ProductDto createProductForSeller(@Valid ProductCreateRequest request, Seller seller) {
         Product product = ModelMapperUtil.map(request, Product.class);
 
-        product.setBrand(request.getBrand().toUpperCase());
         product.setSeller(seller);
         product = productRepository.save(product);
         return ModelMapperUtil.map(product, ProductDto.class);
@@ -140,13 +140,12 @@ public class ProductService {
                 orElseThrow(() -> new EntityNotFoundException(Product.ENTITY_NAME, id));
 
         ModelMapperUtil.map(request, product);
-        product.setBrand(product.getBrand().toUpperCase());
 
         productRepository.save(product);
     }
 
-    public List<String> getBrands(){
-        return productRepository.findDistinctBrands();
+    public List<BrandProjection> getBrands(){
+        return productRepository.findDistinctByBrandIsNotNull();
     }
 
     public byte[] exportCSVFile(UUID sellerId) throws IOException {
