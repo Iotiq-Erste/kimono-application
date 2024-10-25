@@ -2,6 +2,8 @@ package com.iotiq.application.controller;
 
 import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Product;
+import com.iotiq.application.messages.brand.BrandProjection;
+import com.iotiq.application.messages.brand.BrandResponse;
 import com.iotiq.application.messages.product.ProductFilter;
 import com.iotiq.application.messages.product.ProductResponse;
 import com.iotiq.application.service.ProductService;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,5 +44,12 @@ public class ProductController {
     public ProductResponse getOne(@PathVariable UUID id) {
         Product product = productService.getOne(id);
         return ModelMapperUtil.map(product, ProductResponse.class);
+    }
+
+    @GetMapping("/brands")
+    @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW)")
+    public BrandResponse getBrandList(){
+        return new BrandResponse(productService.getBrands().stream().map(BrandProjection::getBrand)
+                .collect(Collectors.toList()));
     }
 }

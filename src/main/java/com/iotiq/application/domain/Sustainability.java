@@ -4,6 +4,7 @@ import com.iotiq.application.domain.enums.EnvironmentalCompatibility;
 import com.iotiq.application.domain.enums.LifeCycle;
 import com.iotiq.application.domain.enums.Regionality;
 import com.iotiq.application.domain.enums.ResourceConsumption;
+import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SocialEthics;
 import com.iotiq.application.domain.enums.SustainabilityComposition;
 import com.iotiq.application.domain.enums.SustainabilityLightweight;
@@ -60,4 +61,9 @@ public class Sustainability {
     @ElementCollection(targetClass = SustainabilityLightweight.class)
     @Enumerated(EnumType.STRING)
     private List<SustainabilityLightweight> sustainabilityLightweights;
+
+    //Fähigkeiten
+    @ElementCollection(targetClass = Skill.class)
+    @Enumerated(EnumType.STRING)
+    private List<Skill> skills;
 }
