@@ -40,13 +40,13 @@ public class ProductDemandController {
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductDemandCreateResponse createProductDemand(@RequestBody ProductDemandRequest productDemandRequest) {
-        return new ProductDemandCreateResponse(productDemandService.createProductDemand(productDemandRequest, customerService.getCurrentCustomerOrCreate()).getId());
+        return new ProductDemandCreateResponse(productDemandService.createProductDemand(productDemandRequest, customerService.getCurrentCustomer()).getId());
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_CUSTOMER')")
     public PagedResponse<ProductDemandResponse> getProductDemandsForCustomer(Pageable pageable) {
-        Page<ProductDemandDto> page = productDemandService.getProductDemandsForCurrentCustomer(pageable, customerService.getCurrentCustomerOrCreate());
+        Page<ProductDemandDto> page = productDemandService.getProductDemandsForCurrentCustomer(pageable, customerService.getCurrentCustomer());
         List<ProductDemandResponse> productDemandResponses = ModelMapperUtil.map(page.getContent(), ProductDemandResponse.class);
 
         return PagedResponseBuilder.createResponse(page, productDemandResponses);
@@ -55,18 +55,18 @@ public class ProductDemandController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_CUSTOMER')")
     public ProductDemandResponse getProductDemand(@PathVariable UUID id) {
-        return ModelMapperUtil.map(productDemandService.getProductDemandOfCustomerByID(id, customerService.getCurrentCustomerOrCreate()), ProductDemandResponse.class);
+        return ModelMapperUtil.map(productDemandService.getProductDemandOfCustomerByID(id, customerService.getCurrentCustomer()), ProductDemandResponse.class);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.UPDATE) and hasRole('ROLE_CUSTOMER')")
     public void updateProductDemand(@PathVariable("id") UUID id, @RequestBody ProductDemandUpdateRequest updateRequest) {
-        productDemandService.updateProductDemand(id, updateRequest, customerService.getCurrentCustomerOrCreate());
+        productDemandService.updateProductDemand(id, updateRequest, customerService.getCurrentCustomer());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.DELETE)")
     public void deleteProductDemand(@PathVariable UUID id) {
-        productDemandService.deleteProductDemand(id, customerService.getCurrentCustomerOrCreate());
+        productDemandService.deleteProductDemand(id, customerService.getCurrentCustomer());
     }
 }
