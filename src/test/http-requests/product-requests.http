@@ -95,7 +95,6 @@ Content-Type: application/json
     "softness": "SOFT",
     "uniform": "MOSTLY"
   },
-  "material": "COTTON",
   "materialBehavior": {
     "abrasionResistant": "VERY",
     "absorbency": "VERY",
@@ -108,7 +107,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -300,7 +304,6 @@ Content-Type: application/json
     "softness": "SOFT",
     "uniform": "MOSTLY"
   },
-  "material": "COTTON",
   "materialBehavior": {
     "abrasionResistant": "VERY",
     "absorbency": "VERY",
@@ -313,7 +316,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",

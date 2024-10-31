@@ -7,6 +7,7 @@ import com.iotiq.application.domain.Composition;
 import com.iotiq.application.domain.Design;
 import com.iotiq.application.domain.Haptics;
 import com.iotiq.application.domain.MaterialBehavior;
+import com.iotiq.application.domain.MaterialParameter;
 import com.iotiq.application.domain.Price;
 import com.iotiq.application.domain.Product;
 import com.iotiq.application.domain.Seller;
@@ -38,7 +39,6 @@ import com.iotiq.application.domain.enums.Gender;
 import com.iotiq.application.domain.enums.LifeCycle;
 import com.iotiq.application.domain.enums.Lightweight;
 import com.iotiq.application.domain.enums.LintFree;
-import com.iotiq.application.domain.enums.MaterialParameter;
 import com.iotiq.application.domain.enums.MoistureTransporting;
 import com.iotiq.application.domain.enums.Motif;
 import com.iotiq.application.domain.enums.Neurodermatitis;
@@ -182,7 +182,8 @@ public class ProductService {
                             product.getMaterialBehavior().getBreathable(), product.getMaterialBehavior().getColorfast(),
                             product.getMaterialBehavior().getMoistureTransporting(), product.getMaterialBehavior().getOdorNeutralizing(),
                             product.getMaterialBehavior().getScratchResistant(), product.getMaterialBehavior().getSweatWicking(),
-                            product.getMaterialBehavior().getWashable(), product.getMaterialParameter(), product.getMotif(),
+                            product.getMaterialBehavior().getWashable(), product.getMaterialParameter().getThickness(), product.getMaterialParameter().getFlexibility(),
+                            product.getMaterialParameter().getBreathability(), product.getMaterialParameter().getMoistureWicking() , product.getMotif(),
                             product.getNeurodermatitis(), product.getOekotexStandard(), product.getPriceRange(), product.getRating(),
                             separateWithSemicolon(product.getSizes()), separateWithSemicolon((product.getSpecificBodyParts())),
                             separateWithSemicolon(product.getSpecificFunctionalities()),
@@ -279,7 +280,12 @@ public class ProductService {
                         parse(SweatWicking.class, record.get(ProductCSVHeader.MATERIAL_BEHAVIOR_SWEAT_WICKING.value())),
                         parse(Washable.class, record.get(ProductCSVHeader.MATERIAL_BEHAVIOR_WASHABLE.value())));
                 productRequest.setMaterialBehavior(materialBehavior);
-                productRequest.setMaterialParameter(parse(MaterialParameter.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER.value())));
+                MaterialParameter materialParameter = new MaterialParameter(
+                        parse(BigDecimal.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_THICKNESS.value())),
+                        parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_FLEXIBILITY.value())),
+                        parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_BREATHABILITY.value())),
+                        parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_MOISTURE_WICKING.value())));
+                productRequest.setMaterialParameter(materialParameter);
                 productRequest.setMotif(parse(Motif.class, record.get(ProductCSVHeader.MOTIF.value())));
                 productRequest.setNeurodermatitis(parse(Neurodermatitis.class, record.get(ProductCSVHeader.NEURODERMATITIS.value())));
                 productRequest.setOekotexStandard(parse(OekotexStandard.class, record.get(ProductCSVHeader.OEKOTEXSTANDARD.value())));
