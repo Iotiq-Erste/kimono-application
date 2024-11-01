@@ -281,7 +281,7 @@ public class ProductService {
                         parse(Washable.class, record.get(ProductCSVHeader.MATERIAL_BEHAVIOR_WASHABLE.value())));
                 productRequest.setMaterialBehavior(materialBehavior);
                 MaterialParameter materialParameter = new MaterialParameter(
-                        parse(BigDecimal.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_THICKNESS.value())),
+                        parse(Float.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_THICKNESS.value())),
                         parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_FLEXIBILITY.value())),
                         parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_BREATHABILITY.value())),
                         parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_MOISTURE_WICKING.value())));
