@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,13 +66,11 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    @Transactional
     public Customer getCurrentCustomer() {
         User currentUser = userService.getCurrentUser();
         return customerRepository.findByUser(currentUser).orElseThrow(() -> new EntityNotFoundException(Customer.ENTITY_NAME));
     }
 
-    @Transactional
     public CustomerDto getCustomer() {
         Customer customer = getCurrentCustomer();
 
@@ -103,9 +100,9 @@ public class CustomerService {
 
     @Transactional
     public void createIfNotExists(User currentUser) {
-        Optional<Customer> customer = customerRepository.findByUser(currentUser);
+        boolean exists = customerRepository.existsByUser(currentUser);
 
-        if(customer.isEmpty()) {
+        if(!exists) {
             createCustomer(currentUser);
         }
     }

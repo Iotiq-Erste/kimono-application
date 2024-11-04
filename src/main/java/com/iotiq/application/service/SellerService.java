@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +25,6 @@ public class SellerService {
     private final UserService userService;
     private final OrderedProductService orderedProductService;
 
-    @Transactional
     public Seller getCurrentSeller() {
         User currentUser = userService.getCurrentUser();
         return sellerRepository.findByUser(currentUser).orElseThrow(() -> new EntityNotFoundException(Seller.ENTITY_NAME));
@@ -41,9 +39,9 @@ public class SellerService {
 
     @Transactional
     public void createIfNotExists(User currentUser) {
-        Optional<Seller> seller = sellerRepository.findByUser(currentUser);
+        boolean exists = sellerRepository.existsByUser(currentUser);
 
-        if(seller.isEmpty()) {
+        if(!exists) {
             createSeller(currentUser);
         }
     }
@@ -69,7 +67,6 @@ public class SellerService {
         sellerRepository.save(currentSeller);
     }
 
-    @Transactional
     public List<OrderedProductDto> getLastTwoOrder() {
         return orderedProductService.getOrderedProducts(getCurrentSeller()).stream()
                 .sorted(Comparator.comparing(OrderedProductDto::getOrderDate).reversed())

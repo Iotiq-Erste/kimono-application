@@ -11,4 +11,5 @@ import java.util.UUID;
 @Repository
 public interface SellerRepository extends JpaRepository<Seller, UUID> {
     Optional<Seller> findByUser(User user);
+    boolean existsByUser(User user);
 }
