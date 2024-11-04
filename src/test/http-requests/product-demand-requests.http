@@ -39,7 +39,7 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
+    "applicationArea": "PROFESSIONAL_CLOTHING",
     "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
@@ -175,7 +175,7 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
+    "applicationArea": "PROFESSIONAL_CLOTHING",
     "frequency": "ONE_TIME"
   },
   "brand": "BEYMEN",
@@ -308,7 +308,7 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
+    "applicationArea": "PROFESSIONAL_CLOTHING",
     "frequency": "ONE_TIME"
   },
   "brand": "BEYMEN",
@@ -441,7 +441,7 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
+    "applicationArea": "PROFESSIONAL_CLOTHING",
     "frequency": "ONE_TIME"
   },
   "brand": "BEYMEN",
@@ -574,7 +574,7 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
+    "applicationArea": "PROFESSIONAL_CLOTHING",
     "frequency": "ONE_TIME"
   },
   "brand": "BEYMEN",
@@ -707,7 +707,7 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
+    "applicationArea": "PROFESSIONAL_CLOTHING",
     "frequency": "ONE_TIME"
   },
   "brand": "BEYMEN",
@@ -840,7 +840,7 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
+    "applicationArea": "PROFESSIONAL_CLOTHING",
     "frequency": "ONE_TIME"
   },
   "brand": "BEYMEN",
@@ -973,8 +973,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "PROFESSIONAL_CLOTHING",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -1143,8 +1143,8 @@ Content-Type: application/json
         client.assert(response.status === 200, "Status code is 200");
         client.assert(response.body.ageGroup.adultAgeGroup === "THIRTY_TO_FOURTYFIVE", "Creation failed, adultAgeGroup does not match");
         client.assert(response.body.ageGroup.childrenAgeGroup === "TWO_TO_SIX_YEARS", "Creation failed, childrenAgeGroup does not match");
-        client.assert(response.body.applicationAreaGroup.applicationArea === "WORK_CLOTHING", "Creation failed, applicationArea does not match");
-        client.assert(response.body.applicationAreaGroup.frequency === "ONE_TIME", "Creation failed, frequency does not match");
+        client.assert(response.body.applicationAreaGroup.applicationArea === "PROFESSIONAL_CLOTHING", "Creation failed, applicationArea does not match");
+        client.assert(response.body.applicationAreaGroup.usageCycle === "ONE_TIME", "Creation failed, frequency does not match");
         client.assert(response.body.brand === "BEYMEN", "Creation failed, brand does not match");
         client.assert(response.body.category === "JEANS", "Creation failed, category does not match");
         client.assert(response.body.certifications[0] === "BLUESIGN", "Creation failed, certifications does not match");
