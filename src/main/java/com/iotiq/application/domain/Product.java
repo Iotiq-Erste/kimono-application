@@ -7,7 +7,6 @@ import com.iotiq.application.domain.enums.Color;
 import com.iotiq.application.domain.enums.DesignBodyPart;
 import com.iotiq.application.domain.enums.FiberType;
 import com.iotiq.application.domain.enums.Gender;
-import com.iotiq.application.domain.enums.MaterialParameter;
 import com.iotiq.application.domain.enums.Motif;
 import com.iotiq.application.domain.enums.Neurodermatitis;
 import com.iotiq.application.domain.enums.OekotexStandard;
@@ -105,8 +104,8 @@ public class Product extends AbstractPersistable<UUID> {
     @Embedded
     private MaterialBehavior materialBehavior;
 
-    //Material Parameter Enum
-    @Enumerated(EnumType.STRING)
+    //Material Parameter
+    @Embedded
     private MaterialParameter materialParameter;
 
     //Motiv
