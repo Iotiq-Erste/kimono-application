@@ -6,6 +6,7 @@ import com.iotiq.application.domain.Composition;
 import com.iotiq.application.domain.Design;
 import com.iotiq.application.domain.Haptics;
 import com.iotiq.application.domain.MaterialBehavior;
+import com.iotiq.application.domain.MaterialParameter;
 import com.iotiq.application.domain.Price;
 import com.iotiq.application.domain.Sustainability;
 import com.iotiq.application.domain.enums.Category;
@@ -14,7 +15,6 @@ import com.iotiq.application.domain.enums.Color;
 import com.iotiq.application.domain.enums.DesignBodyPart;
 import com.iotiq.application.domain.enums.FiberType;
 import com.iotiq.application.domain.enums.Gender;
-import com.iotiq.application.domain.enums.MaterialParameter;
 import com.iotiq.application.domain.enums.Motif;
 import com.iotiq.application.domain.enums.Neurodermatitis;
 import com.iotiq.application.domain.enums.OekotexStandard;
@@ -116,7 +116,10 @@ public class ProductCreateRequest{
                 ProductCSVHeader.MATERIAL_BEHAVIOR_SCRATCH_RESISTANT.value(),
                 ProductCSVHeader.MATERIAL_BEHAVIOR_SWEAT_WICKING.value(),
                 ProductCSVHeader.MATERIAL_BEHAVIOR_WASHABLE.value(),
-                ProductCSVHeader.MATERIAL_PARAMETER.value(),
+                ProductCSVHeader.MATERIAL_PARAMETER_THICKNESS.value(),
+                ProductCSVHeader.MATERIAL_PARAMETER_FLEXIBILITY.value(),
+                ProductCSVHeader.MATERIAL_PARAMETER_BREATHABILITY.value(),
+                ProductCSVHeader.MATERIAL_PARAMETER_MOISTURE_WICKING.value(),
                 ProductCSVHeader.MOTIF.value(),
                 ProductCSVHeader.NEURODERMATITIS.value(),
                 ProductCSVHeader.OEKOTEXSTANDARD.value(),

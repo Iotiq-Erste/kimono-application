@@ -29,7 +29,6 @@ import com.iotiq.application.domain.enums.Gender;
 import com.iotiq.application.domain.enums.LifeCycle;
 import com.iotiq.application.domain.enums.Lightweight;
 import com.iotiq.application.domain.enums.LintFree;
-import com.iotiq.application.domain.enums.MaterialParameter;
 import com.iotiq.application.domain.enums.MoistureTransporting;
 import com.iotiq.application.domain.enums.Motif;
 import com.iotiq.application.domain.enums.Neurodermatitis;
@@ -69,11 +68,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import static com.iotiq.application.service.ProductSpecification.findInRange;
 import static com.iotiq.application.service.ProductSpecification.isIn;
 import static com.iotiq.application.service.ProductSpecification.isInList;
 import static com.iotiq.application.service.ProductSpecification.isLike;
 import static com.iotiq.application.service.ProductSpecification.listIn;
-import static com.iotiq.application.service.ProductSpecification.priceBetween;
 
 
 @Getter
@@ -144,7 +143,17 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
     private List<DesignBodyPart> designBodyParts;
     private List<FiberType> fiberTypes;
     private List<Gender> genders;
-    private List<MaterialParameter> materialParameters;
+
+    // MaterialParameter
+    private BigDecimal lowestThickness;
+    private BigDecimal highestThickness;
+    private Integer lowestFlexibility;
+    private Integer highestFlexibility;
+    private Integer lowestBreathability;
+    private Integer highestBreathability;
+    private Integer lowestMoistureWicking;
+    private Integer highestMoistureWicking;
+
     private List<Motif> motifs;
     private List<Neurodermatitis> neurodermatitis;
     private List<OekotexStandard> oekotexStandards;
@@ -159,7 +168,7 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
     public Specification<Product> buildSpecification() {
         Specification<Product> specification = Specification
                 .where(isLike("title", search))
-                .and(priceBetween(lowestPrice, highestPrice))
+                .and(findInRange("price", "amount", lowestPrice, highestPrice))
                 .and(isIn("ageGroup", "adultAgeGroup", adultAgeGroups))
                 .and(isIn("ageGroup", "childrenAgeGroup", childrenAgeGroups))
                 .and(isIn("applicationAreaGroup", "applicationArea", applicationAreas))
@@ -204,7 +213,10 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isInList("designBodyParts", designBodyParts))
                 .and(isInList("fiberTypes", fiberTypes))
                 .and(isIn("gender", genders))
-                .and(isIn("materialParameter", materialParameters))
+                .and(findInRange("materialParameter", "thickness", lowestThickness, highestThickness))
+                .and(findInRange("materialParameter", "flexibility", (lowestFlexibility != null) ? BigDecimal.valueOf(lowestFlexibility) : null, (highestFlexibility != null) ? BigDecimal.valueOf(highestFlexibility) : null))
+                .and(findInRange("materialParameter", "breathability", (lowestBreathability != null) ? BigDecimal.valueOf(lowestBreathability) : null, (highestBreathability != null) ? BigDecimal.valueOf(highestBreathability) : null))
+                .and(findInRange("materialParameter", "moistureWicking", (lowestMoistureWicking != null) ? BigDecimal.valueOf(lowestMoistureWicking) : null, (highestMoistureWicking != null) ? BigDecimal.valueOf(highestMoistureWicking) : null))
                 .and(isIn("motif", motifs))
                 .and(isIn("neurodermatitis", neurodermatitis))
                 .and(isIn("oekotexStandard", oekotexStandards))

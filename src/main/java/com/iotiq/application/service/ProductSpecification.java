@@ -60,17 +60,17 @@ public class ProductSpecification {
     }
 
 
-    public static Specification<Product> priceBetween(BigDecimal lowest, BigDecimal highest) {
+    public static Specification<Product> findInRange(String attribute, String subAttribute, BigDecimal lowest, BigDecimal highest) {
         if (lowest == null && highest == null) {
             return null;
         }
         if (lowest != null && highest == null) {
-            return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get("price").get("amount"), lowest);
+            return (root, query, cb) -> cb.greaterThanOrEqualTo(root.get(attribute).get(subAttribute), lowest);
         }
         if (lowest == null) {
-            return (root, query, cb) -> cb.lessThanOrEqualTo(root.get("price").get("amount"), highest);
+            return (root, query, cb) -> cb.lessThanOrEqualTo(root.get(attribute).get(subAttribute), highest);
         }
-        return (root, query, cb) -> cb.between(root.get("price").get("amount"), lowest, highest);
+        return (root, query, cb) -> cb.between(root.get(attribute).get(subAttribute), lowest, highest);
     }
 
 }

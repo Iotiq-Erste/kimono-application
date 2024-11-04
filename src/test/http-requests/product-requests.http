@@ -26,7 +26,7 @@ Content-Type: application/json
 %}
 
 ### Scenario 3: Create New Product
-POST {{baseUrl}}/api/v1/products
+POST {{baseUrl}}/api/v1/seller/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -43,8 +43,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "OUTDOOR",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -95,7 +95,6 @@ Content-Type: application/json
     "softness": "SOFT",
     "uniform": "MOSTLY"
   },
-  "material": "COTTON",
   "materialBehavior": {
     "abrasionResistant": "VERY",
     "absorbency": "VERY",
@@ -108,7 +107,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -147,6 +151,9 @@ Content-Type: application/json
     ],
     "sustainabilityLightweights": [
       "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "FINISHING"
     ]
   }
 }
@@ -173,8 +180,8 @@ Content-Type: application/json
         client.assert(response.body.imageUrl === "http://example.com/image.jpg", "Creation failed, imageUrl does not match");
         client.assert(response.body.ageGroup.adultAgeGroup === "THIRTY_TO_FOURTYFIVE", "Creation failed, ageGroup does not match");
         client.assert(response.body.ageGroup.childrenAgeGroup === "TWO_TO_SIX_YEARS", "Creation failed, ageGroup does not match");
-        client.assert(response.body.applicationAreaGroup.applicationArea === "WORK_CLOTHING", "Creation failed, applicationAreaGroup does not match");
-        client.assert(response.body.applicationAreaGroup.frequency === "ONE_TIME", "Creation failed, applicationAreaGroup does not match");
+        client.assert(response.body.applicationAreaGroup.applicationArea === "OUTDOOR", "Creation failed, applicationAreaGroup does not match");
+        client.assert(response.body.applicationAreaGroup.usageCycle === "ONE_TIME", "Creation failed, applicationAreaGroup does not match");
         client.assert(response.body.brand === "BEYMEN", "Creation failed, brand does not match");
         client.assert(response.body.category === "JEANS", "Creation failed, category does not match");
         client.assert(response.body.composition.activeSubstanceAreas[0] === "COMPLETE", "Creation failed, composition does not match");
@@ -207,7 +214,10 @@ Content-Type: application/json
         client.assert(response.body.materialBehavior.scratchResistant === "VERY", "Creation failed, materialBehavior does not match");
         client.assert(response.body.materialBehavior.sweatWicking === "VERY", "Creation failed, materialBehavior does not match");
         client.assert(response.body.materialBehavior.washable === "VERY", "Creation failed, materialBehavior does not match");
-        client.assert(response.body.materialParameter === "THICKNESS", "Creation failed, materialParameter does not match");
+        client.assert(response.body.materialParameter.thickness === 20, "Creation failed, thickness does not match");
+        client.assert(response.body.materialParameter.flexibility === 20, "Creation failed, flexibility does not match");
+        client.assert(response.body.materialParameter.breathability === 20, "Creation failed, breathability does not match");
+        client.assert(response.body.materialParameter.moistureWicking === 20, "Creation failed, moistureWicking does not match");
         client.assert(response.body.motif === "ANIMALS", "Creation failed, motif does not match");
         client.assert(response.body.neurodermatitis === "STAGE_ONE_DRY_SKIN", "Creation failed, neurodermatitis does not match");
         client.assert(response.body.oekotexStandard === "PRODUCT_CLASS_1", "Creation failed, oekotexStandard does not match");
@@ -226,12 +236,13 @@ Content-Type: application/json
         client.assert(response.body.sustainability.socialEthics[0] === "FAIR_WAGES", "Creation failed, sustainability does not match");
         client.assert(response.body.sustainability.sustainabilityCompositions[0] === "RARE_MATERIALS", "Creation failed, sustainability does not match");
         client.assert(response.body.sustainability.sustainabilityLightweights[0] === "LIGHTWEIGHT", "Creation failed, sustainability does not match");
+        client.assert(response.body.sustainability.skills[0] === "FINISHING", "Creation failed, sustainability does not match");
     });
 %}
 
 
 ### Scenario 5: Create New Product
-POST {{baseUrl}}/api/v1/products
+POST {{baseUrl}}/api/v1/seller/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -248,8 +259,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "OUTDOOR",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -300,7 +311,6 @@ Content-Type: application/json
     "softness": "SOFT",
     "uniform": "MOSTLY"
   },
-  "material": "COTTON",
   "materialBehavior": {
     "abrasionResistant": "VERY",
     "absorbency": "VERY",
@@ -313,7 +323,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -352,6 +367,9 @@ Content-Type: application/json
     ],
     "sustainabilityLightweights": [
       "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "FINISHING"
     ]
   }
 }
@@ -379,7 +397,7 @@ Content-Type: application/json
 %}
 
 ### Scenario 7: Update Product
-PUT {{baseUrl}}/api/v1/products/{{newProductID1}}
+PUT {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -393,7 +411,7 @@ Content-Type: application/json
 }
 > {%
     client.test("Product has been updated" ,function() {
-        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.status === 204, "Status code is 204");
     });
 %}
 
@@ -412,7 +430,7 @@ Content-Type: application/json
 
 ### Scenario 9: Get Filtered Products
 GET {{baseUrl}}/api/v1/products?lowestPrice=0&highestPrice=100
-    &adultAgeGroups=THIRTY_TO_FOURTYFIVE&childrenAgeGroups=TWO_TO_SIX_YEARS&applicationAreas=WORK_CLOTHING&frequencies=ONE_TIME
+    &adultAgeGroups=THIRTY_TO_FOURTYFIVE&childrenAgeGroups=TWO_TO_SIX_YEARS&applicationAreas=OUTDOOR&usageCycle=ONE_TIME
     &brands=BEYMEN&categories=JEANS&certifications=BLUESIGN,TOXPROOF&colors=RED&activeSubstanceAreas=COMPLETE
     &activeSubstances=CHITOSAN&activeSubstancePlacements=SERUM
     &activeSubstanceReleases=DIFFUSING&compositions=PATCHWORK&staggerings=TEMPORAL&designAppearances=DYNAMIC
@@ -420,11 +438,12 @@ GET {{baseUrl}}/api/v1/products?lowestPrice=0&highestPrice=100
     &finenesses=FINE&lightweights=LIGHT&lintFrees=FREE&seamFeelables=FEELABLE&schratchies=SMOOTH&softnesses=SOFT
     &uniforms=MOSTLY&abrassionResistants=VERY&absorbencies=VERY&antistatics=VERY&breathables=VERY&colorfasts=VERY
     &moistureTransportings=VERY&odorNeutralizings=VERY&scratchResistants=VERY&sweatWickings=VERY&washables=VERY
-    &materialParameters=THICKNESS&motifs=ANIMALS&neurodermatitis=STAGE_ONE_DRY_SKIN&oekotexStandards=PRODUCT_CLASS_1
+    &motifs=ANIMALS&neurodermatitis=STAGE_ONE_DRY_SKIN&oekotexStandards=PRODUCT_CLASS_1
     &priceRanges=STANDARD&ratings=FOUR_POINT_AND_OVER&sizes=XXS&specificBodyParts=SCALP
     &specificFunctionalities=ANTIBACTERIAL,ANTIVIRAL&environmentalCompatibilities=ENVIRONMENTAL_COMPATIBILITY,BIODEGRADABLE
     &lifeCycles=LIFE_CYCLE&regionalityList=MADE_IN_GERMANY&resourceConsumptions=LOW_USAGE
-    &socialEthics=FAIR_WAGES&sustainabilityCompositions=RARE_MATERIALS&sustainabilityLightweights=LIGHTWEIGHT
+    &socialEthics=FAIR_WAGES&sustainabilityCompositions=RARE_MATERIALS&sustainabilityLightweights=LIGHTWEIGHT&lowestThickness=0&highestThickness=30
+    &lowestFlexibility=0&highestFlexibility=30&lowestBreathability=0&highestBreathability=30&lowestMoistureWicking=0&highestMoistureWicking=30
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -436,8 +455,8 @@ Content-Type: application/json
         client.assert(response.body.content[1].imageUrl === "http://example.com/image.jpg", "imageUrl filter failed, imageUrl does not match");
         client.assert(response.body.content[1].ageGroup.adultAgeGroup === "THIRTY_TO_FOURTYFIVE", "adultAgeGroup filter failed, adultAgeGroup does not match");
         client.assert(response.body.content[1].ageGroup.childrenAgeGroup === "TWO_TO_SIX_YEARS", "childrenAgeGroup filter failed, childrenAgeGroup does not match");
-        client.assert(response.body.content[1].applicationAreaGroup.applicationArea === "WORK_CLOTHING", "applicationArea filter failed, applicationArea does not match");
-        client.assert(response.body.content[1].applicationAreaGroup.frequency === "ONE_TIME", "frequency filter failed, frequency does not match");
+        client.assert(response.body.content[1].applicationAreaGroup.applicationArea === "OUTDOOR", "applicationArea filter failed, applicationArea does not match");
+        client.assert(response.body.content[1].applicationAreaGroup.usageCycle === "ONE_TIME", "usageCycle filter failed, usageCycle does not match");
         client.assert(response.body.content[1].brand === "BEYMEN", "brand filter failed, brand does not match");
         client.assert(response.body.content[1].category === "JEANS", "category filter failed, category does not match");
         client.assert(response.body.content[1].certifications[0] === "BLUESIGN", "certifications filter failed, certifications does not match");
@@ -472,7 +491,10 @@ Content-Type: application/json
         client.assert(response.body.content[1].materialBehavior.scratchResistant === "VERY", "scratchResistant filter failed, scratchResistant does not match");
         client.assert(response.body.content[1].materialBehavior.sweatWicking === "VERY", "sweatWicking filter failed, sweatWicking does not match");
         client.assert(response.body.content[1].materialBehavior.washable === "VERY", "washable filter failed, washable does not match");
-        client.assert(response.body.content[1].materialParameter === "THICKNESS", "materialParameter filter failed, materialParameter does not match");
+        client.assert(response.body.content[1].materialParameter.thickness === 20, "Creation failed, thickness does not match");
+        client.assert(response.body.content[1].materialParameter.flexibility === 20, "Creation failed, flexibility does not match");
+        client.assert(response.body.content[1].materialParameter.breathability === 20, "Creation failed, breathability does not match");
+        client.assert(response.body.content[1].materialParameter.moistureWicking === 20, "Creation failed, moistureWicking does not match");
         client.assert(response.body.content[1].motif === "ANIMALS", "motif filter failed, motif does not match");
         client.assert(response.body.content[1].neurodermatitis === "STAGE_ONE_DRY_SKIN", "neurodermatitis filter failed, neurodermatitis does not match");
         client.assert(response.body.content[1].oekotexStandard === "PRODUCT_CLASS_1", "oekotexStandard filter failed, oekotexStandard does not match");
@@ -491,31 +513,32 @@ Content-Type: application/json
         client.assert(response.body.content[1].sustainability.socialEthics[0] === "FAIR_WAGES", "socialEthics filter failed, socialEthics filter failed");
         client.assert(response.body.content[1].sustainability.sustainabilityCompositions[0] === "RARE_MATERIALS", "sustainabilityCompositions filter failed, sustainabilityCompositions filter failed");
         client.assert(response.body.content[1].sustainability.sustainabilityLightweights[0] === "LIGHTWEIGHT", "sustainabilityLightweights filter failed, sustainabilityLightweights filter failed");
+        client.assert(response.body.content[1].sustainability.skills[0] === "FINISHING", "Creation failed, sustainability does not match");
 
 
     });
 %}
 
 ### Scenario 10: Delete Product
-DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
+DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 > {%
     client.test("Product has been deleted" ,function() {
-        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.status === 204, "Status code is 204");
     });
     client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
 %}
 
 ### Scenario 11: Delete Product
-DELETE {{baseUrl}}/api/v1/products/{{newProductID2}}
+DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID2}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
 > {%
     client.test("Product has been deleted" ,function() {
-        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.status === 204, "Status code is 204");
     });
     client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
 %}
@@ -547,8 +570,8 @@ grant_type={{grantType}}&client_id={{clientId}}&password={{company2Password}}&us
     });
 %}
 
-### Scenario 12: Get All Products
-GET {{baseUrl}}/api/v1/products
+### Scenario 12: Get All The Another Company's Products
+GET {{baseUrl}}/api/v1/seller/products
 Authorization: Bearer {{auth_token2}}
 Content-Type: application/json
 
