@@ -37,14 +37,14 @@ public class OrderController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
     public OrderResponse getOne(@PathVariable UUID id) {
-        Order order = orderService.getOrderForCurrentCustomer(id, customerService.getCurrentCustomerOrCreate());
+        Order order = orderService.getOrderForCurrentCustomer(id, customerService.getCurrentCustomer());
         return ModelMapperUtil.map(order, OrderResponse.class);
     }
 
     @GetMapping
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
     public List<OrderResponse> getOrders() {
-        List<OrderDto> orderDtoList = orderService.getOrdersForCurrentCustomer(customerService.getCurrentCustomerOrCreate());
+        List<OrderDto> orderDtoList = orderService.getOrdersForCurrentCustomer(customerService.getCurrentCustomer());
         return ModelMapperUtil.map(orderDtoList, OrderResponse.class);
     }
 
@@ -52,19 +52,19 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasAuthority(@OrderManagementAuth.CREATE)")
     public OrderCreateResponse createOrder(@RequestBody OrderCreateRequest request) {
-        return orderService.createOrder(request, customerService.getCurrentCustomerOrCreate());
+        return orderService.createOrder(request, customerService.getCurrentCustomer());
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority(@OrderManagementAuth.DELETE)")
     public void invisible(@PathVariable("id") UUID id) {
-        orderService.invisible(id, customerService.getCurrentCustomerOrCreate());
+        orderService.invisible(id, customerService.getCurrentCustomer());
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@OrderManagementAuth.UPDATE)")
     public void update(@PathVariable("id") UUID id, @RequestBody @Valid OrderUpdateRequest request) {
-        orderService.update(id, request, customerService.getCurrentCustomerOrCreate());
+        orderService.update(id, request, customerService.getCurrentCustomer());
     }
 
 }

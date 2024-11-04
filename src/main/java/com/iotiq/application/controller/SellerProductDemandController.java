@@ -42,7 +42,7 @@ public class SellerProductDemandController {
     @GetMapping("/assigned")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public PagedResponse<ProductDemandResponse> getAssignedProductDemands(Pageable pageable) {
-        Page<ProductDemandDto> page = productDemandService.getAssignedProductDemandsForSeller(pageable, sellerService.getCurrentSellerOrCreate());
+        Page<ProductDemandDto> page = productDemandService.getAssignedProductDemandsForSeller(pageable, sellerService.getCurrentSeller());
         List<ProductDemandResponse> productDemandResponses = ModelMapperUtil.map(page.getContent(), ProductDemandResponse.class);
 
         return PagedResponseBuilder.createResponse(page, productDemandResponses);
@@ -51,12 +51,12 @@ public class SellerProductDemandController {
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public ProductDemandResponse getProductDemand(@PathVariable UUID id) {
-        return ModelMapperUtil.map(productDemandService.getProductDemand(id, sellerService.getCurrentSellerOrCreate()), ProductDemandResponse.class);
+        return ModelMapperUtil.map(productDemandService.getProductDemand(id, sellerService.getCurrentSeller()), ProductDemandResponse.class);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.UPDATE) and hasRole('ROLE_COMPANY')")
     public void updateDemandStatus(@PathVariable("id") UUID id, @RequestBody SellerProductDemandUpdateRequest updateRequest) {
-        productDemandService.updateDemandStatusBySeller(id, updateRequest, sellerService.getCurrentSellerOrCreate());
+        productDemandService.updateDemandStatusBySeller(id, updateRequest, sellerService.getCurrentSeller());
     }
 }

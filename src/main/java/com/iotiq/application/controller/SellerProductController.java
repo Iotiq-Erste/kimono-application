@@ -50,7 +50,7 @@ public class SellerProductController {
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public PagedResponse<ProductResponse> getAll(ProductFilter filter, Sort sort) {
-        filter.setSellerIds(List.of(Objects.requireNonNull(sellerService.getCurrentSellerOrCreate().getId())));
+        filter.setSellerIds(List.of(Objects.requireNonNull(sellerService.getCurrentSeller().getId())));
         Page<Product> page = productService.getAll(filter, sort);
         List<ProductResponse> responseList = ModelMapperUtil.map(page.getContent(), ProductResponse.class);
 
@@ -61,7 +61,7 @@ public class SellerProductController {
     @PreAuthorize("hasAuthority(@ProductManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public ResponseEntity<byte[]> export() throws IOException {
 
-        byte[] csvBytes = productService.exportCSVFile(sellerService.getCurrentSellerOrCreate().getId());
+        byte[] csvBytes = productService.exportCSVFile(sellerService.getCurrentSeller().getId());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
@@ -75,14 +75,14 @@ public class SellerProductController {
     @PostMapping("/csv-upload")
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     public ResponseEntity<ProductCSVUploadResponse> uploadFile(@RequestParam("file") MultipartFile file) {
-        return productService.importCSVFile(sellerService.getCurrentSellerOrCreate().getId(), file);
+        return productService.importCSVFile(sellerService.getCurrentSeller().getId(), file);
     }
 
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
     public ProductCreateResponse createProduct(@RequestBody @Valid ProductCreateRequest request) {
-        Seller currentSeller = sellerService.getCurrentSellerOrCreate();
+        Seller currentSeller = sellerService.getCurrentSeller();
         return new ProductCreateResponse(productService.createProductForSeller(request, currentSeller).getId());
     }
 

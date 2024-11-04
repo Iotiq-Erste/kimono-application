@@ -24,13 +24,13 @@ public class CartController {
     @GetMapping
     @PreAuthorize("hasAuthority(@CartManagementAuth.VIEW)")
     public CartResponse getCart(){
-        return ModelMapperUtil.map(cartService.getCart(customerService.getCurrentCustomerOrCreate()), CartResponse.class);
+        return ModelMapperUtil.map(cartService.getCart(customerService.getCurrentCustomer()), CartResponse.class);
     }
 
     @PutMapping
     @PreAuthorize("hasAuthority(@CartManagementAuth.UPDATE)")
     public void updateCart(@RequestBody CartUpdateRequest request){
-        cartService.update(request, customerService.getCurrentCustomerOrCreate());
+        cartService.update(request, customerService.getCurrentCustomer());
     }
 
 }

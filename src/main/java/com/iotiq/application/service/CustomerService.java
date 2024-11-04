@@ -12,6 +12,7 @@ import com.iotiq.application.messages.customer.contact.BasicInfo;
 import com.iotiq.application.messages.customer.contact.ContactInfo;
 import com.iotiq.application.messages.order.OrderDto;
 import com.iotiq.application.repository.CustomerRepository;
+import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.Person;
 import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
@@ -35,7 +36,7 @@ public class CustomerService {
 
     @Transactional
     public void update(CustomerUpdateRequest request) {
-        Customer customer = getCurrentCustomerOrCreate();
+        Customer customer = getCurrentCustomer();
         if (request.getContactInfo() != null) {
             if (request.getContactInfo().getBasicInfo() != null) {
                 customer.getUser().setPersonalInfo(Objects.requireNonNullElseGet(customer.getUser().getPersonalInfo(), Person::new));
@@ -65,15 +66,13 @@ public class CustomerService {
         customerRepository.save(customer);
     }
 
-    @Transactional
-    public Customer getCurrentCustomerOrCreate() {
+    public Customer getCurrentCustomer() {
         User currentUser = userService.getCurrentUser();
-        return customerRepository.findByUser(currentUser).orElseGet(() -> createCustomer(currentUser));
+        return customerRepository.findByUser(currentUser).orElseThrow(() -> new EntityNotFoundException(Customer.ENTITY_NAME));
     }
 
-    @Transactional
     public CustomerDto getCustomer() {
-        Customer customer = getCurrentCustomerOrCreate();
+        Customer customer = getCurrentCustomer();
 
         CustomerDto customerDto = new CustomerDto();
 
@@ -99,13 +98,23 @@ public class CustomerService {
         return contactInfo;
     }
 
-    private Customer createCustomer(User currentUser) {
+    @Transactional
+    public void createIfNotExists(User currentUser) {
+        boolean exists = customerRepository.existsByUser(currentUser);
+
+        if(!exists) {
+            createCustomer(currentUser);
+        }
+    }
+
+    @Transactional
+    public void createCustomer(User currentUser) {
         Customer customer = new Customer();
         customer.setUser(currentUser);
         customer.setAddress(new Address());
         customer.setMedicalData(new MedicalData());
         customer.setSizeInfo(new SizeInfo());
-        return customerRepository.save(customer);
+        customerRepository.save(customer);
     }
 
     private List<OrderDto> getLastTwoOrders(List<Order> orderList) {
