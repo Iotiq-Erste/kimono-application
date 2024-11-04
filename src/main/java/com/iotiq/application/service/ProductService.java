@@ -144,7 +144,7 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public List<BrandProjection> getBrands(){
+    public List<BrandProjection> getBrands() {
         return productRepository.findDistinctByBrandIsNotNull();
     }
 
@@ -160,47 +160,79 @@ public class ProductService {
                 .build();
 
         try (final CSVPrinter printer = new CSVPrinter(sw, csvFormat)) {
-            products.forEach((product -> {
-                try {
-                    printer.printRecord(product.getTitle(), product.getDescription(), product.getPrice().getAmount(),
-                            product.getPrice().getCurrency(), product.getImageUrl(), product.getAgeGroup().getAdultAgeGroup(),
-                            product.getAgeGroup().getChildrenAgeGroup(), product.getApplicationAreaGroup().getApplicationArea(),
-                            product.getApplicationAreaGroup().getUsageCycle(), product.getBrand(), product.getCategory(),
-                            separateWithSemicolon(product.getCertifications()), product.getColor(),
-                            separateWithSemicolon(product.getComposition().getActiveSubstanceAreas()),
-                            separateWithSemicolon(product.getComposition().getActiveSubstances()),
-                            separateWithSemicolon(product.getComposition().getActiveSubstancePlacements()),
-                            separateWithSemicolon(product.getComposition().getActiveSubstanceReleases()),
-                            separateWithSemicolon(product.getComposition().getCompositions()),
-                            separateWithSemicolon(product.getComposition().getStaggerings()), product.getDesign().getDesignAppearance(),
-                            product.getDesign().getDesignColor(), separateWithSemicolon(product.getDesignBodyParts()),
-                            separateWithSemicolon((product.getFiberTypes())), product.getGender(), product.getHaptics().getElasticity(),
-                            product.getHaptics().getFineness(), product.getHaptics().getLightweight(), product.getHaptics().getLintFree(),
-                            product.getHaptics().getScratchy(), product.getHaptics().getSeamFeelable(), product.getHaptics().getSoftness(),
-                            product.getHaptics().getUniform(), product.getMaterialBehavior().getAbrasionResistant(),
-                            product.getMaterialBehavior().getAbsorbency(), product.getMaterialBehavior().getAntistatic(),
-                            product.getMaterialBehavior().getBreathable(), product.getMaterialBehavior().getColorfast(),
-                            product.getMaterialBehavior().getMoistureTransporting(), product.getMaterialBehavior().getOdorNeutralizing(),
-                            product.getMaterialBehavior().getScratchResistant(), product.getMaterialBehavior().getSweatWicking(),
-                            product.getMaterialBehavior().getWashable(), product.getMaterialParameter().getThickness(), product.getMaterialParameter().getFlexibility(),
-                            product.getMaterialParameter().getBreathability(), product.getMaterialParameter().getMoistureWicking() , product.getMotif(),
-                            product.getNeurodermatitis(), product.getOekotexStandard(), product.getPriceRange(), product.getRating(),
-                            separateWithSemicolon(product.getSizes()), separateWithSemicolon((product.getSpecificBodyParts())),
-                            separateWithSemicolon(product.getSpecificFunctionalities()),
-                            separateWithSemicolon(product.getSustainability().getEnvironmentalCompatibilities()),
-                            separateWithSemicolon(product.getSustainability().getLifeCycles()),
-                            separateWithSemicolon(product.getSustainability().getRegionalityList()),
-                            separateWithSemicolon(product.getSustainability().getResourceConsumptions()),
-                            separateWithSemicolon(product.getSustainability().getSocialEthics()),
-                            separateWithSemicolon(product.getSustainability().getSustainabilityCompositions()),
-                            separateWithSemicolon(product.getSustainability().getSustainabilityLightweights()),
-                            separateWithSemicolon(product.getSustainability().getSkills()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }));
+            products.forEach(product -> printProductRecord(printer, product));
         }
         return sw.toString().getBytes();
+    }
+
+    private void printProductRecord(CSVPrinter printer, Product product) {
+        try {
+            printer.printRecord(
+                    product.getTitle(),
+                    product.getDescription(),
+                    product.getPrice().getAmount(),
+                    product.getPrice().getCurrency(),
+                    product.getImageUrl(),
+                    product.getAgeGroup() != null ? product.getAgeGroup().getAdultAgeGroup() : "",
+                    product.getAgeGroup() != null ? product.getAgeGroup().getChildrenAgeGroup() : "",
+                    product.getApplicationAreaGroup() != null ? product.getApplicationAreaGroup().getApplicationArea() : "",
+                    product.getApplicationAreaGroup() != null ? product.getApplicationAreaGroup().getUsageCycle() : "",
+                    product.getBrand(),
+                    product.getCategory(),
+                    separateWithSemicolon(product.getCertifications()),
+                    product.getColor(),
+                    separateWithSemicolon(product.getComposition() != null ? product.getComposition().getActiveSubstanceAreas() : List.of()),
+                    separateWithSemicolon(product.getComposition() != null ? product.getComposition().getActiveSubstances() : List.of()),
+                    separateWithSemicolon(product.getComposition() != null ? product.getComposition().getActiveSubstancePlacements() : List.of()),
+                    separateWithSemicolon(product.getComposition() != null ? product.getComposition().getActiveSubstanceReleases() : List.of()),
+                    separateWithSemicolon(product.getComposition() != null ? product.getComposition().getCompositions() : List.of()),
+                    separateWithSemicolon(product.getComposition() != null ? product.getComposition().getStaggerings() : List.of()),
+                    product.getDesign() != null ? product.getDesign().getDesignAppearance() : "",
+                    product.getDesign() != null ? product.getDesign().getDesignColor() : "",
+                    separateWithSemicolon(product.getDesignBodyParts()),
+                    separateWithSemicolon((product.getFiberTypes())),
+                    product.getGender(),
+                    product.getHaptics() != null ? product.getHaptics().getElasticity() : "",
+                    product.getHaptics() != null ? product.getHaptics().getFineness() : "",
+                    product.getHaptics() != null ? product.getHaptics().getLightweight() : "",
+                    product.getHaptics() != null ? product.getHaptics().getLintFree() : "",
+                    product.getHaptics() != null ? product.getHaptics().getScratchy() : "",
+                    product.getHaptics() != null ? product.getHaptics().getSeamFeelable() : "",
+                    product.getHaptics() != null ? product.getHaptics().getSoftness() : "",
+                    product.getHaptics() != null ? product.getHaptics().getUniform() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getAbrasionResistant() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getAbsorbency() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getAntistatic() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getBreathable() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getColorfast() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getMoistureTransporting() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getOdorNeutralizing() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getScratchResistant() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getSweatWicking() : "",
+                    product.getMaterialBehavior() != null ? product.getMaterialBehavior().getWashable() : "",
+                    product.getMaterialParameter() != null ? product.getMaterialParameter().getThickness() : "",
+                    product.getMaterialParameter() != null ? product.getMaterialParameter().getFlexibility() : "",
+                    product.getMaterialParameter() != null ? product.getMaterialParameter().getBreathability() : "",
+                    product.getMaterialParameter() != null ? product.getMaterialParameter().getMoistureWicking() : "",
+                    product.getMotif(),
+                    product.getNeurodermatitis(),
+                    product.getOekotexStandard(),
+                    product.getPriceRange(),
+                    product.getRating(),
+                    separateWithSemicolon(product.getSizes()),
+                    separateWithSemicolon((product.getSpecificBodyParts())),
+                    separateWithSemicolon(product.getSpecificFunctionalities()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getEnvironmentalCompatibilities() : List.of()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getLifeCycles() : List.of()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getRegionalityList() : List.of()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getResourceConsumptions() : List.of()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getSocialEthics() : List.of()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getSustainabilityCompositions() : List.of()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getSustainabilityLightweights() : List.of()),
+                    separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getSkills() : List.of()));
+        } catch (IOException e) {
+            throw new RuntimeException("Fehler beim Schreiben des CSV-Datensatzes.", e);
+        }
     }
 
     @Transactional
@@ -316,8 +348,8 @@ public class ProductService {
                         errorField.add(violation.getPropertyPath().toString());
                     }
                     message += errorField.stream().sorted()
-                                    .map(Object::toString)
-                                    .collect(Collectors.joining(", "));
+                            .map(Object::toString)
+                            .collect(Collectors.joining(", "));
 
                     productCSVUploadResponse.getMessages().add(message);
                 } else {
@@ -329,10 +361,9 @@ public class ProductService {
                             .collect(Collectors.toList());
                 }
             }
-            if(!productCSVUploadResponse.getMessages().isEmpty()){
+            if (!productCSVUploadResponse.getMessages().isEmpty()) {
                 return ResponseEntity.badRequest().body(productCSVUploadResponse);
-            }
-            else {
+            } else {
                 productRepository.saveAll(productList);
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             }
@@ -365,7 +396,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
-    private <E extends Enum<E>>  String separateWithSemicolon(List<E> enumList){
+    private <E extends Enum<E>> String separateWithSemicolon(List<E> enumList) {
         return enumList.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(";"));
