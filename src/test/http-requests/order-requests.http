@@ -1,21 +1,43 @@
-### Scenario 1: Obtain Token
-
+### Scenario 1: Obtain Token For Customer
 POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type={{grantType}}&client_id={{clientId}}&password={{password}}&username={{username}}&client_secret={{clientSecret}}
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{customerPassword}} &
+username = {{customerUsername}} &
+client_secret = {{clientSecret}}
 
 > {%
-    client.global.set("auth_token", response.body.access_token);
-    client.test("Obtain Token", function() {
+    client.global.set("customer_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
         client.assert(response.status === 200, "HTTP response code is 200");
         client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
     });
 %}
 
-### Scenario 2: Get All Orders
+### Scenario 2: Obtain Token For Company
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{password}} &
+username = {{username}} &
+client_secret = {{clientSecret}}
+
+> {%
+    client.global.set("company_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+
+### Scenario 3: Get All Orders
 GET {{baseUrl}}/api/v1/orders
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 > {%
@@ -26,9 +48,9 @@ Content-Type: application/json
 %}
 
 
-### Scenario 3: Create New Product
-POST {{baseUrl}}/api/v1/products
-Authorization: Bearer {{auth_token}}
+### Scenario 4: Create New Product
+POST {{baseUrl}}/api/v1/seller/products
+Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 {
@@ -44,8 +66,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "OTHERS",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -109,7 +131,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -148,6 +175,9 @@ Content-Type: application/json
     ],
     "sustainabilityLightweights": [
       "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "FINISHING"
     ]
   }
 }
@@ -159,9 +189,9 @@ Content-Type: application/json
     client.global.set("newProductID1", response.body.newProductID);
 %}
 
-### Scenario 4: Update Cart by Adding Cart Item
+### Scenario 5: Update Cart by Adding Cart Item
 PUT {{baseUrl}}/api/v1/cart
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 {
@@ -179,9 +209,9 @@ Content-Type: application/json
 %}
 
 
-### Scenario 5: Get Cart to Validate
+### Scenario 6: Get Cart to Validate
 GET {{baseUrl}}/api/v1/cart
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 > {%
@@ -192,9 +222,9 @@ Content-Type: application/json
 %}
 
 
-### Scenario 6: Create Order
+### Scenario 7: Create Order
 POST {{baseUrl}}/api/v1/orders
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 {
@@ -220,9 +250,9 @@ Content-Type: application/json
     client.global.set("newOrderId", response.body.newOrderId);
 %}
 
-### Scenario 7: Get Order By ID
+### Scenario 8: Get Order By ID
 GET {{baseUrl}}/api/v1/orders/{{newOrderId}}
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 
@@ -233,9 +263,9 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 8: Update Order
+### Scenario 9: Update Order
 PUT {{baseUrl}}/api/v1/orders/{{newOrderId}}
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 {
@@ -250,9 +280,9 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 9: Get Order By ID
+### Scenario 10: Get Order By ID
 GET {{baseUrl}}/api/v1/orders/{{newOrderId}}
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 > {%
@@ -265,27 +295,27 @@ Content-Type: application/json
 %}
 
 
-### Scenario 10: Delete Order
-DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
-Authorization: Bearer {{auth_token}}
+### Scenario 11: Delete Order
+DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
+Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 > {%
     client.test("Product has been deleted" ,function() {
-        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.status === 204, "Status code is 204");
     });
 %}
 
-### Scenario 11: Update Cart by Deleting Cart Item
+### Scenario 12: Update Cart by Deleting Cart Item
 PUT {{baseUrl}}/api/v1/cart
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 {
   "cartItems": []
 }
 
-### Scenario 12: Delete Product
-DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
-Authorization: Bearer {{auth_token}}
+### Scenario 13: Delete Product
+DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
+Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json

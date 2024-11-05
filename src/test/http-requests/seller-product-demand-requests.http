@@ -57,8 +57,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "OUTDOOR",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -122,7 +122,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -161,6 +166,9 @@ Content-Type: application/json
     ],
     "sustainabilityLightweights": [
       "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "FINISHING"
     ]
   }
 }
@@ -185,8 +193,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "OUTDOOR",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -250,7 +258,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -289,6 +302,9 @@ Content-Type: application/json
     ],
     "sustainabilityLightweights": [
       "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "FINISHING"
     ]
   }
 }
@@ -312,8 +328,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "OUTDOOR",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -377,7 +393,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -416,6 +437,9 @@ Content-Type: application/json
     ],
     "sustainabilityLightweights": [
       "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "FINISHING"
     ]
   }
 }

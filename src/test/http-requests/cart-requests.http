@@ -1,21 +1,42 @@
-### Scenario 1: Obtain Token
-
+### Scenario 1: Obtain Token For Customer
 POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type={{grantType}}&client_id={{clientId}}&password={{password}}&username={{username}}&client_secret={{clientSecret}}
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{customerPassword}} &
+username = {{customerUsername}} &
+client_secret = {{clientSecret}}
 
 > {%
-    client.global.set("auth_token", response.body.access_token);
-    client.test("Obtain Token", function() {
+    client.global.set("customer_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
         client.assert(response.status === 200, "HTTP response code is 200");
         client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
     });
 %}
 
-### Scenario 2: Create New Product
-POST {{baseUrl}}/api/v1/products
-Authorization: Bearer {{auth_token}}
+### Scenario 2: Obtain Token For Company
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{password}} &
+username = {{username}} &
+client_secret = {{clientSecret}}
+
+> {%
+    client.global.set("company_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 3: Create New Product
+POST {{baseUrl}}/api/v1/seller/products
+Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 {
@@ -31,8 +52,8 @@ Content-Type: application/json
     "childrenAgeGroup": "TWO_TO_SIX_YEARS"
   },
   "applicationAreaGroup": {
-    "applicationArea": "WORK_CLOTHING",
-    "frequency": "ONE_TIME"
+    "applicationArea": "OUTDOOR",
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -96,7 +117,12 @@ Content-Type: application/json
     "sweatWicking": "VERY",
     "washable": "VERY"
   },
-  "materialParameter": "THICKNESS",
+  "materialParameter": {
+    "thickness": 20,
+    "flexibility": 20,
+    "breathability": 20,
+    "moistureWicking": 20
+  },
   "motif": "ANIMALS",
   "neurodermatitis": "STAGE_ONE_DRY_SKIN",
   "oekotexStandard": "PRODUCT_CLASS_1",
@@ -135,6 +161,9 @@ Content-Type: application/json
     ],
     "sustainabilityLightweights": [
       "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "FINISHING"
     ]
   }
 }
@@ -146,9 +175,9 @@ Content-Type: application/json
     client.global.set("newProductID1", response.body.newProductID);
 %}
 
-### Scenario 3: Update Cart by Adding Cart Item
+### Scenario 4: Update Cart by Adding Cart Item
 PUT {{baseUrl}}/api/v1/cart
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 {
@@ -166,9 +195,9 @@ Content-Type: application/json
 %}
 
 
-### Scenario 4: Get Updated Cart
+### Scenario 5: Get Updated Cart
 GET {{baseUrl}}/api/v1/cart
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 > {%
@@ -178,9 +207,9 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 5: Update Cart by Deleting Cart Item
+### Scenario 6: Update Cart by Deleting Cart Item
 PUT {{baseUrl}}/api/v1/cart
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 {
@@ -192,9 +221,9 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 6: Get Updated Cart
+### Scenario 7: Get Updated Cart
 GET {{baseUrl}}/api/v1/cart
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
 
 > {%
@@ -204,7 +233,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 7: Delete Product
+### Scenario 8: Delete Product
 DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
-Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json

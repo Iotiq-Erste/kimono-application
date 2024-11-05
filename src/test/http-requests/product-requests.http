@@ -430,7 +430,7 @@ Content-Type: application/json
 
 ### Scenario 9: Get Filtered Products
 GET {{baseUrl}}/api/v1/products?lowestPrice=0&highestPrice=100
-    &adultAgeGroups=THIRTY_TO_FOURTYFIVE&childrenAgeGroups=TWO_TO_SIX_YEARS&applicationAreas=OUTDOOR&usageCycle=ONE_TIME
+    &adultAgeGroups=THIRTY_TO_FOURTYFIVE&childrenAgeGroups=TWO_TO_SIX_YEARS&applicationAreas=OUTDOOR&usageCycles=ONE_TIME
     &brands=BEYMEN&categories=JEANS&certifications=BLUESIGN,TOXPROOF&colors=RED&activeSubstanceAreas=COMPLETE
     &activeSubstances=CHITOSAN&activeSubstancePlacements=SERUM
     &activeSubstanceReleases=DIFFUSING&compositions=PATCHWORK&staggerings=TEMPORAL&designAppearances=DYNAMIC

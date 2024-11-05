@@ -176,7 +176,7 @@ Content-Type: application/json
   },
   "applicationAreaGroup": {
     "applicationArea": "PROFESSIONAL_CLOTHING",
-    "frequency": "ONE_TIME"
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -309,7 +309,7 @@ Content-Type: application/json
   },
   "applicationAreaGroup": {
     "applicationArea": "PROFESSIONAL_CLOTHING",
-    "frequency": "ONE_TIME"
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -442,7 +442,7 @@ Content-Type: application/json
   },
   "applicationAreaGroup": {
     "applicationArea": "PROFESSIONAL_CLOTHING",
-    "frequency": "ONE_TIME"
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -575,7 +575,7 @@ Content-Type: application/json
   },
   "applicationAreaGroup": {
     "applicationArea": "PROFESSIONAL_CLOTHING",
-    "frequency": "ONE_TIME"
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -708,7 +708,7 @@ Content-Type: application/json
   },
   "applicationAreaGroup": {
     "applicationArea": "PROFESSIONAL_CLOTHING",
-    "frequency": "ONE_TIME"
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -841,7 +841,7 @@ Content-Type: application/json
   },
   "applicationAreaGroup": {
     "applicationArea": "PROFESSIONAL_CLOTHING",
-    "frequency": "ONE_TIME"
+    "usageCycle": "ONE_TIME"
   },
   "brand": "BEYMEN",
   "category": "JEANS",
@@ -1144,7 +1144,7 @@ Content-Type: application/json
         client.assert(response.body.ageGroup.adultAgeGroup === "THIRTY_TO_FOURTYFIVE", "Creation failed, adultAgeGroup does not match");
         client.assert(response.body.ageGroup.childrenAgeGroup === "TWO_TO_SIX_YEARS", "Creation failed, childrenAgeGroup does not match");
         client.assert(response.body.applicationAreaGroup.applicationArea === "PROFESSIONAL_CLOTHING", "Creation failed, applicationArea does not match");
-        client.assert(response.body.applicationAreaGroup.usageCycle === "ONE_TIME", "Creation failed, frequency does not match");
+        client.assert(response.body.applicationAreaGroup.usageCycle === "ONE_TIME", "Creation failed, usageCycle does not match");
         client.assert(response.body.brand === "BEYMEN", "Creation failed, brand does not match");
         client.assert(response.body.category === "JEANS", "Creation failed, category does not match");
         client.assert(response.body.certifications[0] === "BLUESIGN", "Creation failed, certifications does not match");
