@@ -161,7 +161,6 @@ Content-Type: application/json
     });
     client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
     client.global.set("newProductDemandID1", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 3: Create Product Demand #2
@@ -291,10 +290,9 @@ Content-Type: application/json
 > {%
     client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
+        client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+        client.global.set("newProductDemandID2", response.body.newProductDemandID);
     });
-    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
-    client.global.set("newProductDemandID2", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 3: Create Product Demand #3
@@ -424,10 +422,9 @@ Content-Type: application/json
 > {%
     client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
+        client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+        client.global.set("newProductDemandID2", response.body.newProductDemandID);
     });
-    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
-    client.global.set("newProductDemandID2", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 3: Create Product Demand #4
@@ -557,10 +554,9 @@ Content-Type: application/json
 > {%
     client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
+        client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+        client.global.set("newProductDemandID2", response.body.newProductDemandID);
     });
-    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
-    client.global.set("newProductDemandID2", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 3: Create Product Demand #1
@@ -690,10 +686,9 @@ Content-Type: application/json
 > {%
     client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
+        client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+        client.global.set("newProductDemandID2", response.body.newProductDemandID);
     });
-    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
-    client.global.set("newProductDemandID2", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 3: Create Product Demand #1
@@ -823,10 +818,9 @@ Content-Type: application/json
 > {%
     client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
+        client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+        client.global.set("newProductDemandID2", response.body.newProductDemandID);
     });
-    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
-    client.global.set("newProductDemandID2", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 3: Create Product Demand #1
@@ -956,10 +950,9 @@ Content-Type: application/json
 > {%
     client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
+        client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+        client.global.set("newProductDemandID2", response.body.newProductDemandID);
     });
-    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
-    client.global.set("newProductDemandID2", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 3: Create Product Demand #1
@@ -1089,10 +1082,9 @@ Content-Type: application/json
 > {%
     client.test("Creating product demand", function () {
         client.assert(response.status === 201, "Status code is 201");
+        client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
+        client.global.set("newProductDemandID2", response.body.newProductDemandID);
     });
-    client.global.set("customersTotalDemands", client.global.get("customersTotalDemands") + 1);
-    client.global.set("newProductDemandID2", response.body.newProductDemandID);
-
 %}
 
 ### Scenario 4: Get Current Customer's Product Demands
@@ -1103,8 +1095,8 @@ Content-Type: application/json
 > {%
     client.test("Testing customer's total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
-        client.assert(response.body.content.length===4)
-        client.assert(client.global.get("customersTotalDemands") == response.body.page.totalElements)
+        client.assert(response.body.content.length===4);
+        client.assert(client.global.get("customersTotalDemands") == response.body.page.totalElements);
     });
 %}
 
@@ -1116,8 +1108,8 @@ Content-Type: application/json
 > {%
     client.test("Testing customer's total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
-        client.assert(response.body.content.length>=3)
-        client.assert(client.global.get("customersTotalDemands") == response.body.page.totalElements)
+        client.assert(response.body.content.length>=3);
+        client.assert(client.global.get("customersTotalDemands") == response.body.page.totalElements);
     });
 %}
 
@@ -1201,7 +1193,7 @@ Content-Type: application/json
         client.assert(response.body.sustainability.socialEthics[0] === "FAIR_WAGES", "Creation failed, socialEthics filter failed");
         client.assert(response.body.sustainability.sustainabilityCompositions[0] === "RARE_MATERIALS", "Creation failed, sustainabilityCompositions filter failed");
         client.assert(response.body.sustainability.sustainabilityLightweights[0] === "LIGHTWEIGHT", "Creation failed, sustainabilityLightweights filter failed");
-        client.assert(response.body.sustainability.skills[0] === "FINISHING", "Creation failed, sustainability does not match")
+        client.assert(response.body.sustainability.skills[0] === "FINISHING", "Creation failed, sustainability does not match");
     });
 %}
 
@@ -1214,6 +1206,7 @@ Content-Type: application/json
   "category": "JACKET",
   "gender": "UNISEX"
 }
+
 > {%
     client.test("Product demand has been updated" ,function() {
         client.assert(response.status === 200, "Status code is 200");
@@ -1224,7 +1217,6 @@ Content-Type: application/json
 GET {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
-
 
 > {%
     client.test("Testing fields of updated product demand", function () {
@@ -1251,7 +1243,6 @@ GET {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
-
 > {%
     client.test("Get all product demands" ,function() {
         client.assert(response.status === 200, "Status code is 200");
@@ -1272,3 +1263,5 @@ Content-Type: application/json
         client.global.set("totalDemands", client.global.get("totalDemands")-1);
     });
 %}
+
+###
