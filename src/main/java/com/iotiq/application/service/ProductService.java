@@ -73,6 +73,7 @@ import com.iotiq.application.messages.product.ProductFilter;
 import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.repository.ProductRepository;
 import com.iotiq.application.repository.SellerRepository;
+import com.iotiq.commons.exceptions.CSVWriteException;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
@@ -231,7 +232,7 @@ public class ProductService {
                     separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getSustainabilityLightweights() : List.of()),
                     separateWithSemicolon(product.getSustainability() != null ? product.getSustainability().getSkills() : List.of()));
         } catch (IOException e) {
-            throw new RuntimeException("Fehler beim Schreiben des CSV-Datensatzes.", e);
+            throw new CSVWriteException(e);
         }
     }
 
