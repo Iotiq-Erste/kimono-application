@@ -27,7 +27,7 @@ public class Seller extends AbstractPersistable<UUID> {
 
     public static final String ENTITY_NAME = "seller";
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -47,6 +47,7 @@ public enum Role implements com.iotiq.user.domain.authorities.Role {
             OrderManagementAuthority.CREATE,
             OrderManagementAuthority.DELETE,
             OrderManagementAuthority.VIEW,
+            OrderManagementAuthority.UPDATE,
 
             CustomerManagementAuthority.UPDATE,
             CustomerManagementAuthority.VIEW,

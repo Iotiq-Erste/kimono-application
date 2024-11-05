@@ -6,6 +6,7 @@ import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import com.iotiq.application.messages.seller.SellerDto;
 import com.iotiq.application.messages.seller.SellerUpdateRequest;
 import com.iotiq.application.repository.SellerRepository;
+import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
 import jakarta.transaction.Transactional;
@@ -24,30 +25,38 @@ public class SellerService {
     private final UserService userService;
     private final OrderedProductService orderedProductService;
 
-    @Transactional
-    public Seller getCurrentSellerOrCreate() {
+    public Seller getCurrentSeller() {
         User currentUser = userService.getCurrentUser();
-        return sellerRepository.findByUser(currentUser).orElseGet(() -> createDefaultSeller(currentUser));
+        return sellerRepository.findByUser(currentUser).orElseThrow(() -> new EntityNotFoundException(Seller.ENTITY_NAME));
     }
 
     @Transactional
     public SellerDto getSeller() {
-        SellerDto sellerDto = ModelMapperUtil.map(getCurrentSellerOrCreate(), SellerDto.class);
+        SellerDto sellerDto = ModelMapperUtil.map(getCurrentSeller(), SellerDto.class);
         sellerDto.setOrderedProducts(getLastTwoOrder());
         return sellerDto;
     }
 
     @Transactional
-    public Seller createDefaultSeller(User currentUser) {
+    public void createIfNotExists(User currentUser) {
+        boolean exists = sellerRepository.existsByUser(currentUser);
+
+        if(!exists) {
+            createSeller(currentUser);
+        }
+    }
+
+    @Transactional
+    public void createSeller(User currentUser) {
         Seller seller = new Seller();
         seller.setUser(currentUser);
         seller.setActive(true);
-        return sellerRepository.save(seller);
+        sellerRepository.save(seller);
     }
 
     @Transactional
     public void update(SellerUpdateRequest request) {
-        Seller currentSeller = getCurrentSellerOrCreate();
+        Seller currentSeller = getCurrentSeller();
         if (request.getApplicationAreas() != null && currentSeller.getApplicationAreas() != null)
             currentSeller.getApplicationAreas().clear();
         if (request.getSkills() != null && currentSeller.getSkills() != null)
@@ -58,9 +67,8 @@ public class SellerService {
         sellerRepository.save(currentSeller);
     }
 
-    @Transactional
     public List<OrderedProductDto> getLastTwoOrder() {
-        return orderedProductService.getOrderedProducts(getCurrentSellerOrCreate()).stream()
+        return orderedProductService.getOrderedProducts(getCurrentSeller()).stream()
                 .sorted(Comparator.comparing(OrderedProductDto::getOrderDate).reversed())
                 .limit(2)
                 .collect(Collectors.toList());
