@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 public class CSVWriteException extends ApplicationException {
 
     public CSVWriteException(Throwable e, Object... args) {
-        super(HttpStatus.UNPROCESSABLE_ENTITY, "CSVUnprocessableEntity", args);
+        super(HttpStatus.UNPROCESSABLE_ENTITY, "csvUnprocessableEntity", args);
         log.error("Error occurred while writing the CSV file: {}", e.getMessage());
     }
 }
