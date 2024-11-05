@@ -22,7 +22,6 @@ import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.ProductCSVHeader;
 import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
-import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import jakarta.validation.Valid;
@@ -71,7 +70,6 @@ public class ProductCreateRequest{
     private List<SpecificBodyPart> specificBodyParts;
     private List<SpecificFunctionality> specificFunctionalities;
     private Sustainability sustainability;
-    private List<Skill> skills;
 
     public static String[] getCSVHeaders() {
         return new String[]{ProductCSVHeader.TITLE.value(),
