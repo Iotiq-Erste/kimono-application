@@ -319,3 +319,5 @@ Content-Type: application/json
 DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
+
+###
