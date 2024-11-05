@@ -480,6 +480,7 @@ Content-Type: application/json
 {
   "status": "COMPLETED"
 }
+
 > {%
     client.test("Seller can not change status to COMPLETED on demand that it does not have", function () {
         client.assert(response.status === 404, "Status code is 404");
