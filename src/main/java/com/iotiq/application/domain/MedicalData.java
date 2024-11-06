@@ -1,5 +1,6 @@
 package com.iotiq.application.domain;
 
+import com.iotiq.application.domain.enums.SpecificBodyPart;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ public class MedicalData {
     private String clothingSizeDetermination;
     private String brandPreferences;
     private List<String> clothingSelection;
-    private List<String> bodyRegions;
+    private List<SpecificBodyPart> bodyRegions;
     private String medicalExamination;
     private List<String> allergiesSensitivities;
     private List<String> pastHealthIssues;
