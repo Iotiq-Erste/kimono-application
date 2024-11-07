@@ -1,6 +1,9 @@
 package com.iotiq.application.domain;
 
 import com.iotiq.application.domain.enums.SpecificBodyPart;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +16,8 @@ public class MedicalData {
     private String clothingSizeDetermination;
     private String brandPreferences;
     private List<String> clothingSelection;
+    @ElementCollection(targetClass = SpecificBodyPart.class)
+    @Enumerated(EnumType.STRING)
     private List<SpecificBodyPart> bodyRegions;
     private String medicalExamination;
     private List<String> allergiesSensitivities;
