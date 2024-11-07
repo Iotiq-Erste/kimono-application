@@ -7,7 +7,10 @@ import com.iotiq.application.domain.Seller;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
 import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import com.iotiq.application.repository.OrderedProductRepository;
+import com.iotiq.commons.message.request.PageableRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +22,8 @@ public class OrderedProductService {
 
     private final OrderedProductRepository orderedProductRepository;
 
-    public List<OrderedProductDto> getOrderedProducts(Seller seller) {
-        return orderedProductRepository.findAllBySeller(seller).stream().map(this::toOrderedProductDto).collect(Collectors.toList());
+    public Page<OrderedProductDto> getOrderedProducts(PageableRequest pageableRequest, Sort sort, Seller seller) {
+        return orderedProductRepository.findAllBySeller(pageableRequest.buildPageable(sort), seller).map(this::toOrderedProductDto);
     }
 
     public OrderedProductDto toOrderedProductDto(OrderedProduct orderedProduct) {
