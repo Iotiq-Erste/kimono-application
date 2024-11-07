@@ -56,7 +56,7 @@ public class Order extends BaseAbstractAuditingEntity<UUID> {
     private String deliveryAddress;
 
     @Enumerated(EnumType.STRING)
-    private DeliveryStatus deliveryStatus;
+    private DeliveryStatus deliveryStatus = DeliveryStatus.ORDER_PLACED;
 
     private LocalDateTime deliveryStatusDate;
 
