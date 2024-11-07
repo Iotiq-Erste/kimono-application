@@ -14,8 +14,11 @@ import com.iotiq.application.messages.order.OrderUpdateRequest;
 import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import com.iotiq.application.repository.OrderRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
+import com.iotiq.commons.message.request.PageableRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,19 +34,17 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final ProductService productService;
-    private final OrderedProductService orderedProductService;
 
     public Order getOrderForCurrentCustomer(UUID id, Customer customer) {
         return orderRepository.findByIdAndCustomer(id, customer)
                 .orElseThrow(() -> new EntityNotFoundException(Order.ENTITY_NAME, id));
     }
 
-    public List<OrderDto> getOrdersForCurrentCustomer(Customer customer) {
-        return customer.getOrders().stream().map(order -> {
-            OrderDto orderDto = ModelMapperUtil.map(order, OrderDto.class);
-            orderDto.setOrderedProducts(ModelMapperUtil.map(order.getOrderedProducts(), OrderedProductDto.class));
-            return orderDto;
-        }).collect(Collectors.toList());
+    public Page<OrderDto> getOrdersForCurrentCustomer(PageableRequest pageableRequest, Sort sort, Customer customer) {
+
+        Page<Order> orderPage = orderRepository.findAllByCustomerAndIsVisibleTrue(customer, pageableRequest.buildPageable(sort));
+
+        return orderPage.map(order -> ModelMapperUtil.map(order, OrderDto.class));
     }
 
     @Transactional

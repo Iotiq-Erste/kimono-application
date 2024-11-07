@@ -7,10 +7,16 @@ import com.iotiq.application.messages.order.OrderCreateResponse;
 import com.iotiq.application.messages.order.OrderDto;
 import com.iotiq.application.messages.order.OrderResponse;
 import com.iotiq.application.messages.order.OrderUpdateRequest;
+import com.iotiq.application.messages.product.ProductResponse;
 import com.iotiq.application.service.CustomerService;
 import com.iotiq.application.service.OrderService;
+import com.iotiq.commons.message.request.PageableRequest;
+import com.iotiq.commons.message.response.PagedResponse;
+import com.iotiq.commons.message.response.PagedResponseBuilder;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,9 +49,12 @@ public class OrderController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(@OrderManagementAuth.VIEW)")
-    public List<OrderResponse> getOrders() {
-        List<OrderDto> orderDtoList = orderService.getOrdersForCurrentCustomer(customerService.getCurrentCustomer());
-        return ModelMapperUtil.map(orderDtoList, OrderResponse.class);
+    public PagedResponse<OrderResponse> getOrders(PageableRequest pageable, Sort sort) {
+        Page<OrderDto> page = orderService.getOrdersForCurrentCustomer(pageable, sort, customerService.getCurrentCustomer());
+
+        List<OrderResponse> responseList = ModelMapperUtil.map(page.getContent(), OrderResponse.class);
+
+        return PagedResponseBuilder.createResponse(page, responseList);
     }
 
     @PostMapping
