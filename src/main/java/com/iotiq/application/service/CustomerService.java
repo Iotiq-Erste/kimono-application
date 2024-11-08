@@ -124,12 +124,13 @@ public class CustomerService {
     }
 
     private List<OrderDto> getLastTwoOrders(List<Order> orderList) {
+
         if (CollectionUtils.isEmpty(orderList)) {
             return Collections.emptyList();
         }
         return orderList.stream()
-                .map(order -> order == null ? null : ModelMapperUtil.map(order, OrderDto.class))
                 .filter(orderDto -> orderDto != null && orderDto.isVisible())
+                .map(order -> ModelMapperUtil.map(order, OrderDto.class))
                 .sorted(Comparator.comparing(OrderDto::getOrderDate).reversed())
                 .limit(2)
                 .collect(Collectors.toList());
