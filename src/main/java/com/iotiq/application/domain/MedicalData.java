@@ -15,14 +15,19 @@ public class MedicalData {
     private String ageGroup;
     private String clothingSizeDetermination;
     private String brandPreferences;
+    @ElementCollection
     private List<String> clothingSelection;
     @ElementCollection(targetClass = SpecificBodyPart.class)
     @Enumerated(EnumType.STRING)
     private List<SpecificBodyPart> bodyRegions;
     private String medicalExamination;
+    @ElementCollection
     private List<String> allergiesSensitivities;
+    @ElementCollection
     private List<String> pastHealthIssues;
+    @ElementCollection
     private List<String> treatmentWithMedications;
+    @ElementCollection
     private List<String> medicalHistory;
     private String skinDisease;
 }

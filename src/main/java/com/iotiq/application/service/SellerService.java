@@ -12,6 +12,8 @@ import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,7 @@ public class SellerService {
     private final SellerRepository sellerRepository;
     private final UserService userService;
     private final OrderedProductService orderedProductService;
+    private final Logger log = LoggerFactory.getLogger(SellerService.class);
 
     public Seller getCurrentSeller() {
         User currentUser = userService.getCurrentUser();
@@ -53,6 +56,7 @@ public class SellerService {
         seller.setUser(currentUser);
         seller.setActive(true);
         sellerRepository.save(seller);
+        log.info("User's {} seller created", currentUser.getId());
     }
 
     @Transactional
@@ -66,6 +70,7 @@ public class SellerService {
         ModelMapperUtil.map(request, currentSeller);
 
         sellerRepository.save(currentSeller);
+        log.info("Seller {} updated", currentSeller.getId());
     }
 
     public List<OrderedProductDto> getLastTwoOrder() {
@@ -73,7 +78,7 @@ public class SellerService {
         PageableRequest pageableRequest = new PageableRequest();
         Sort sort = Sort.by(Sort.Direction.DESC, "order.orderDate");
 
-        return orderedProductService.getOrderedProducts(pageableRequest, sort, getCurrentSeller()).stream()
-                .collect(Collectors.toList()).reversed();
+        return orderedProductService.getOrderedProducts(pageableRequest, sort, getCurrentSeller()).stream().limit(2)
+                .collect(Collectors.toList());
     }
 }
