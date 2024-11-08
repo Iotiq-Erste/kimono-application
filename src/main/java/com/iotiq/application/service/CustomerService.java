@@ -129,7 +129,7 @@ public class CustomerService {
             return Collections.emptyList();
         }
         return orderList.stream()
-                .filter(orderDto -> orderDto != null && orderDto.isVisible())
+                .filter(order -> order != null && order.isVisible())
                 .map(order -> ModelMapperUtil.map(order, OrderDto.class))
                 .sorted(Comparator.comparing(OrderDto::getOrderDate).reversed())
                 .limit(2)
