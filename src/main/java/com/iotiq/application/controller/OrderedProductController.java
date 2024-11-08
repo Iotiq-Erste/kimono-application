@@ -5,7 +5,12 @@ import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import com.iotiq.application.messages.orderedproduct.OrderedProductResponse;
 import com.iotiq.application.service.OrderedProductService;
 import com.iotiq.application.service.SellerService;
+import com.iotiq.commons.message.request.PageableRequest;
+import com.iotiq.commons.message.response.PagedResponse;
+import com.iotiq.commons.message.response.PagedResponseBuilder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,8 +28,10 @@ public class OrderedProductController {
 
     @GetMapping
     @PreAuthorize("hasAuthority(@OrderedProductManagementAuth.VIEW)")
-    public List<OrderedProductResponse> getOrderedProducts() {
-        List<OrderedProductDto> orderedProduct = orderedProductService.getOrderedProducts(sellerService.getCurrentSeller());
-        return ModelMapperUtil.map(orderedProduct, OrderedProductResponse.class);
+    public PagedResponse<OrderedProductResponse> getOrderedProducts(PageableRequest pageableRequest, Sort sort) {
+        Page<OrderedProductDto> page = orderedProductService.getOrderedProducts(pageableRequest, sort, sellerService.getCurrentSeller());
+        List<OrderedProductResponse> responseList = ModelMapperUtil.map(page.getContent(), OrderedProductResponse.class);
+
+        return PagedResponseBuilder.createResponse(page, responseList);
     }
 }

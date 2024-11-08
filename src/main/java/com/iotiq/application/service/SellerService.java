@@ -7,13 +7,14 @@ import com.iotiq.application.messages.seller.SellerDto;
 import com.iotiq.application.messages.seller.SellerUpdateRequest;
 import com.iotiq.application.repository.SellerRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
+import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -68,9 +69,11 @@ public class SellerService {
     }
 
     public List<OrderedProductDto> getLastTwoOrder() {
-        return orderedProductService.getOrderedProducts(getCurrentSeller()).stream()
-                .sorted(Comparator.comparing(OrderedProductDto::getOrderDate).reversed())
-                .limit(2)
-                .collect(Collectors.toList());
+
+        PageableRequest pageableRequest = new PageableRequest();
+        Sort sort = Sort.by(Sort.Direction.DESC, "order.orderDate");
+
+        return orderedProductService.getOrderedProducts(pageableRequest, sort, getCurrentSeller()).stream()
+                .collect(Collectors.toList()).reversed();
     }
 }
