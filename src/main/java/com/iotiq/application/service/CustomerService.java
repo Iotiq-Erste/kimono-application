@@ -18,6 +18,8 @@ import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -33,6 +35,8 @@ public class CustomerService {
 
     final private CustomerRepository customerRepository;
     final private UserService userService;
+    private static final Logger log = LoggerFactory.getLogger(CustomerService.class);
+
 
     @Transactional
     public void update(CustomerUpdateRequest request) {
@@ -64,6 +68,7 @@ public class CustomerService {
         }
 
         customerRepository.save(customer);
+        log.info("Customer {} updated", customer.getId());
     }
 
     public Customer getCurrentCustomer() {
@@ -115,12 +120,18 @@ public class CustomerService {
         customer.setMedicalData(new MedicalData());
         customer.setSizeInfo(new SizeInfo());
         customerRepository.save(customer);
+        log.info("User's {} customer created", currentUser.getId());
     }
 
     private List<OrderDto> getLastTwoOrders(List<Order> orderList) {
         if (CollectionUtils.isEmpty(orderList)) {
             return Collections.emptyList();
         }
-        return orderList.stream().map(order -> ModelMapperUtil.map(order, OrderDto.class)).sorted(Comparator.comparing(OrderDto::getOrderDate).reversed()).limit(2).collect(Collectors.toList());
+        return orderList.stream()
+                .map(order -> order == null ? null : ModelMapperUtil.map(order, OrderDto.class))
+                .filter(orderDto -> orderDto != null && orderDto.isVisible())
+                .sorted(Comparator.comparing(OrderDto::getOrderDate).reversed())
+                .limit(2)
+                .collect(Collectors.toList());
     }
 }
