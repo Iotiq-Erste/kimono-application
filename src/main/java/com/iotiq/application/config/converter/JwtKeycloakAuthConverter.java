@@ -83,7 +83,13 @@ public class JwtKeycloakAuthConverter implements Converter<Jwt, AbstractAuthenti
     }
 
     private static Role extractUserRole(Jwt jwt) {
-        return getRoleByNames(Collections.singletonList(jwt.getClaim(KeycloakJwtClaimNames.ROLE)));
+        Map<String, Object> realmAccess = jwt.getClaim(KeycloakJwtClaimNames.REALM_ACCESS);
+        if (realmAccess != null && realmAccess.containsKey("roles")) {
+            List<String> roles = (List<String>) realmAccess.get("roles");
+            return getRoleByNames(roles);
+        }
+        log.error("Realm_access or roles not present in the token.");
+        return null;
     }
 
     static Role getRoleByNames(List<String> roles) {
