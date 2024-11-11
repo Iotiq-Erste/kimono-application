@@ -33,7 +33,7 @@ public class SellerProductDemandController {
     @GetMapping
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.VIEW) and hasRole('ROLE_COMPANY')")
     public PagedResponse<ProductDemandResponse> getProductDemands(Pageable pageable) {
-        Page<ProductDemandDto> page = productDemandService.getProductDemandsForSeller(pageable);
+        Page<ProductDemandDto> page = productDemandService.getProductDemandsForSeller(pageable, sellerService.getCurrentSeller());
         List<ProductDemandResponse> productDemandResponses = ModelMapperUtil.map(page.getContent(), ProductDemandResponse.class);
 
         return PagedResponseBuilder.createResponse(page, productDemandResponses);
