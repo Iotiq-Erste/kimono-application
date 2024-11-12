@@ -118,8 +118,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },

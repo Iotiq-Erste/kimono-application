@@ -24,8 +24,8 @@ Content-Type: application/json
 > {%
     client.test("Testing customer's total number of product demand", function () {
         client.assert(response.status === 200, "Status code is 200");
+        client.global.set("customersTotalDemands", response.body.page.totalElements);
     });
-    client.global.set("customersTotalDemands", response.body.page.totalElements);
 %}
 
 ### Scenario 3: Create Product Demand #1
@@ -105,8 +105,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -163,7 +163,7 @@ Content-Type: application/json
     client.global.set("newProductDemandID1", response.body.newProductDemandID);
 %}
 
-### Scenario 3: Create Product Demand #2
+### Scenario 4: Create Product Demand #2
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -240,8 +240,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -295,7 +295,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Create Product Demand #3
+### Scenario 5: Create Product Demand #3
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -372,8 +372,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -427,7 +427,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Create Product Demand #4
+### Scenario 6: Create Product Demand #4
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -504,8 +504,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -559,7 +559,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Create Product Demand #1
+### Scenario 7: Create Product Demand #1
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -636,8 +636,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -691,7 +691,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Create Product Demand #1
+### Scenario 8: Create Product Demand #1
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -768,8 +768,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -823,7 +823,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Create Product Demand #1
+### Scenario 9: Create Product Demand #1
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -900,8 +900,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -955,7 +955,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Create Product Demand #1
+### Scenario 10: Create Product Demand #1
 POST {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1032,8 +1032,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -1087,7 +1087,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 4: Get Current Customer's Product Demands
+### Scenario 11: Get Current Customer's Product Demands
 GET {{baseUrl}}/api/v1/product-demands?page=0&size=4
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1100,7 +1100,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 4: Get Current Customer's Product Demands
+### Scenario 12: Get Current Customer's Product Demands
 GET {{baseUrl}}/api/v1/product-demands?page=1&size=4
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1113,7 +1113,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 5: Get Current Customer's Pageable Product Demands
+### Scenario 13: Get Current Customer's Pageable Product Demands
 GET {{baseUrl}}/api/v1/product-demands?page=0&size=20
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1125,7 +1125,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 6: Get Created First Product Demand for confirmation
+### Scenario 14: Get Created First Product Demand for confirmation
 GET {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1171,8 +1171,8 @@ Content-Type: application/json
         client.assert(response.body.materialBehavior.scratchResistant === "VERY", "Creation failed, scratchResistant does not match");
         client.assert(response.body.materialBehavior.sweatWicking === "VERY", "Creation failed, sweatWicking does not match");
         client.assert(response.body.materialBehavior.washable === "VERY", "Creation failed, washable does not match");
-        client.assert(response.body.materialParameter.thickness === 20, "Creation failed, thickness does not match");
-        client.assert(response.body.materialParameter.flexibility === 20, "Creation failed, flexibility does not match");
+        client.assert(response.body.materialParameter.thickness === 2, "Creation failed, thickness does not match");
+        client.assert(response.body.materialParameter.weightPerUnitArea === 20, "Creation failed, weight per unit area does not match");
         client.assert(response.body.materialParameter.breathability === 20, "Creation failed, breathability does not match");
         client.assert(response.body.materialParameter.moistureWicking === 20, "Creation failed, moistureWicking does not match");
         client.assert(response.body.motif === "ANIMALS", "Creation failed, motif does not match");
@@ -1197,7 +1197,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 7: Update First Product Demand
+### Scenario 15: Update First Product Demand
 PUT {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1213,7 +1213,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 8: Get Updated Product Demands
+### Scenario 16: Get Updated Product Demands
 GET {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1225,7 +1225,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 9: Delete First Product Demand
+### Scenario 17: Delete First Product Demand
 DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1238,7 +1238,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 10: Get Customer's Product Demands
+### Scenario 18: Get Customer's Product Demands
 GET {{baseUrl}}/api/v1/product-demands
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1251,7 +1251,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 11: Delete Second Product Demand
+### Scenario 19: Delete Second Product Demand
 DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID2}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -1263,5 +1263,4 @@ Content-Type: application/json
         client.global.set("totalDemands", client.global.get("totalDemands")-1);
     });
 %}
-
 ###

@@ -108,8 +108,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -214,8 +214,8 @@ Content-Type: application/json
         client.assert(response.body.materialBehavior.scratchResistant === "VERY", "Creation failed, materialBehavior does not match");
         client.assert(response.body.materialBehavior.sweatWicking === "VERY", "Creation failed, materialBehavior does not match");
         client.assert(response.body.materialBehavior.washable === "VERY", "Creation failed, materialBehavior does not match");
-        client.assert(response.body.materialParameter.thickness === 20, "Creation failed, thickness does not match");
-        client.assert(response.body.materialParameter.flexibility === 20, "Creation failed, flexibility does not match");
+        client.assert(response.body.materialParameter.thickness === 2, "Creation failed, thickness does not match");
+        client.assert(response.body.materialParameter.weightPerUnitArea === 20, "Creation failed, weight perU unit area does not match");
         client.assert(response.body.materialParameter.breathability === 20, "Creation failed, breathability does not match");
         client.assert(response.body.materialParameter.moistureWicking === 20, "Creation failed, moistureWicking does not match");
         client.assert(response.body.motif === "ANIMALS", "Creation failed, motif does not match");
@@ -324,8 +324,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -385,7 +385,7 @@ Content-Type: application/json
 
 
 ### Scenario 6: Get All Products
-GET {{baseUrl}}/api/v1/products
+GET {{baseUrl}}/api/v1/seller/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -443,7 +443,7 @@ GET {{baseUrl}}/api/v1/products?lowestPrice=0&highestPrice=100
     &specificFunctionalities=ANTIBACTERIAL,ANTIVIRAL&environmentalCompatibilities=ENVIRONMENTAL_COMPATIBILITY,BIODEGRADABLE
     &lifeCycles=LIFE_CYCLE&regionalityList=MADE_IN_GERMANY&resourceConsumptions=LOW_USAGE
     &socialEthics=FAIR_WAGES&sustainabilityCompositions=RARE_MATERIALS&sustainabilityLightweights=LIGHTWEIGHT&lowestThickness=0&highestThickness=30
-    &lowestFlexibility=0&highestFlexibility=30&lowestBreathability=0&highestBreathability=30&lowestMoistureWicking=0&highestMoistureWicking=30
+    &lowestWeightPerUnitArea=0&highestWeightPerUnitArea=30&lowestBreathability=0&highestBreathability=30&lowestMoistureWicking=0&highestMoistureWicking=30
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
 
@@ -491,8 +491,8 @@ Content-Type: application/json
         client.assert(response.body.content[1].materialBehavior.scratchResistant === "VERY", "scratchResistant filter failed, scratchResistant does not match");
         client.assert(response.body.content[1].materialBehavior.sweatWicking === "VERY", "sweatWicking filter failed, sweatWicking does not match");
         client.assert(response.body.content[1].materialBehavior.washable === "VERY", "washable filter failed, washable does not match");
-        client.assert(response.body.content[1].materialParameter.thickness === 20, "Creation failed, thickness does not match");
-        client.assert(response.body.content[1].materialParameter.flexibility === 20, "Creation failed, flexibility does not match");
+        client.assert(response.body.content[1].materialParameter.thickness === 2, "Creation failed, thickness does not match");
+        client.assert(response.body.content[1].materialParameter.weightPerUnitArea === 20, "Creation failed, weight per unit area does not match");
         client.assert(response.body.content[1].materialParameter.breathability === 20, "Creation failed, breathability does not match");
         client.assert(response.body.content[1].materialParameter.moistureWicking === 20, "Creation failed, moistureWicking does not match");
         client.assert(response.body.content[1].motif === "ANIMALS", "motif filter failed, motif does not match");
@@ -577,6 +577,7 @@ Content-Type: application/json
 > {%
     client.test("Get all products" ,function() {
         client.assert(response.status === 200, "Status code is 200");
-        client.assert(response.body.page.totalElements === 0, "Deletion failed, product total element didnt match");
+        client.assert(response.body.page.totalElements === 0, "Can not see other companies' products");
     });
 %}
+###

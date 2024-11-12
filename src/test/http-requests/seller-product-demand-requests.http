@@ -123,8 +123,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -259,8 +259,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -394,8 +394,8 @@ Content-Type: application/json
     "washable": "VERY"
   },
   "materialParameter": {
-    "thickness": 20,
-    "flexibility": 20,
+    "thickness": 2,
+    "weightPerUnitArea": 20,
     "breathability": 20,
     "moistureWicking": 20
   },
@@ -560,7 +560,7 @@ Content-Type: application/json
 
 > {%
     client.test("Testing customer's total number of product demand", function () {
-        client.assert( client.global.get("sellersTotalDemands"), response.body.page.totalElements);
+        client.assert( client.global.get("sellersTotalDemands").toString(), response.body.page.totalElements);
     });
 %}
 
@@ -574,3 +574,4 @@ Content-Type: application/json
 DELETE {{baseUrl}}/api/v1/product-demands/{{newProductDemandID2}}
 Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
+###
