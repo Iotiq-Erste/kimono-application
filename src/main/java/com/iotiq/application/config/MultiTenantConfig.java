@@ -50,6 +50,9 @@ public class MultiTenantConfig {
             }
         }
 
+        // Do the Flyway migration for all the tenant databases
+        DbMigrator.getInstance().migrateDataSources(resolvedDataSources.values());
+
         AbstractRoutingDataSource dataSource = new MultiTenantDataSource();
         dataSource.setDefaultTargetDataSource(resolvedDataSources.get(defaultTenant));
         dataSource.setTargetDataSources(resolvedDataSources);
