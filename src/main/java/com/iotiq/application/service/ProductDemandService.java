@@ -6,7 +6,6 @@ import com.iotiq.application.domain.ProductDemand;
 import com.iotiq.application.domain.Seller;
 import com.iotiq.application.domain.enums.RequestStatus;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
-import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
 import com.iotiq.application.messages.productdemand.ProductDemandUpdateRequest;
