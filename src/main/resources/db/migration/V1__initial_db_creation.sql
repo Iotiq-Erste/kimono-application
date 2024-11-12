@@ -35,6 +35,17 @@ create table if not exists seller
             references users
 );
 
+create table if not exists cart
+(
+    id                 uuid not null
+    primary key,
+    created_by         varchar(255),
+    created_date       timestamp(6) with time zone,
+                                        last_modified_by   varchar(255),
+    last_modified_date timestamp(6) with time zone,
+                                        customer_id UUID UNIQUE
+                                        );
+
 create table if not exists customer
 (
     id                                        uuid not null
@@ -90,17 +101,168 @@ create table if not exists customer
     waist_circumference                       integer,
     waist_to_hip_length_on_average            integer,
     wrist_circumference                       integer,
-    cart_id                                   uuid
-        constraint uk_g9sk3sbpw80xw32a5b435qvw2
-            unique
-        constraint fkam4cgy6fxmjm52m8otoph84m3
-            references cart,
-    user_id                                   uuid
-        constraint uk_j7ja2xvrxudhvssosd4nu1o92
-            unique
-        constraint fkra1cb3fu95r1a0m7aksow0nk4
-            references users
+    user_id UUID UNIQUE,
+    cart_id UUID UNIQUE
 );
+
+ALTER TABLE cart
+    ADD CONSTRAINT fk_cart_customer
+        FOREIGN KEY (customer_id) REFERENCES customer(id);
+
+
+ALTER TABLE customer
+    ADD CONSTRAINT fk_customer_cart
+        FOREIGN KEY (cart_id) REFERENCES cart(id);
+
+
+create table if not exists product
+(
+    id                    uuid not null
+    primary key,
+    adult_age_group       varchar(255)
+    constraint product_adult_age_group_check
+    check ((adult_age_group)::text = ANY
+((ARRAY ['NINETEEN_TO_TWENTYNINE'::character varying, 'THIRTY_TO_FOURTYFIVE'::character varying, 'FOURTYSIX_TO_SIXTYSEVEN'::character varying, 'GREATER_THAN_SIXTYESEVEN'::character varying])::text[])),
+    children_age_group    varchar(255)
+    constraint product_children_age_group_check
+    check ((children_age_group)::text = ANY
+((ARRAY ['SMALLER_THAN_SIX_MONTHS'::character varying, 'SIX_MONTHS_TO_TWO_YEAR'::character varying, 'TWO_TO_SIX_YEARS'::character varying, 'SEVEN_TO_THIRTEEN_YEARS'::character varying, 'FOURTEEN_TO_EIGHTEEN_YEARS'::character varying])::text[])),
+    application_area      varchar(255)
+    constraint product_application_area_check
+    check ((application_area)::text = ANY
+((ARRAY ['PROFESSIONAL_CLOTHING'::character varying, 'SLEEP_AND_REST_TIME'::character varying, 'OUTDOOR'::character varying, 'WOUND_HEALING'::character varying, 'BANDAGE_MATERIAL'::character varying, 'SCRATCH_PROTECTION'::character varying, 'THERAPY_SUPPORT'::character varying, 'SUN_PROTECTION'::character varying, 'HEAT_PROTECTION'::character varying, 'MECHANICAL_PROTECTION'::character varying, 'BED_PROTECTION'::character varying, 'UNDERWEAR'::character varying, 'HOODIES_AND_PULLOVERS'::character varying, 'OCCASION_AND_FESTIVE'::character varying, 'ACCESSORIES_FOR_BABIES_AND_CHILDREN'::character varying, 'PANTS_AND_SHORTS_AND_JUMPSUITS'::character varying, 'SWIMWEAR'::character varying, 'OTHERS'::character varying])::text[])),
+    usage_cycle           varchar(255)
+    constraint product_usage_cycle_check
+    check ((usage_cycle)::text = ANY
+((ARRAY ['ONE_TIME'::character varying, 'TWO_TO_NINE'::character varying, 'TEN_TO_FOURTYNINE'::character varying, 'FIFTY_TO_HUNDRED'::character varying, 'MORE_THAN_HUNDRED'::character varying])::text[])),
+    brand                 varchar(255),
+    category              varchar(255)
+    constraint product_category_check
+    check ((category)::text = ANY
+((ARRAY ['JEANS'::character varying, 'T_SHIRT'::character varying, 'SHIRT'::character varying, 'JACKET'::character varying, 'COAT'::character varying, 'HOODIE'::character varying, 'SWEATSHIRT'::character varying, 'DRESS'::character varying, 'SKIRT'::character varying, 'SHORTS'::character varying, 'PANTS'::character varying, 'LEGGINGS'::character varying, 'JUMPSUIT'::character varying, 'SWIMSUIT'::character varying, 'UNDERWEAR'::character varying, 'SOCKS'::character varying, 'SHOES'::character varying, 'ACCESSORIES'::character varying])::text[])),
+    color                 varchar(255)
+    constraint product_color_check
+    check ((color)::text = ANY
+((ARRAY ['RED'::character varying, 'GREEN'::character varying, 'BLUE'::character varying, 'WHITE'::character varying, 'BLACK'::character varying])::text[])),
+    description           varchar(2048),
+    design_appearance     varchar(255)
+    constraint product_design_appearance_check
+    check ((design_appearance)::text = ANY
+((ARRAY ['DYNAMIC'::character varying, 'CEREMONIAL'::character varying, 'INNOVATIVE'::character varying, 'CLASSIC'::character varying, 'PRIMITIVE'::character varying, 'PROVOCATIVE'::character varying, 'ROMANTIC'::character varying, 'FACTUAL'::character varying, 'SIMPLE'::character varying, 'STATIC'::character varying, 'TECHNICAL'::character varying, 'TRADITIONAL'::character varying, 'LUXURIOUS'::character varying, 'RESTRAINED'::character varying])::text[])),
+    design_color          varchar(255)
+    constraint product_design_color_check
+    check ((design_color)::text = ANY
+((ARRAY ['COLORFUL'::character varying, 'NON_COLORFUL'::character varying, 'PATTERNED'::character varying, 'RAW_WHITE_STRETCHED'::character varying, 'RAW_WHITE_WASHED'::character varying, 'WHITE'::character varying, 'BLACK'::character varying])::text[])),
+    gender                varchar(255)
+    constraint product_gender_check
+    check ((gender)::text = ANY
+((ARRAY ['MALE'::character varying, 'FEMALE'::character varying, 'UNISEX'::character varying])::text[])),
+    elasticity            varchar(255)
+    constraint product_elasticity_check
+    check ((elasticity)::text = ANY
+((ARRAY ['VERY_ELASTIC'::character varying, 'ELASTIC'::character varying, 'SLIGHTLY_ELASTIC'::character varying, 'SOMEWHAT_STIFF'::character varying, 'VERY_STIFF'::character varying])::text[])),
+    fineness              varchar(255)
+    constraint product_fineness_check
+    check ((fineness)::text = ANY
+((ARRAY ['VERY_DELICATE'::character varying, 'VERY_FINE'::character varying, 'FINE'::character varying, 'COARSE'::character varying, 'VERY_COARSE'::character varying])::text[])),
+    lightweight           varchar(255)
+    constraint product_lightweight_check
+    check ((lightweight)::text = ANY
+((ARRAY ['ULTRA_LIGHT'::character varying, 'VERY_LIGHT'::character varying, 'LIGHT'::character varying, 'HEAVY'::character varying, 'VERY_HEAVY'::character varying])::text[])),
+    lint_free             varchar(255)
+    constraint product_lint_free_check
+    check ((lint_free)::text = ANY
+((ARRAY ['FREE'::character varying, 'ALMOST_FREE'::character varying, 'SOMEWHAT_FREE'::character varying, 'NOT_FREE'::character varying, 'HIGHLY_LINTY'::character varying])::text[])),
+    scratchy              varchar(255)
+    constraint product_scratchy_check
+    check ((scratchy)::text = ANY
+((ARRAY ['VERY_SCRATCHY'::character varying, 'SCRATCHY'::character varying, 'ROUGH'::character varying, 'SMOOTH'::character varying, 'VELVETY'::character varying])::text[])),
+    seam_feelable         varchar(255)
+    constraint product_seam_feelable_check
+    check ((seam_feelable)::text = ANY
+((ARRAY ['NOT_FEELABLE'::character varying, 'BARELY_FEELABLE'::character varying, 'FEELABLE'::character varying, 'VERY_FEELABLE'::character varying])::text[])),
+    softness              varchar(255)
+    constraint product_softness_check
+    check ((softness)::text = ANY
+((ARRAY ['VERY_SOFT'::character varying, 'SOFT'::character varying, 'MODERATE'::character varying, 'HARD'::character varying, 'VERY_HARD'::character varying])::text[])),
+    uniform               varchar(255)
+    constraint product_uniform_check
+    check ((uniform)::text = ANY
+((ARRAY ['COMPLETELY'::character varying, 'MOSTLY'::character varying, 'IRREGULAR'::character varying, 'BROKEN'::character varying, 'VERY_UNEVEN'::character varying])::text[])),
+    image_url             varchar(255),
+    abrasion_resistant    varchar(255)
+    constraint product_abrasion_resistant_check
+    check ((abrasion_resistant)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    absorbency            varchar(255)
+    constraint product_absorbency_check
+    check ((absorbency)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    antistatic            varchar(255)
+    constraint product_antistatic_check
+    check ((antistatic)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    breathable            varchar(255)
+    constraint product_breathable_check
+    check ((breathable)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    colorfast             varchar(255)
+    constraint product_colorfast_check
+    check ((colorfast)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    moisture_transporting varchar(255)
+    constraint product_moisture_transporting_check
+    check ((moisture_transporting)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    odor_neutralizing     varchar(255)
+    constraint product_odor_neutralizing_check
+    check ((odor_neutralizing)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    scratch_resistant     varchar(255)
+    constraint product_scratch_resistant_check
+    check ((scratch_resistant)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    sweat_wicking         varchar(255)
+    constraint product_sweat_wicking_check
+    check ((sweat_wicking)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    washable              varchar(255)
+    constraint product_washable_check
+    check ((washable)::text = ANY
+((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
+    breathability         integer,
+    flexibility           integer,
+    moisture_wicking      integer,
+    thickness             real,
+    motif                 varchar(255)
+    constraint product_motif_check
+    check ((motif)::text = ANY
+((ARRAY ['NONE'::character varying, 'ANIMALS'::character varying, 'DOTS'::character varying, 'STARS'::character varying, 'TEXT'::character varying, 'IMAGE'::character varying, 'LOGO'::character varying])::text[])),
+    neurodermatitis       varchar(255)
+    constraint product_neurodermatitis_check
+    check ((neurodermatitis)::text = ANY
+((ARRAY ['STAGE_ONE_DRY_SKIN'::character varying, 'STAGE_TWO_MILD_ECZEMA'::character varying, 'STAGE_THREE_MODERATE_TO_SEVERE_ECZEMA'::character varying])::text[])),
+    oekotex_standard      varchar(255)
+    constraint product_oekotex_standard_check
+    check ((oekotex_standard)::text = ANY
+((ARRAY ['PRODUCT_CLASS_1'::character varying, 'PRODUCT_CLASS_2'::character varying])::text[])),
+    amount                numeric(38, 2),
+    currency              smallint
+    constraint product_currency_check
+    check ((currency >= 0) AND (currency <= 2)),
+    price_range           varchar(255)
+    constraint product_price_range_check
+    check ((price_range)::text = ANY
+((ARRAY ['STANDARD'::character varying, 'HIGH'::character varying, 'PREMIUM'::character varying])::text[])),
+    rating                varchar(255)
+    constraint product_rating_check
+    check ((rating)::text = ANY
+((ARRAY ['FOUR_POINT_FIVE_AND_OVER'::character varying, 'FOUR_POINT_AND_OVER'::character varying, 'THREE_POINT_AND_OVER'::character varying, 'TWO_POINT_AND_OVER'::character varying, 'ONE_POINT_AND_OVER'::character varying])::text[])),
+    title                 varchar(255),
+    seller_id             uuid
+    constraint fkesd6fy52tk7esoo2gcls4lfe3
+    references seller
+    );
 
 create index if not exists brand_index
     on product (brand);
@@ -286,23 +448,7 @@ create table if not exists order_table
             references customer
 );
 
-create table if not exists cart
-(
-    id                 uuid not null
-        primary key,
-    created_by         varchar(255),
-    created_date       timestamp(6) with time zone,
-    last_modified_by   varchar(255),
-    last_modified_date timestamp(6) with time zone,
-    customer_id        uuid
-        constraint uk_867x3yysb1f3jk41cv3vsoejj
-            unique
-        constraint fkdebwvad6pp1ekiqy5jtixqbaj
-            references customer
-);
 
-alter table cart
-    owner to postgres;
 
 create table if not exists cart_item
 (
@@ -841,155 +987,6 @@ create table if not exists seller_skills
         constraint seller_skills_skills_check
             check ((skills)::text = ANY
         ((ARRAY ['YARN_SUPPLY'::character varying, 'WOVEN_FABRIC'::character varying, 'FINISHING'::character varying, 'PROTOTYPE'::character varying, 'PRODUCT_PARAMETER_MODELING'::character varying, 'MODELING_SUPPORT'::character varying, 'CO_DESIGN'::character varying, 'PATTERN_CREATION'::character varying, 'CUTTING'::character varying, 'ASSEMBLY'::character varying, 'ACTIVE_SUBSTANCE_PLACEMENT'::character varying, 'QUALITY_CONTROL'::character varying, 'B2C'::character varying, 'RECYCLING'::character varying])::text[]))
-    );
-
-create table if not exists product
-(
-    id                    uuid not null
-    primary key,
-    adult_age_group       varchar(255)
-    constraint product_adult_age_group_check
-    check ((adult_age_group)::text = ANY
-((ARRAY ['NINETEEN_TO_TWENTYNINE'::character varying, 'THIRTY_TO_FOURTYFIVE'::character varying, 'FOURTYSIX_TO_SIXTYSEVEN'::character varying, 'GREATER_THAN_SIXTYESEVEN'::character varying])::text[])),
-    children_age_group    varchar(255)
-    constraint product_children_age_group_check
-    check ((children_age_group)::text = ANY
-((ARRAY ['SMALLER_THAN_SIX_MONTHS'::character varying, 'SIX_MONTHS_TO_TWO_YEAR'::character varying, 'TWO_TO_SIX_YEARS'::character varying, 'SEVEN_TO_THIRTEEN_YEARS'::character varying, 'FOURTEEN_TO_EIGHTEEN_YEARS'::character varying])::text[])),
-    application_area      varchar(255)
-    constraint product_application_area_check
-    check ((application_area)::text = ANY
-((ARRAY ['PROFESSIONAL_CLOTHING'::character varying, 'SLEEP_AND_REST_TIME'::character varying, 'OUTDOOR'::character varying, 'WOUND_HEALING'::character varying, 'BANDAGE_MATERIAL'::character varying, 'SCRATCH_PROTECTION'::character varying, 'THERAPY_SUPPORT'::character varying, 'SUN_PROTECTION'::character varying, 'HEAT_PROTECTION'::character varying, 'MECHANICAL_PROTECTION'::character varying, 'BED_PROTECTION'::character varying, 'UNDERWEAR'::character varying, 'HOODIES_AND_PULLOVERS'::character varying, 'OCCASION_AND_FESTIVE'::character varying, 'ACCESSORIES_FOR_BABIES_AND_CHILDREN'::character varying, 'PANTS_AND_SHORTS_AND_JUMPSUITS'::character varying, 'SWIMWEAR'::character varying, 'OTHERS'::character varying])::text[])),
-    usage_cycle           varchar(255)
-    constraint product_usage_cycle_check
-    check ((usage_cycle)::text = ANY
-((ARRAY ['ONE_TIME'::character varying, 'TWO_TO_NINE'::character varying, 'TEN_TO_FOURTYNINE'::character varying, 'FIFTY_TO_HUNDRED'::character varying, 'MORE_THAN_HUNDRED'::character varying])::text[])),
-    brand                 varchar(255),
-    category              varchar(255)
-    constraint product_category_check
-    check ((category)::text = ANY
-((ARRAY ['JEANS'::character varying, 'T_SHIRT'::character varying, 'SHIRT'::character varying, 'JACKET'::character varying, 'COAT'::character varying, 'HOODIE'::character varying, 'SWEATSHIRT'::character varying, 'DRESS'::character varying, 'SKIRT'::character varying, 'SHORTS'::character varying, 'PANTS'::character varying, 'LEGGINGS'::character varying, 'JUMPSUIT'::character varying, 'SWIMSUIT'::character varying, 'UNDERWEAR'::character varying, 'SOCKS'::character varying, 'SHOES'::character varying, 'ACCESSORIES'::character varying])::text[])),
-    color                 varchar(255)
-    constraint product_color_check
-    check ((color)::text = ANY
-((ARRAY ['RED'::character varying, 'GREEN'::character varying, 'BLUE'::character varying, 'WHITE'::character varying, 'BLACK'::character varying])::text[])),
-    description           varchar(2048),
-    design_appearance     varchar(255)
-    constraint product_design_appearance_check
-    check ((design_appearance)::text = ANY
-((ARRAY ['DYNAMIC'::character varying, 'CEREMONIAL'::character varying, 'INNOVATIVE'::character varying, 'CLASSIC'::character varying, 'PRIMITIVE'::character varying, 'PROVOCATIVE'::character varying, 'ROMANTIC'::character varying, 'FACTUAL'::character varying, 'SIMPLE'::character varying, 'STATIC'::character varying, 'TECHNICAL'::character varying, 'TRADITIONAL'::character varying, 'LUXURIOUS'::character varying, 'RESTRAINED'::character varying])::text[])),
-    design_color          varchar(255)
-    constraint product_design_color_check
-    check ((design_color)::text = ANY
-((ARRAY ['COLORFUL'::character varying, 'NON_COLORFUL'::character varying, 'PATTERNED'::character varying, 'RAW_WHITE_STRETCHED'::character varying, 'RAW_WHITE_WASHED'::character varying, 'WHITE'::character varying, 'BLACK'::character varying])::text[])),
-    gender                varchar(255)
-    constraint product_gender_check
-    check ((gender)::text = ANY
-((ARRAY ['MALE'::character varying, 'FEMALE'::character varying, 'UNISEX'::character varying])::text[])),
-    elasticity            varchar(255)
-    constraint product_elasticity_check
-    check ((elasticity)::text = ANY
-((ARRAY ['VERY_ELASTIC'::character varying, 'ELASTIC'::character varying, 'SLIGHTLY_ELASTIC'::character varying, 'SOMEWHAT_STIFF'::character varying, 'VERY_STIFF'::character varying])::text[])),
-    fineness              varchar(255)
-    constraint product_fineness_check
-    check ((fineness)::text = ANY
-((ARRAY ['VERY_DELICATE'::character varying, 'VERY_FINE'::character varying, 'FINE'::character varying, 'COARSE'::character varying, 'VERY_COARSE'::character varying])::text[])),
-    lightweight           varchar(255)
-    constraint product_lightweight_check
-    check ((lightweight)::text = ANY
-((ARRAY ['ULTRA_LIGHT'::character varying, 'VERY_LIGHT'::character varying, 'LIGHT'::character varying, 'HEAVY'::character varying, 'VERY_HEAVY'::character varying])::text[])),
-    lint_free             varchar(255)
-    constraint product_lint_free_check
-    check ((lint_free)::text = ANY
-((ARRAY ['FREE'::character varying, 'ALMOST_FREE'::character varying, 'SOMEWHAT_FREE'::character varying, 'NOT_FREE'::character varying, 'HIGHLY_LINTY'::character varying])::text[])),
-    scratchy              varchar(255)
-    constraint product_scratchy_check
-    check ((scratchy)::text = ANY
-((ARRAY ['VERY_SCRATCHY'::character varying, 'SCRATCHY'::character varying, 'ROUGH'::character varying, 'SMOOTH'::character varying, 'VELVETY'::character varying])::text[])),
-    seam_feelable         varchar(255)
-    constraint product_seam_feelable_check
-    check ((seam_feelable)::text = ANY
-((ARRAY ['NOT_FEELABLE'::character varying, 'BARELY_FEELABLE'::character varying, 'FEELABLE'::character varying, 'VERY_FEELABLE'::character varying])::text[])),
-    softness              varchar(255)
-    constraint product_softness_check
-    check ((softness)::text = ANY
-((ARRAY ['VERY_SOFT'::character varying, 'SOFT'::character varying, 'MODERATE'::character varying, 'HARD'::character varying, 'VERY_HARD'::character varying])::text[])),
-    uniform               varchar(255)
-    constraint product_uniform_check
-    check ((uniform)::text = ANY
-((ARRAY ['COMPLETELY'::character varying, 'MOSTLY'::character varying, 'IRREGULAR'::character varying, 'BROKEN'::character varying, 'VERY_UNEVEN'::character varying])::text[])),
-    image_url             varchar(255),
-    abrasion_resistant    varchar(255)
-    constraint product_abrasion_resistant_check
-    check ((abrasion_resistant)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    absorbency            varchar(255)
-    constraint product_absorbency_check
-    check ((absorbency)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    antistatic            varchar(255)
-    constraint product_antistatic_check
-    check ((antistatic)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    breathable            varchar(255)
-    constraint product_breathable_check
-    check ((breathable)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    colorfast             varchar(255)
-    constraint product_colorfast_check
-    check ((colorfast)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    moisture_transporting varchar(255)
-    constraint product_moisture_transporting_check
-    check ((moisture_transporting)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    odor_neutralizing     varchar(255)
-    constraint product_odor_neutralizing_check
-    check ((odor_neutralizing)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    scratch_resistant     varchar(255)
-    constraint product_scratch_resistant_check
-    check ((scratch_resistant)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    sweat_wicking         varchar(255)
-    constraint product_sweat_wicking_check
-    check ((sweat_wicking)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    washable              varchar(255)
-    constraint product_washable_check
-    check ((washable)::text = ANY
-((ARRAY ['VERY'::character varying, 'MODERATE'::character varying, 'SOMEWHAT'::character varying, 'BARELY'::character varying, 'NOT_AT_ALL'::character varying])::text[])),
-    breathability         integer,
-    flexibility           integer,
-    moisture_wicking      integer,
-    thickness             real,
-    motif                 varchar(255)
-    constraint product_motif_check
-    check ((motif)::text = ANY
-((ARRAY ['NONE'::character varying, 'ANIMALS'::character varying, 'DOTS'::character varying, 'STARS'::character varying, 'TEXT'::character varying, 'IMAGE'::character varying, 'LOGO'::character varying])::text[])),
-    neurodermatitis       varchar(255)
-    constraint product_neurodermatitis_check
-    check ((neurodermatitis)::text = ANY
-((ARRAY ['STAGE_ONE_DRY_SKIN'::character varying, 'STAGE_TWO_MILD_ECZEMA'::character varying, 'STAGE_THREE_MODERATE_TO_SEVERE_ECZEMA'::character varying])::text[])),
-    oekotex_standard      varchar(255)
-    constraint product_oekotex_standard_check
-    check ((oekotex_standard)::text = ANY
-((ARRAY ['PRODUCT_CLASS_1'::character varying, 'PRODUCT_CLASS_2'::character varying])::text[])),
-    amount                numeric(38, 2),
-    currency              smallint
-    constraint product_currency_check
-    check ((currency >= 0) AND (currency <= 2)),
-    price_range           varchar(255)
-    constraint product_price_range_check
-    check ((price_range)::text = ANY
-((ARRAY ['STANDARD'::character varying, 'HIGH'::character varying, 'PREMIUM'::character varying])::text[])),
-    rating                varchar(255)
-    constraint product_rating_check
-    check ((rating)::text = ANY
-((ARRAY ['FOUR_POINT_FIVE_AND_OVER'::character varying, 'FOUR_POINT_AND_OVER'::character varying, 'THREE_POINT_AND_OVER'::character varying, 'TWO_POINT_AND_OVER'::character varying, 'ONE_POINT_AND_OVER'::character varying])::text[])),
-    title                 varchar(255),
-    seller_id             uuid
-    constraint fkesd6fy52tk7esoo2gcls4lfe3
-    references seller
     );
 
 create table if not exists flyway_schema_history
