@@ -6,6 +6,7 @@ import com.iotiq.application.domain.ProductDemand;
 import com.iotiq.application.domain.Seller;
 import com.iotiq.application.domain.enums.RequestStatus;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
+import com.iotiq.application.messages.product.ProductUpdateRequest;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
 import com.iotiq.application.messages.productdemand.ProductDemandUpdateRequest;
@@ -14,6 +15,9 @@ import com.iotiq.application.repository.ProductDemandRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.Person;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +27,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -30,11 +35,14 @@ import java.util.UUID;
 public class ProductDemandService {
     private final ProductDemandRepository productDemandRepository;
     private static final Logger log = LoggerFactory.getLogger(ProductDemandService.class);
+    private final Validator validator;
 
     @Transactional
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest, Customer customer) {
         ProductDemand productDemand = ModelMapperUtil.map(productDemandRequest, ProductDemand.class);
         productDemand.setCustomer(customer);
+
+        validate(productDemand);
 
         ProductDemand createdProductDemand = productDemandRepository.save(productDemand);
 
@@ -75,6 +83,8 @@ public class ProductDemandService {
         ProductDemand productDemand = findProductDemandOfCurrentCustomerById(id, customer);
 
         ModelMapperUtil.map(updateRequest, productDemand);
+        validate(productDemand);
+
         productDemandRepository.save(productDemand);
 
         log.info("Product demand {} updated", productDemand.getId());
@@ -161,5 +171,12 @@ public class ProductDemandService {
         basicInfo.setPhoneNumber(productDemand.getCustomer().getUser().getPersonalInfo().getPhoneNumber());
         basicInfo.setEmail(productDemand.getCustomer().getUser().getPersonalInfo().getEmail());
         return basicInfo;
+    }
+
+    private void validate(ProductDemand productDemand) {
+        Set<ConstraintViolation<ProductDemand>> violations = validator.validate(productDemand);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
     }
 }

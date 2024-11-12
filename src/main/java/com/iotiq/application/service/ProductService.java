@@ -76,9 +76,7 @@ import com.iotiq.application.repository.ProductRepository;
 import com.iotiq.application.repository.SellerRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Valid;
-import jakarta.validation.Validator;
+import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -125,8 +123,9 @@ public class ProductService {
     @Transactional
     public ProductDto createProductForSeller(@Valid ProductCreateRequest request, Seller seller) {
         Product product = ModelMapperUtil.map(request, Product.class);
-
         product.setSeller(seller);
+        validate(product);
+
         product = productRepository.save(product);
         return ModelMapperUtil.map(product, ProductDto.class);
     }
@@ -141,6 +140,7 @@ public class ProductService {
                 orElseThrow(() -> new EntityNotFoundException(Product.ENTITY_NAME, id));
 
         ModelMapperUtil.map(request, product);
+        validate(product);
 
         productRepository.save(product);
     }
@@ -212,7 +212,7 @@ public class ProductService {
                     product.getMaterialBehavior() != null ? product.getMaterialBehavior().getSweatWicking() : "",
                     product.getMaterialBehavior() != null ? product.getMaterialBehavior().getWashable() : "",
                     product.getMaterialParameter() != null ? product.getMaterialParameter().getThickness() : "",
-                    product.getMaterialParameter() != null ? product.getMaterialParameter().getFlexibility() : "",
+                    product.getMaterialParameter() != null ? product.getMaterialParameter().getWeightPerUnitArea() : "",
                     product.getMaterialParameter() != null ? product.getMaterialParameter().getBreathability() : "",
                     product.getMaterialParameter() != null ? product.getMaterialParameter().getMoistureWicking() : "",
                     product.getMotif(),
@@ -315,7 +315,7 @@ public class ProductService {
                 productRequest.setMaterialBehavior(materialBehavior);
                 MaterialParameter materialParameter = new MaterialParameter(
                         parse(Float.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_THICKNESS.value())),
-                        parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_FLEXIBILITY.value())),
+                        parse(Float.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_WEIGHT_PER_UNIT_AREA.value())),
                         parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_BREATHABILITY.value())),
                         parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_MOISTURE_WICKING.value())));
                 productRequest.setMaterialParameter(materialParameter);
@@ -401,5 +401,12 @@ public class ProductService {
         return enumList.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(";"));
+    }
+
+    private void validate(Product product) {
+        Set<ConstraintViolation<Product>> violations = validator.validate(product);
+        if (!violations.isEmpty()) {
+            throw new ConstraintViolationException(violations);
+        }
     }
 }

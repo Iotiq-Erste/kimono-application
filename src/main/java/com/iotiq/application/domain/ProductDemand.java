@@ -23,6 +23,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -88,6 +89,7 @@ public class ProductDemand extends BaseAbstractAuditingEntity<UUID> {
 
     //Material Parameter
     @Embedded
+    @Valid
     private MaterialParameter materialParameter;
 
     //Motiv
