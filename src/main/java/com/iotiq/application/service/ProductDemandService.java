@@ -15,6 +15,8 @@ import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.Person;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,16 +29,23 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductDemandService {
     private final ProductDemandRepository productDemandRepository;
+    private static final Logger log = LoggerFactory.getLogger(ProductDemandService.class);
 
     @Transactional
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest, Customer customer) {
         ProductDemand productDemand = ModelMapperUtil.map(productDemandRequest, ProductDemand.class);
         productDemand.setCustomer(customer);
-        return productDemandRepository.save(productDemand);
+
+        ProductDemand createdProductDemand = productDemandRepository.save(productDemand);
+
+        log.info("Product demand {} created", createdProductDemand.getId());
+
+        return createdProductDemand;
     }
 
-    public Page<ProductDemandDto> getProductDemandsForSeller(Pageable pageable) {
-        return productDemandRepository.findAllByIsActiveTrueAndSellerIsNull(pageable).map(productDemand -> {
+    public Page<ProductDemandDto> getProductDemandsForSeller(Pageable pageable, Seller seller) {
+        return productDemandRepository.
+                findAllByIsActiveTrueAndSellerIsNullAndSustainabilitySkillsIn(pageable, seller.getSkills()).map(productDemand -> {
             ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
             demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
             return demandDto;
@@ -67,6 +76,8 @@ public class ProductDemandService {
 
         ModelMapperUtil.map(updateRequest, productDemand);
         productDemandRepository.save(productDemand);
+
+        log.info("Product demand {} updated", productDemand.getId());
     }
 
     /**
@@ -82,7 +93,9 @@ public class ProductDemandService {
         ProductDemand productDemand = productDemandRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
         updateSellerInfo(productDemand, updateRequest.getStatus(), seller);
-        productDemand.setStatus(updateRequest.getStatus());
+        productDemand.setStatus(
+                updateRequest.getStatus() == RequestStatus.CANCELLED ?
+                RequestStatus.PENDING : updateRequest.getStatus());
         productDemandRepository.save(productDemand);
     }
 
@@ -96,13 +109,14 @@ public class ProductDemandService {
      *                                 or if the seller id does not match the existing seller id in the product demand.
      */
     private void updateSellerInfo(ProductDemand productDemand, RequestStatus status, Seller seller) {
-        UUID sellerId = productDemand.getSeller() == null ? null : productDemand.getSeller().getId();
+        UUID productDemandSellerId = productDemand.getSeller() == null ? null : productDemand.getSeller().getId();
 
-        if (sellerId == null && status.equals(RequestStatus.IN_PROGRESS)) {
+        if (productDemandSellerId == null && status.equals(RequestStatus.IN_PROGRESS)) {
             productDemand.setSeller(seller);
-        } else if (sellerId != null && sellerId.equals(seller.getId())) {
+        } else if (productDemandSellerId != null && productDemandSellerId.equals(seller.getId())) {
             productDemand.setSeller(status.equals(RequestStatus.CANCELLED) ? null : seller);
         } else {
+            log.error("Seller {} cannot update the status for this product demand {}.", seller.getId(), productDemand.getId());
             throw new EntityNotFoundException(ProductDemand.ENTITY_NAME, productDemand.getId());
         }
     }
