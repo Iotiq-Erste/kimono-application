@@ -26,6 +26,12 @@ public class MultiTenantConfig {
     @Value("${tenantPropertiesPath}")
     private String tenantPropertiesPath;
 
+    private final DbMigrator dbMigrator;
+
+    public MultiTenantConfig(DbMigrator dbMigrator) {
+        this.dbMigrator = dbMigrator;
+    }
+
     @Bean
     @ConfigurationProperties(prefix = "tenants")
     public DataSource dataSource() {
@@ -49,6 +55,9 @@ public class MultiTenantConfig {
                 throw new TenantDataSourceConnectionException("Problem in tenant datasource:", exp);
             }
         }
+
+        // Do the Flyway migration for all the tenant databases
+        dbMigrator.migrateDataSources(resolvedDataSources.values());
 
         AbstractRoutingDataSource dataSource = new MultiTenantDataSource();
         dataSource.setDefaultTargetDataSource(resolvedDataSources.get(defaultTenant));
