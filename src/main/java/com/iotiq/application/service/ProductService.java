@@ -123,7 +123,7 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDto createProductForSeller(@Valid ProductCreateRequest request, Seller seller) {
+    public ProductDto createProductForSeller(ProductCreateRequest request, Seller seller) {
         Product product = ModelMapperUtil.map(request, Product.class);
         product.setSeller(seller);
         validate(product);
