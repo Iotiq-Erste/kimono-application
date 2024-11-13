@@ -78,10 +78,14 @@ import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -106,6 +110,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -127,11 +132,16 @@ public class ProductService {
         validate(product);
 
         product = productRepository.save(product);
+
+        log.info("Product created: {}", product.getId());
+
         return ModelMapperUtil.map(product, ProductDto.class);
     }
 
+    @Transactional
     public void delete(UUID id) {
         productRepository.deleteById(id);
+        log.info("Product deleted: {}", id);
     }
 
     @Transactional
@@ -143,6 +153,7 @@ public class ProductService {
         validate(product);
 
         productRepository.save(product);
+        log.info("Product updated: {}", product.getId());
     }
 
     public List<BrandProjection> getBrands() {
@@ -365,7 +376,10 @@ public class ProductService {
             if (!productCSVUploadResponse.getMessages().isEmpty()) {
                 return ResponseEntity.badRequest().body(productCSVUploadResponse);
             } else {
-                productRepository.saveAll(productList);
+                List<Product> savedProductList = productRepository.saveAll(productList);
+
+                savedProductList.stream().map(Product::getId).forEach(productID -> {log.info("Product created: {}", productID);});
+
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             }
         } catch (Exception e) {
