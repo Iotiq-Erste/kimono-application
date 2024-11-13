@@ -1,22 +1,13 @@
 package com.iotiq.application.config;
 
 import org.flywaydb.core.Flyway;
+import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.util.Collection;
 
+@Component
 public class DbMigrator {
-    private static DbMigrator instance;
-
-    private DbMigrator() {
-    }
-
-    public static DbMigrator getInstance() {
-        if (instance == null) {
-            instance = new DbMigrator();
-        }
-        return instance;
-    }
 
     public void migrateDataSources(Collection<Object> dataSources) {
         dataSources.forEach(
