@@ -83,9 +83,6 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
-import org.slf4j.ILoggerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -378,7 +375,7 @@ public class ProductService {
             } else {
                 List<Product> savedProductList = productRepository.saveAll(productList);
 
-                savedProductList.stream().map(Product::getId).forEach(productID -> {log.info("Product created: {}", productID);});
+                savedProductList.stream().map(Product::getId).forEach(productID -> log.info("Product created: {}", productID));
 
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             }
