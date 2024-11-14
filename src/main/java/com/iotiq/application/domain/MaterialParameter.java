@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Embeddable
@@ -19,8 +21,8 @@ public class MaterialParameter {
     @DecimalMin("0.05")
     @DecimalMax("2.00")
     private Float thickness;
-    @DecimalMin("0.0")
-    @DecimalMax("600.00")
+    @Min(0)
+    @Max(600)
     private Float weightPerUnitArea;
     @Min(0)
     @Max(100)
