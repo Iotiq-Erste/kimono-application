@@ -66,6 +66,7 @@ import com.iotiq.application.domain.enums.Uniform;
 import com.iotiq.application.domain.enums.UsageCycle;
 import com.iotiq.application.domain.enums.Washable;
 import com.iotiq.application.exception.CSVWriteException;
+import com.iotiq.application.exception.ConstraintException;
 import com.iotiq.application.messages.brand.BrandProjection;
 import com.iotiq.application.messages.product.ProductCSVUploadResponse;
 import com.iotiq.application.messages.product.ProductCreateRequest;
@@ -417,7 +418,7 @@ public class ProductService {
     private void validate(Product product) {
         Set<ConstraintViolation<Product>> violations = validator.validate(product);
         if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+            throw new ConstraintException(violations);
         }
     }
 }

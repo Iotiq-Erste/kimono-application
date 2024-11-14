@@ -5,6 +5,7 @@ import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.ProductDemand;
 import com.iotiq.application.domain.Seller;
 import com.iotiq.application.domain.enums.RequestStatus;
+import com.iotiq.application.exception.ConstraintException;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
@@ -15,7 +16,6 @@ import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.Person;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -175,7 +175,7 @@ public class ProductDemandService {
     private void validate(ProductDemand productDemand) {
         Set<ConstraintViolation<ProductDemand>> violations = validator.validate(productDemand);
         if (!violations.isEmpty()) {
-            throw new ConstraintViolationException(violations);
+            throw new ConstraintException(violations);
         }
     }
 }
