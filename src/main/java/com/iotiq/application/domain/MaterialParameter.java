@@ -23,8 +23,8 @@ public class MaterialParameter {
     @Min(0)
     @Max(600)
     private Float weightPerUnitArea;
-    @Min(0)
-    @Max(100)
+    @Min(50)
+    @Max(500)
     private Integer breathability;
     @Min(0)
     @Max(100)
