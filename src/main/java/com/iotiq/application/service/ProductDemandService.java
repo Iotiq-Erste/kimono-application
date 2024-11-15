@@ -5,7 +5,6 @@ import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.ProductDemand;
 import com.iotiq.application.domain.Seller;
 import com.iotiq.application.domain.enums.RequestStatus;
-import com.iotiq.application.exception.ConstraintException;
 import com.iotiq.application.messages.customer.contact.BasicInfo;
 import com.iotiq.application.messages.productdemand.ProductDemandDto;
 import com.iotiq.application.messages.productdemand.ProductDemandRequest;
@@ -15,7 +14,6 @@ import com.iotiq.application.repository.ProductDemandRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.Person;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -26,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -40,8 +37,6 @@ public class ProductDemandService {
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest, Customer customer) {
         ProductDemand productDemand = ModelMapperUtil.map(productDemandRequest, ProductDemand.class);
         productDemand.setCustomer(customer);
-
-        validate(productDemand);
 
         ProductDemand createdProductDemand = productDemandRepository.save(productDemand);
 
@@ -82,7 +77,6 @@ public class ProductDemandService {
         ProductDemand productDemand = findProductDemandOfCurrentCustomerById(id, customer);
 
         ModelMapperUtil.map(updateRequest, productDemand);
-        validate(productDemand);
 
         productDemandRepository.save(productDemand);
 
@@ -170,12 +164,5 @@ public class ProductDemandService {
         basicInfo.setPhoneNumber(productDemand.getCustomer().getUser().getPersonalInfo().getPhoneNumber());
         basicInfo.setEmail(productDemand.getCustomer().getUser().getPersonalInfo().getEmail());
         return basicInfo;
-    }
-
-    private void validate(ProductDemand productDemand) {
-        Set<ConstraintViolation<ProductDemand>> violations = validator.validate(productDemand);
-        if (!violations.isEmpty()) {
-            throw new ConstraintException(violations);
-        }
     }
 }
