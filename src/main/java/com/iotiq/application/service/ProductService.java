@@ -1,85 +1,21 @@
 package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
-import com.iotiq.application.domain.AgeGroup;
-import com.iotiq.application.domain.ApplicationAreaGroup;
 import com.iotiq.application.domain.Composition;
-import com.iotiq.application.domain.Design;
-import com.iotiq.application.domain.Haptics;
-import com.iotiq.application.domain.MaterialBehavior;
-import com.iotiq.application.domain.MaterialParameter;
-import com.iotiq.application.domain.Price;
-import com.iotiq.application.domain.Product;
-import com.iotiq.application.domain.Seller;
-import com.iotiq.application.domain.Sustainability;
-import com.iotiq.application.domain.enums.AbrassionResistant;
-import com.iotiq.application.domain.enums.Absorbency;
-import com.iotiq.application.domain.enums.ActiveSubstance;
-import com.iotiq.application.domain.enums.ActiveSubstanceArea;
-import com.iotiq.application.domain.enums.ActiveSubstancePlacement;
-import com.iotiq.application.domain.enums.ActiveSubstanceRelease;
-import com.iotiq.application.domain.enums.AdultAgeGroup;
-import com.iotiq.application.domain.enums.Antistatic;
-import com.iotiq.application.domain.enums.ApplicationArea;
-import com.iotiq.application.domain.enums.Breathable;
-import com.iotiq.application.domain.enums.Category;
-import com.iotiq.application.domain.enums.Certification;
-import com.iotiq.application.domain.enums.ChildrenAgeGroup;
-import com.iotiq.application.domain.enums.Color;
-import com.iotiq.application.domain.enums.Colorfast;
+import com.iotiq.application.domain.*;
 import com.iotiq.application.domain.enums.Currency;
-import com.iotiq.application.domain.enums.DesignAppearance;
-import com.iotiq.application.domain.enums.DesignBodyPart;
-import com.iotiq.application.domain.enums.DesignColor;
-import com.iotiq.application.domain.enums.Elasticity;
-import com.iotiq.application.domain.enums.EnvironmentalCompatibility;
-import com.iotiq.application.domain.enums.FiberType;
-import com.iotiq.application.domain.enums.Fineness;
-import com.iotiq.application.domain.enums.Gender;
-import com.iotiq.application.domain.enums.LifeCycle;
-import com.iotiq.application.domain.enums.Lightweight;
-import com.iotiq.application.domain.enums.LintFree;
-import com.iotiq.application.domain.enums.MoistureTransporting;
-import com.iotiq.application.domain.enums.Motif;
-import com.iotiq.application.domain.enums.Neurodermatitis;
-import com.iotiq.application.domain.enums.OdorNeutralizing;
-import com.iotiq.application.domain.enums.OekotexStandard;
-import com.iotiq.application.domain.enums.PriceRange;
-import com.iotiq.application.domain.enums.ProductCSVHeader;
-import com.iotiq.application.domain.enums.Rating;
-import com.iotiq.application.domain.enums.Regionality;
-import com.iotiq.application.domain.enums.ResourceConsumption;
-import com.iotiq.application.domain.enums.ScratchResistant;
-import com.iotiq.application.domain.enums.Scratchy;
-import com.iotiq.application.domain.enums.SeamFeelable;
-import com.iotiq.application.domain.enums.Size;
-import com.iotiq.application.domain.enums.Skill;
-import com.iotiq.application.domain.enums.SocialEthics;
-import com.iotiq.application.domain.enums.Softness;
-import com.iotiq.application.domain.enums.SpecificBodyPart;
-import com.iotiq.application.domain.enums.SpecificFunctionality;
-import com.iotiq.application.domain.enums.Staggering;
-import com.iotiq.application.domain.enums.SustainabilityComposition;
-import com.iotiq.application.domain.enums.SustainabilityLightweight;
-import com.iotiq.application.domain.enums.SweatWicking;
-import com.iotiq.application.domain.enums.Uniform;
-import com.iotiq.application.domain.enums.UsageCycle;
-import com.iotiq.application.domain.enums.Washable;
+import com.iotiq.application.domain.enums.*;
 import com.iotiq.application.exception.CSVWriteException;
 import com.iotiq.application.messages.brand.BrandProjection;
-import com.iotiq.application.messages.product.ProductCSVUploadResponse;
-import com.iotiq.application.messages.product.ProductCreateRequest;
-import com.iotiq.application.messages.product.ProductDto;
-import com.iotiq.application.messages.product.ProductFilter;
-import com.iotiq.application.messages.product.ProductUpdateRequest;
+import com.iotiq.application.messages.product.*;
 import com.iotiq.application.repository.ProductRepository;
 import com.iotiq.application.repository.SellerRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVPrinter;
@@ -99,15 +35,12 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final ProductRepository productRepository;
@@ -123,16 +56,21 @@ public class ProductService {
     }
 
     @Transactional
-    public ProductDto createProductForSeller(@Valid ProductCreateRequest request, Seller seller) {
+    public ProductDto createProductForSeller(ProductCreateRequest request, Seller seller) {
         Product product = ModelMapperUtil.map(request, Product.class);
-
         product.setSeller(seller);
+
         product = productRepository.save(product);
+
+        log.info("Product created: {}", product.getId());
+
         return ModelMapperUtil.map(product, ProductDto.class);
     }
 
+    @Transactional
     public void delete(UUID id) {
         productRepository.deleteById(id);
+        log.info("Product deleted: {}", id);
     }
 
     @Transactional
@@ -143,6 +81,7 @@ public class ProductService {
         ModelMapperUtil.map(request, product);
 
         productRepository.save(product);
+        log.info("Product updated: {}", product.getId());
     }
 
     public List<BrandProjection> getBrands() {
@@ -212,7 +151,7 @@ public class ProductService {
                     product.getMaterialBehavior() != null ? product.getMaterialBehavior().getSweatWicking() : "",
                     product.getMaterialBehavior() != null ? product.getMaterialBehavior().getWashable() : "",
                     product.getMaterialParameter() != null ? product.getMaterialParameter().getThickness() : "",
-                    product.getMaterialParameter() != null ? product.getMaterialParameter().getFlexibility() : "",
+                    product.getMaterialParameter() != null ? product.getMaterialParameter().getWeightPerUnitArea() : "",
                     product.getMaterialParameter() != null ? product.getMaterialParameter().getBreathability() : "",
                     product.getMaterialParameter() != null ? product.getMaterialParameter().getMoistureWicking() : "",
                     product.getMotif(),
@@ -315,7 +254,7 @@ public class ProductService {
                 productRequest.setMaterialBehavior(materialBehavior);
                 MaterialParameter materialParameter = new MaterialParameter(
                         parse(Float.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_THICKNESS.value())),
-                        parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_FLEXIBILITY.value())),
+                        parse(Float.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_WEIGHT_PER_UNIT_AREA.value())),
                         parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_BREATHABILITY.value())),
                         parse(Integer.class, record.get(ProductCSVHeader.MATERIAL_PARAMETER_MOISTURE_WICKING.value())));
                 productRequest.setMaterialParameter(materialParameter);
@@ -365,7 +304,10 @@ public class ProductService {
             if (!productCSVUploadResponse.getMessages().isEmpty()) {
                 return ResponseEntity.badRequest().body(productCSVUploadResponse);
             } else {
-                productRepository.saveAll(productList);
+                List<Product> savedProductList = productRepository.saveAll(productList);
+
+                savedProductList.stream().map(Product::getId).forEach(productID -> log.info("Product created: {}", productID));
+
                 return ResponseEntity.status(HttpStatus.CREATED).build();
             }
         } catch (Exception e) {

@@ -27,6 +27,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -106,6 +107,7 @@ public class Product extends AbstractPersistable<UUID> {
 
     //Material Parameter
     @Embedded
+    @Valid
     private MaterialParameter materialParameter;
 
     //Motiv

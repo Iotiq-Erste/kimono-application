@@ -45,7 +45,7 @@ public enum ProductCSVHeader {
     MATERIAL_BEHAVIOR_SWEAT_WICKING("materialBehavior.sweatWicking"),
     MATERIAL_BEHAVIOR_WASHABLE("materialBehavior.washable"),
     MATERIAL_PARAMETER_THICKNESS("materialParameter.thickness"),
-    MATERIAL_PARAMETER_FLEXIBILITY("materialParameter.flexibility"),
+    MATERIAL_PARAMETER_WEIGHT_PER_UNIT_AREA("materialParameter.weightPerUnitArea"),
     MATERIAL_PARAMETER_BREATHABILITY("materialParameter.breathability"),
     MATERIAL_PARAMETER_MOISTURE_WICKING("materialParameter.moistureWicking"),
     MOTIF("motif"),

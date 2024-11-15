@@ -156,8 +156,8 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
     // MaterialParameter
     private BigDecimal lowestThickness;
     private BigDecimal highestThickness;
-    private Integer lowestFlexibility;
-    private Integer highestFlexibility;
+    private BigDecimal lowestWeightPerUnitArea;
+    private BigDecimal highestWeightPerUnitArea;
     private Integer lowestBreathability;
     private Integer highestBreathability;
     private Integer lowestMoistureWicking;
@@ -224,7 +224,7 @@ public class ProductFilter extends PageableRequest implements SearchRequest<Prod
                 .and(isInList(Product_.FIBER_TYPES, fiberTypes))
                 .and(isIn(Product_.GENDER, genders))
                 .and(findInRange(Product_.MATERIAL_PARAMETER, MaterialParameter_.THICKNESS, lowestThickness, highestThickness))
-                .and(findInRange(Product_.MATERIAL_PARAMETER, MaterialParameter_.FLEXIBILITY, (lowestFlexibility != null) ? BigDecimal.valueOf(lowestFlexibility) : null, (highestFlexibility != null) ? BigDecimal.valueOf(highestFlexibility) : null))
+                .and(findInRange(Product_.MATERIAL_PARAMETER, MaterialParameter_.WEIGHT_PER_UNIT_AREA, (lowestWeightPerUnitArea != null) ? lowestWeightPerUnitArea : null, (highestWeightPerUnitArea != null) ? highestWeightPerUnitArea : null))
                 .and(findInRange(Product_.MATERIAL_PARAMETER, MaterialParameter_.BREATHABILITY, (lowestBreathability != null) ? BigDecimal.valueOf(lowestBreathability) : null, (highestBreathability != null) ? BigDecimal.valueOf(highestBreathability) : null))
                 .and(findInRange(Product_.MATERIAL_PARAMETER, MaterialParameter_.MOISTURE_WICKING, (lowestMoistureWicking != null) ? BigDecimal.valueOf(lowestMoistureWicking) : null, (highestMoistureWicking != null) ? BigDecimal.valueOf(highestMoistureWicking) : null))
                 .and(isIn(Product_.MOTIF, motifs))

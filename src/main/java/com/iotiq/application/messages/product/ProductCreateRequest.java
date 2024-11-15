@@ -59,6 +59,7 @@ public class ProductCreateRequest{
     private Gender gender;
     private Haptics haptics;
     private MaterialBehavior materialBehavior;
+    @Valid
     private MaterialParameter materialParameter;
     private Motif motif;
     private Neurodermatitis neurodermatitis;
@@ -115,7 +116,7 @@ public class ProductCreateRequest{
                 ProductCSVHeader.MATERIAL_BEHAVIOR_SWEAT_WICKING.value(),
                 ProductCSVHeader.MATERIAL_BEHAVIOR_WASHABLE.value(),
                 ProductCSVHeader.MATERIAL_PARAMETER_THICKNESS.value(),
-                ProductCSVHeader.MATERIAL_PARAMETER_FLEXIBILITY.value(),
+                ProductCSVHeader.MATERIAL_PARAMETER_WEIGHT_PER_UNIT_AREA.value(),
                 ProductCSVHeader.MATERIAL_PARAMETER_BREATHABILITY.value(),
                 ProductCSVHeader.MATERIAL_PARAMETER_MOISTURE_WICKING.value(),
                 ProductCSVHeader.MOTIF.value(),

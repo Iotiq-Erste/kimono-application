@@ -22,6 +22,7 @@ import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -57,6 +58,7 @@ public class ProductDemandRequest {
 
     private MaterialBehavior materialBehavior;
 
+    @Valid
     private MaterialParameter materialParameter;
 
     private Motif motif;

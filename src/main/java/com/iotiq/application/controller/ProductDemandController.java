@@ -10,6 +10,7 @@ import com.iotiq.application.service.CustomerService;
 import com.iotiq.application.service.ProductDemandService;
 import com.iotiq.commons.message.response.PagedResponse;
 import com.iotiq.commons.message.response.PagedResponseBuilder;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +40,7 @@ public class ProductDemandController {
     @PostMapping
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.CREATE)")
     @ResponseStatus(HttpStatus.CREATED)
-    public ProductDemandCreateResponse createProductDemand(@RequestBody ProductDemandRequest productDemandRequest) {
+    public ProductDemandCreateResponse createProductDemand(@RequestBody @Valid ProductDemandRequest productDemandRequest) {
         return new ProductDemandCreateResponse(productDemandService.createProductDemand(productDemandRequest, customerService.getCurrentCustomer()).getId());
     }
 
@@ -60,7 +61,7 @@ public class ProductDemandController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority(@ProductDemandManagementAuth.UPDATE) and hasRole('ROLE_CUSTOMER')")
-    public void updateProductDemand(@PathVariable("id") UUID id, @RequestBody ProductDemandUpdateRequest updateRequest) {
+    public void updateProductDemand(@PathVariable("id") UUID id, @RequestBody @Valid ProductDemandUpdateRequest updateRequest) {
         productDemandService.updateProductDemand(id, updateRequest, customerService.getCurrentCustomer());
     }
 

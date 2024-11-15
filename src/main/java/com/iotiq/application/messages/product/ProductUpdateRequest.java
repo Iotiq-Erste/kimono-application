@@ -24,6 +24,7 @@ import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -50,6 +51,7 @@ public class ProductUpdateRequest {
     private Gender gender;
     private Haptics haptics;
     private MaterialBehavior materialBehavior;
+    @Valid
     private MaterialParameter materialParameter;
     private Motif motif;
     private Neurodermatitis neurodermatitis;

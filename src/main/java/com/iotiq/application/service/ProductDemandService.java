@@ -75,6 +75,7 @@ public class ProductDemandService {
         ProductDemand productDemand = findProductDemandOfCurrentCustomerById(id, customer);
 
         ModelMapperUtil.map(updateRequest, productDemand);
+
         productDemandRepository.save(productDemand);
 
         log.info("Product demand {} updated", productDemand.getId());
