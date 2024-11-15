@@ -14,7 +14,6 @@ import com.iotiq.application.repository.ProductDemandRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.Person;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Validator;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,6 @@ import java.util.UUID;
 public class ProductDemandService {
     private final ProductDemandRepository productDemandRepository;
     private static final Logger log = LoggerFactory.getLogger(ProductDemandService.class);
-    private final Validator validator;
 
     @Transactional
     public ProductDemand createProductDemand(ProductDemandRequest productDemandRequest, Customer customer) {
