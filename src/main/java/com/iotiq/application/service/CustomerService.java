@@ -5,6 +5,7 @@ import com.iotiq.application.domain.Customer;
 import com.iotiq.application.domain.MedicalData;
 import com.iotiq.application.domain.Order;
 import com.iotiq.application.domain.SizeInfo;
+import com.iotiq.application.messages.cart.CartDto;
 import com.iotiq.application.messages.customer.CustomerDto;
 import com.iotiq.application.messages.customer.CustomerUpdateRequest;
 import com.iotiq.application.messages.customer.contact.Address;
@@ -84,7 +85,7 @@ public class CustomerService {
         customerDto.setContactInfo(getContactInfo(customer));
         customerDto.setSizeInfo(Objects.requireNonNullElseGet(customer.getSizeInfo(), SizeInfo::new));
         customerDto.setMedicalData(Objects.requireNonNullElseGet(customer.getMedicalData(), MedicalData::new));
-        customerDto.setCart(customerDto.getCart());
+        customerDto.setCart(ModelMapperUtil.map(customer.getCart(), CartDto.class));
         customerDto.setOrders(getLastTwoOrders(customer.getOrders()));
 
         return customerDto;
