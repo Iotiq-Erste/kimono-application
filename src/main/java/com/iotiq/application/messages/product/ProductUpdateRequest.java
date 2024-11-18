@@ -36,6 +36,7 @@ public class ProductUpdateRequest {
 
     private String title;
     private String description;
+    @Valid
     private Price price;
     private String imageUrl;
     private AgeGroup ageGroup;

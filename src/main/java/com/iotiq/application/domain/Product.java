@@ -53,6 +53,7 @@ public class Product extends AbstractPersistable<UUID> {
     private String description;
 
     @Embedded
+    @Valid
     private Price price;
 
     private String imageUrl;
