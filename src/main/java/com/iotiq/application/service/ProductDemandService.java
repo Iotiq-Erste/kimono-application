@@ -45,7 +45,7 @@ public class ProductDemandService {
 
     public Page<ProductDemandDto> getProductDemandsForSeller(Pageable pageable, Seller seller) {
         return productDemandRepository.
-                findAllByIsActiveTrueAndSellerIsNullAndSustainabilitySkillsIn(pageable, seller.getSkills()).map(productDemand -> {
+                findByIsActiveTrueAndSellerIsNullAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(pageable, seller.getSkills()).map(productDemand -> {
             ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
             demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
             return demandDto;
