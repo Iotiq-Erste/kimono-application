@@ -107,7 +107,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -242,7 +242,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -374,7 +374,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -506,7 +506,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -638,7 +638,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -770,7 +770,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -902,7 +902,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -1034,7 +1034,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -1173,7 +1173,7 @@ Content-Type: application/json
         client.assert(response.body.materialBehavior.washable === "VERY", "Creation failed, washable does not match");
         client.assert(response.body.materialParameter.thickness === 2, "Creation failed, thickness does not match");
         client.assert(response.body.materialParameter.weightPerUnitArea === 20, "Creation failed, weight per unit area does not match");
-        client.assert(response.body.materialParameter.breathability === 20, "Creation failed, breathability does not match");
+        client.assert(response.body.materialParameter.breathability === 50, "Creation failed, breathability does not match");
         client.assert(response.body.materialParameter.moistureWicking === 20, "Creation failed, moistureWicking does not match");
         client.assert(response.body.motif === "ANIMALS", "Creation failed, motif does not match");
         client.assert(response.body.neurodermatitis === "STAGE_ONE_DRY_SKIN", "Creation failed, neurodermatitis does not match");
