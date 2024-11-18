@@ -20,8 +20,8 @@ import java.math.BigDecimal;
 public class Price {
 
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = false, message = "{exception.greaterThan}")
-    @Digits(integer = 10, fraction = 2, message = "{exception.priceAmountFormat}")
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Digits(integer = 10, fraction = 2)
     private BigDecimal amount;
     @NotNull
     Currency currency;

@@ -17,16 +17,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MaterialParameter {
-    @DecimalMin(value = "0.05", message = "{exception.greaterThan}")
-    @DecimalMax(value = "2.00", message = "{exception.lessThanOrEqualTo}")
+    @DecimalMin(value = "0.05")
+    @DecimalMax(value = "2.00")
     private Float thickness;
-    @Min(value = 0, message = "{exception.greaterThan}")
-    @Max(value = 600, message = "{exception.lessThanOrEqualTo}")
+    @Min(value = 0)
+    @Max(value = 600)
     private Float weightPerUnitArea;
-    @Min(value = 50, message = "{exception.greaterThan}")
-    @Max(value = 500, message = "{exception.lessThanOrEqualTo}")
+    @Min(value = 50)
+    @Max(value = 500)
     private Integer breathability;
-    @Min(value = 0, message = "{exception.greaterThan}")
-    @Max(value = 100, message = "{exception.lessThanOrEqualTo}")
+    @Min(value = 0)
+    @Max(value = 100)
     private Integer moistureWicking;
 }
