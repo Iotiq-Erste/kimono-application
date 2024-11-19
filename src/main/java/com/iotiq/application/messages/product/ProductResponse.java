@@ -21,7 +21,6 @@ import com.iotiq.application.domain.enums.OekotexStandard;
 import com.iotiq.application.domain.enums.PriceRange;
 import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
-import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import lombok.Getter;
@@ -61,5 +60,4 @@ public class ProductResponse {
     private List<SpecificBodyPart> specificBodyParts;
     private List<SpecificFunctionality> specificFunctionalities;
     private Sustainability sustainability;
-    private List<Skill> skills;
 }

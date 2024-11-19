@@ -125,7 +125,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -261,7 +261,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
@@ -396,7 +396,7 @@ Content-Type: application/json
   "materialParameter": {
     "thickness": 2,
     "weightPerUnitArea": 20,
-    "breathability": 20,
+    "breathability": 50,
     "moistureWicking": 20
   },
   "motif": "ANIMALS",
