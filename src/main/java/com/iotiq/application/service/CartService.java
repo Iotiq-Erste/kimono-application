@@ -1,6 +1,5 @@
 package com.iotiq.application.service;
 
-import com.iotiq.application.config.ModelMapperUtil;
 import com.iotiq.application.domain.Cart;
 import com.iotiq.application.domain.CartItem;
 import com.iotiq.application.domain.Customer;
@@ -12,7 +11,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -23,15 +21,7 @@ public class CartService {
     private final ProductService productService;
 
     public CartDto getCart(Customer customer) {
-        Cart cart = customer.getCart();
-        BigDecimal totalAmount = cart.getCartItems().stream()
-                .map(cartItem ->  BigDecimal.valueOf(cartItem.getQuantity())
-                        .multiply(cartItem.getProduct().getPrice().getAmount()))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        CartDto cartDto = ModelMapperUtil.map(cart, CartDto.class);
-        cartDto.setTotalAmount(totalAmount);
-
-        return cartDto;
+        return customer.getCart().toDto();
     }
 
     @Transactional
@@ -43,7 +33,7 @@ public class CartService {
         cartRepository.save(cart);
     }
 
-    public List<CartItem> toCartItemList(List<CartItemDto> cartItemDtos, Cart cart){
+    public List<CartItem> toCartItemList(List<CartItemDto> cartItemDtos, Cart cart) {
         return cartItemDtos.stream().map(cartItemDto -> {
             CartItem cartItem = new CartItem();
             cartItem.setProduct(productService.getOne(cartItemDto.getProductId()));
@@ -52,5 +42,6 @@ public class CartService {
             return cartItem;
         }).toList();
     }
+
 
 }

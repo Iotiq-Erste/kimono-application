@@ -1,18 +1,17 @@
 package com.iotiq.application.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.iotiq.application.config.ModelMapperUtil;
+import com.iotiq.application.messages.cart.CartDto;
+import com.iotiq.application.messages.cartitem.CartItemDetailDto;
 import com.iotiq.commons.domain.BaseAbstractAuditingEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -45,5 +44,19 @@ public class Cart extends BaseAbstractAuditingEntity<UUID> {
     @Override
     public int hashCode() {
         return 13;
+    }
+
+    public BigDecimal calculateTotalAmount() {
+        return this.cartItems.stream()
+                .map(cartItem -> BigDecimal.valueOf(cartItem.getQuantity())
+                        .multiply(cartItem.getProduct().getPrice().getAmount()))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public CartDto toDto () {
+        CartDto cartDto = new CartDto();
+        cartDto.setCartItems(ModelMapperUtil.map(this.cartItems, CartItemDetailDto.class));
+        cartDto.setTotalAmount(calculateTotalAmount());
+        return cartDto;
     }
 }
