@@ -15,14 +15,17 @@ import java.util.UUID;
 
 public interface ProductDemandRepository extends JpaRepository<ProductDemand, UUID> {
 
+    @Query("select pd from ProductDemand pd left join pd.sustainability.skills skills where pd.id=:id and pd.isActive = true and (pd.sustainability.skills is empty or skills in :skills)")
+    Optional<ProductDemand> findByIdAndIsActiveTrueSustainabilitySkillsEmptyOrSustainabilitySkillsIn(UUID id, Set<Skill> skills);
+
     Page<ProductDemand> findAllByCustomerAndIsActiveTrue(Customer customer, Pageable pageable);
     Optional<ProductDemand> findByIdAndCustomerAndIsActiveTrue(UUID id, Customer customer);
 
-    @Query("select p from ProductDemand p left join p.sustainability.skills skills where p.isActive = true and p.seller is null and (p.sustainability.skills is empty or skills in :skills)")
+    @Query("select pd from ProductDemand pd left join pd.sustainability.skills skills where pd.isActive = true and pd.seller is null and (pd.sustainability.skills is empty or skills in :skills)")
     Page<ProductDemand> findByIsActiveTrueAndSellerIsNullAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(Pageable pageable, Set<Skill> skills);
 
-    Page<ProductDemand> findAllByIsActiveTrueAndSeller(Pageable pageable, Seller seller);
+    Page<ProductDemand> findAllBySeller(Pageable pageable, Seller seller);
 
-    @Query("SELECT pd FROM ProductDemand pd WHERE pd.id = :id AND (pd.seller IS NULL OR pd.seller = :seller)")
-    Optional<ProductDemand> findByIdAndSellerIsNullOrSeller(UUID id, Seller seller);
+    @Query("SELECT pd FROM ProductDemand pd left join pd.sustainability.skills skills  WHERE pd.id = :id AND pd.isActive = true AND (pd.seller IS NULL OR pd.seller = :seller) AND (pd.sustainability.skills is empty or skills in :skills)")
+    Optional<ProductDemand> findByIdAndIsActiveAndSellerIsNullOrSellerAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(UUID id, Seller seller, Set<Skill> skills);
 }

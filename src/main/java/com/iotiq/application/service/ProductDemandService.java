@@ -22,7 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -46,14 +45,14 @@ public class ProductDemandService {
     public Page<ProductDemandDto> getProductDemandsForSeller(Pageable pageable, Seller seller) {
         return productDemandRepository.
                 findByIsActiveTrueAndSellerIsNullAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(pageable, seller.getSkills()).map(productDemand -> {
-            ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
-            demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
-            return demandDto;
-        });
+                    ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
+                    demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
+                    return demandDto;
+                });
     }
 
     public Page<ProductDemandDto> getAssignedProductDemandsForSeller(Pageable pageable, Seller seller) {
-        return productDemandRepository.findAllByIsActiveTrueAndSeller(pageable, seller).map(productDemand -> {
+        return productDemandRepository.findAllBySeller(pageable, seller).map(productDemand -> {
             ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
             demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
             return demandDto;
@@ -74,6 +73,11 @@ public class ProductDemandService {
     public void updateProductDemand(UUID id, ProductDemandUpdateRequest updateRequest, Customer customer) {
         ProductDemand productDemand = findProductDemandOfCurrentCustomerById(id, customer);
 
+        if (productDemand.getStatus().equals(RequestStatus.COMPLETED) || productDemand.getStatus().equals(RequestStatus.CANCELLED)
+                || productDemand.getStatus().equals(RequestStatus.IN_PROGRESS)) {
+            throw new EntityNotFoundException(ProductDemand.ENTITY_NAME);
+        }
+
         ModelMapperUtil.map(updateRequest, productDemand);
 
         productDemandRepository.save(productDemand);
@@ -91,12 +95,16 @@ public class ProductDemandService {
      */
     @Transactional
     public void updateDemandStatusBySeller(UUID id, SellerProductDemandUpdateRequest updateRequest, Seller seller) {
-        ProductDemand productDemand = productDemandRepository.findById(id)
+
+        ProductDemand productDemand = productDemandRepository.findByIdAndIsActiveTrueSustainabilitySkillsEmptyOrSustainabilitySkillsIn(id, seller.getSkills())
                 .orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
+        if(productDemand.getStatus().equals(RequestStatus.COMPLETED) || productDemand.getStatus().equals(RequestStatus.CANCELLED)){
+            throw new EntityNotFoundException(ProductDemand.ENTITY_NAME);
+        }
         updateSellerInfo(productDemand, updateRequest.getStatus(), seller);
         productDemand.setStatus(
                 updateRequest.getStatus() == RequestStatus.CANCELLED ?
-                RequestStatus.PENDING : updateRequest.getStatus());
+                        RequestStatus.PENDING : updateRequest.getStatus());
         productDemandRepository.save(productDemand);
     }
 
@@ -125,6 +133,14 @@ public class ProductDemandService {
     @Transactional
     public void deleteProductDemand(UUID id, Customer customer) {
         ProductDemand productDemand = findProductDemandOfCurrentCustomerById(id, customer);
+
+        if (productDemand.getStatus().equals(RequestStatus.COMPLETED)) {
+            throw new EntityNotFoundException(ProductDemand.ENTITY_NAME);
+        }
+
+        if (Objects.nonNull(productDemand.getSeller())) {
+            productDemand.setStatus(RequestStatus.CANCELLED);
+        }
         productDemand.setActive(false);
         productDemandRepository.save(productDemand);
     }
@@ -135,19 +151,16 @@ public class ProductDemandService {
     }
 
     public ProductDemandDto getProductDemandOfCustomerByID(UUID id, Customer customer) {
-        Optional<ProductDemand> productDemand = productDemandRepository.findById(id);
+        ProductDemand productDemand = findProductDemandOfCurrentCustomerById(id, customer);
 
-        if (productDemand.isEmpty() || !Objects.equals(productDemand.get().getCustomer().getId(), customer.getId())) {
-            throw new EntityNotFoundException(ProductDemand.ENTITY_NAME, id);
-        }
-        ProductDemandDto productDemandDto = ModelMapperUtil.map(productDemand.get(), ProductDemandDto.class);
-        productDemandDto.setCustomerBasicInfo(ModelMapperUtil.map(Objects.requireNonNullElseGet(productDemand.get().getCustomer().getUser().getPersonalInfo(), Person::new), BasicInfo.class));
+        ProductDemandDto productDemandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
+        productDemandDto.setCustomerBasicInfo(ModelMapperUtil.map(Objects.requireNonNullElseGet(productDemand.getCustomer().getUser().getPersonalInfo(), Person::new), BasicInfo.class));
 
         return productDemandDto;
     }
 
     public ProductDemandDto getProductDemand(UUID id, Seller seller) {
-        ProductDemand productDemand = productDemandRepository.findByIdAndSellerIsNullOrSeller(id, seller).orElseThrow(() ->
+        ProductDemand productDemand = productDemandRepository.findByIdAndIsActiveAndSellerIsNullOrSellerAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(id, seller, seller.getSkills()).orElseThrow(() ->
                 new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
         ProductDemandDto productDemandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
         ModelMapperUtil.map(productDemand, ProductDemandDto.class);
