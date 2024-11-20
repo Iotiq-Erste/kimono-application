@@ -160,7 +160,7 @@ public class ProductDemandService {
     }
 
     public ProductDemandDto getProductDemand(UUID id, Seller seller) {
-        ProductDemand productDemand = productDemandRepository.findByIdAndIsActiveAndSellerIsNullOrSellerAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(id, seller, seller.getSkills()).orElseThrow(() ->
+        ProductDemand productDemand = productDemandRepository.findByIdAndSellerIsNullOrSellerAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(id, seller, seller.getSkills()).orElseThrow(() ->
                 new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
         ProductDemandDto productDemandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
         ModelMapperUtil.map(productDemand, ProductDemandDto.class);

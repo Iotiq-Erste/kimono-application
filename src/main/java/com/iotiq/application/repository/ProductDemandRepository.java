@@ -26,6 +26,6 @@ public interface ProductDemandRepository extends JpaRepository<ProductDemand, UU
 
     Page<ProductDemand> findAllBySeller(Pageable pageable, Seller seller);
 
-    @Query("SELECT pd FROM ProductDemand pd left join pd.sustainability.skills skills  WHERE pd.id = :id AND pd.isActive = true AND (pd.seller IS NULL OR pd.seller = :seller) AND (pd.sustainability.skills is empty or skills in :skills)")
-    Optional<ProductDemand> findByIdAndIsActiveAndSellerIsNullOrSellerAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(UUID id, Seller seller, Set<Skill> skills);
+    @Query("SELECT pd FROM ProductDemand pd left join pd.sustainability.skills skills  WHERE pd.id = :id AND (pd.seller IS NULL OR pd.seller = :seller) AND (pd.sustainability.skills is empty or skills in :skills)")
+    Optional<ProductDemand> findByIdAndSellerIsNullOrSellerAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(UUID id, Seller seller, Set<Skill> skills);
 }
