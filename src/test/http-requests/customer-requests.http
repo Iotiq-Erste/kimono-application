@@ -1,0 +1,204 @@
+### Scenario 1: Obtain Token For Customer
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{customerPassword}} &
+username = {{customerUsername}} &
+client_secret = {{clientSecret}}
+
+> {%
+    client.global.set("customer_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 2: Creating Customer According to Role by Filter
+GET {{baseUrl}}/api/v1/products
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+
+### Scenario 3: Get Customer
+GET {{baseUrl}}/api/v1/customer
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Test customer created successfully", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("contactInfo"),"Customer created");
+        client.assert(response.body.hasOwnProperty("medicalData"),"Customer created");
+        client.assert(response.body.hasOwnProperty("sizeInfo"),"Customer created");
+    });
+%}
+
+### Scenario 4: Update Customer
+PUT {{baseUrl}}/api/v1/customer
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+{
+  "contactInfo": {
+    "basicInfo": {
+      "firstName": "testName",
+      "lastName": "testLastName",
+      "phoneNumber": "+494324395833",
+      "email": "test@gmail.com"
+    },
+    "address": {
+      "city": "test-city",
+      "state": "test-state",
+      "street": "test-street",
+      "zipCode": "test-zipCode",
+      "country": "test-country"
+    }
+  },
+  "medicalData": {
+    "ageGroup": "test-ageGroup",
+    "clothingSizeDetermination": "test-clothingSizeDetermination",
+    "brandPreferences": "test-brandPreferences",
+    "clothingSelection": [
+      "test-clothingSelection"
+    ],
+    "bodyRegions": [
+      "NECK"
+    ],
+    "medicalExamination": "test-medicalExamination",
+    "allergiesSensitivities": [
+      "test-allergiesSensitivities"
+    ],
+    "pastHealthIssues": [
+      "test-pastHealthIssues"
+    ],
+    "treatmentWithMedications": [
+      "test-treatmentWithMedications"
+    ],
+    "medicalHistory": ["test-medicalHistory"],
+    "skinDisease": "test-skinDisease"
+  },
+  "sizeInfo": {
+    "height": 180,
+    "neckCircumference": 50,
+    "chestCircumference": 50,
+    "chestCircumferenceHorizontal": 50,
+    "waistCircumference": 50,
+    "hipCircumference": 50,
+    "buttockCircumference": 50,
+    "leftArmLength": 50,
+    "rightArmLength": 50,
+    "averageArmLength": 50,
+    "leftShoulderLength": 50,
+    "rightShoulderLength": 50,
+    "averageShoulderLength": 50,
+    "leftShoulderInclination": 5,
+    "rightShoulderInclination": 5,
+    "chestWidth": 50,
+    "frontWaistLength": 50,
+    "chestSpan": 50,
+    "chestHeight": 50,
+    "backWidth": 50,
+    "lengthOfChestAtBack": 50,
+    "backWaistLength": 50,
+    "hipHeight": 50,
+    "leftWaistToHipLength": 50,
+    "rightWaistToHipLength": 50,
+    "waistToHipLengthOnAverage": 50,
+    "heightButtocks": 50,
+    "lengthLeftWaistToButtocks": 50,
+    "rightLeftWaistToButtocks": 50,
+    "averageLengthBetweenWaistAndButtocks": 50,
+    "innerLegLength": 50,
+    "leftOuterLegLength": 50,
+    "rightoOuterLegLength": 50,
+    "averageOutsideLegLength": 50,
+    "leftThighCircumference": 50,
+    "rightThighCircumference": 50,
+    "averageThighCircumference": 50,
+    "upperArmCircumference": 50,
+    "wristCircumference": 50,
+    "frontLength": 50,
+    "underbustMeasurement": 50
+  }
+}
+
+> {%
+    client.test("Update customer", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+    });
+%}
+
+### Scenario 5: Get Customer
+GET {{baseUrl}}/api/v1/customer
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Test customer has been updated successfully", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.contactInfo.basicInfo.firstName === "testName", "Update failed, firstName does not match");
+        client.assert(response.body.contactInfo.basicInfo.lastName === "testLastName", "Update failed, lastName does not match");
+        client.assert(response.body.contactInfo.basicInfo.phoneNumber === "+494324395833", "Update failed, phoneNumber does not match");
+        client.assert(response.body.contactInfo.basicInfo.email === "test@gmail.com", "Update failed, phoneNumber does not match");
+        client.assert(response.body.contactInfo.address.city === "test-city", "Update failed, city does not match");
+        client.assert(response.body.contactInfo.address.state === "test-state", "Update failed, state does not match");
+        client.assert(response.body.contactInfo.address.street === "test-street", "Update failed, street does not match");
+        client.assert(response.body.contactInfo.address.zipCode === "test-zipCode", "Update failed, zipCode does not match");
+        client.assert(response.body.contactInfo.address.country === "test-country", "Update failed, country does not match");
+        client.assert(response.body.medicalData.ageGroup === "test-ageGroup", "Update failed, ageGroup does not match");
+        client.assert(response.body.medicalData.clothingSizeDetermination === "test-clothingSizeDetermination", "Update failed, clothingSizeDetermination does not match");
+        client.assert(response.body.medicalData.brandPreferences === "test-brandPreferences", "Update failed, brandPreferences does not match");
+        client.assert(response.body.medicalData.clothingSelection[0] === "test-clothingSelection", "Update failed, clothingSelection does not match");
+        client.assert(response.body.medicalData.bodyRegions[0] === "NECK", "Update failed, bodyRegions does not match");
+        client.assert(response.body.medicalData.medicalExamination === "test-medicalExamination", "Update failed, medicalExamination does not match");
+        client.assert(response.body.medicalData.allergiesSensitivities[0] === "test-allergiesSensitivities", "Update failed, allergiesSensitivities does not match");
+        client.assert(response.body.medicalData.pastHealthIssues[0] === "test-pastHealthIssues", "Update failed, pastHealthIssues does not match");
+        client.assert(response.body.medicalData.treatmentWithMedications[0] === "test-treatmentWithMedications", "Update failed, treatmentWithMedications does not match");
+        client.assert(response.body.medicalData.medicalHistory[0] === "test-medicalHistory", "Update failed, medicalHistory does not match");
+        client.assert(response.body.medicalData.skinDisease === "test-skinDisease", "Update failed, skinDisease does not match");
+        client.assert(response.body.sizeInfo.height === 180, "Update failed, height does not match");
+        client.assert(response.body.sizeInfo.neckCircumference === 50, "Update failed, neckCircumference does not match");
+        client.assert(response.body.sizeInfo.chestCircumference === 50, "Update failed, chestCircumference does not match");
+        client.assert(response.body.sizeInfo.chestCircumferenceHorizontal === 50, "Update failed, chestCircumferenceHorizontal does not match");
+        client.assert(response.body.sizeInfo.waistCircumference === 50, "Update failed, waistCircumference does not match");
+        client.assert(response.body.sizeInfo.hipCircumference === 50, "Update failed, hipCircumference does not match");
+        client.assert(response.body.sizeInfo.buttockCircumference === 50, "Update failed, buttockCircumference does not match");
+        client.assert(response.body.sizeInfo.leftArmLength === 50, "Update failed, leftArmLength does not match");
+        client.assert(response.body.sizeInfo.rightArmLength === 50, "Update failed, rightArmLength does not match");
+        client.assert(response.body.sizeInfo.averageArmLength === 50, "Update failed, averageArmLength does not match");
+        client.assert(response.body.sizeInfo.leftShoulderLength === 50, "Update failed, leftShoulderLength does not match");
+        client.assert(response.body.sizeInfo.rightShoulderLength === 50, "Update failed, rightShoulderLength does not match");
+        client.assert(response.body.sizeInfo.averageShoulderLength === 50, "Update failed, averageShoulderLength does not match");
+        client.assert(response.body.sizeInfo.leftShoulderInclination == 5, "Update failed, leftShoulderInclination does not match");
+        client.assert(response.body.sizeInfo.rightShoulderInclination == 5, "Update failed, rightShoulderInclination does not match");
+        client.assert(response.body.sizeInfo.chestWidth === 50, "Update failed, chestWidth does not match");
+        client.assert(response.body.sizeInfo.frontWaistLength === 50, "Update failed, frontWaistLength does not match");
+        client.assert(response.body.sizeInfo.chestSpan === 50, "Update failed, chestSpan does not match");
+        client.assert(response.body.sizeInfo.chestHeight === 50, "Update failed, chestHeight does not match");
+        client.assert(response.body.sizeInfo.backWidth === 50, "Update failed, backWidth does not match");
+        client.assert(response.body.sizeInfo.lengthOfChestAtBack === 50, "Update failed, lengthOfChestAtBack does not match");
+        client.assert(response.body.sizeInfo.backWaistLength === 50, "Update failed, backWaistLength does not match");
+        client.assert(response.body.sizeInfo.hipHeight === 50, "Update failed, hipHeight does not match");
+        client.assert(response.body.sizeInfo.leftWaistToHipLength === 50, "Update failed, leftWaistToHipLength does not match");
+        client.assert(response.body.sizeInfo.rightWaistToHipLength === 50, "Update failed, rightWaistToHipLength does not match");
+        client.assert(response.body.sizeInfo.waistToHipLengthOnAverage === 50, "Update failed, waistToHipLengthOnAverage does not match");
+        client.assert(response.body.sizeInfo.heightButtocks === 50, "Update failed, heightButtocks does not match");
+        client.assert(response.body.sizeInfo.lengthLeftWaistToButtocks === 50, "Update failed, lengthLeftWaistToButtocks does not match");
+        client.assert(response.body.sizeInfo.rightLeftWaistToButtocks === 50, "Update failed, rightLeftWaistToButtocks does not match");
+        client.assert(response.body.sizeInfo.averageLengthBetweenWaistAndButtocks === 50, "Update failed, averageLengthBetweenWaistAndButtocks does not match");
+        client.assert(response.body.sizeInfo.innerLegLength === 50, "Update failed, innerLegLength does not match");
+        client.assert(response.body.sizeInfo.leftOuterLegLength === 50, "Update failed, leftOuterLegLength does not match");
+        client.assert(response.body.sizeInfo.rightoOuterLegLength === 50, "Update failed, rightoOuterLegLength does not match");
+        client.assert(response.body.sizeInfo.averageOutsideLegLength === 50, "Update failed, averageOutsideLegLength does not match");
+        client.assert(response.body.sizeInfo.leftThighCircumference === 50, "Update failed, leftThighCircumference does not match");
+        client.assert(response.body.sizeInfo.rightThighCircumference === 50, "Update failed, rightThighCircumference does not match");
+        client.assert(response.body.sizeInfo.averageThighCircumference === 50, "Update failed, averageThighCircumference does not match");
+        client.assert(response.body.sizeInfo.upperArmCircumference === 50, "Update failed, upperArmCircumference does not match");
+        client.assert(response.body.sizeInfo.wristCircumference === 50, "Update failed, wristCircumference does not match");
+        client.assert(response.body.sizeInfo.frontLength === 50, "Update failed, frontLength does not match");
+        client.assert(response.body.sizeInfo.underbustMeasurement === 50, "Update failed, underbustMeasurement does not match");
+    });
+%}

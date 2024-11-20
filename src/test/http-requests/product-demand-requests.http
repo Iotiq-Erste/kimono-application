@@ -1263,4 +1263,3 @@ Content-Type: application/json
         client.global.set("totalDemands", client.global.get("totalDemands")-1);
     });
 %}
-###

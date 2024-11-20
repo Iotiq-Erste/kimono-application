@@ -1,0 +1,69 @@
+### Scenario 1: Obtain Token For Company
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{password}} &
+username = {{username}} &
+client_secret = {{clientSecret}}
+
+> {%
+    client.global.set("company_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 2: Creating Seller According to Role by Filter
+GET {{baseUrl}}/api/v1/seller/products
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+
+### Scenario 3: Get Seller
+GET {{baseUrl}}/api/v1/seller
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("a", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("skills"),"Seller created");
+        client.assert(response.body.hasOwnProperty("capacity"),"Seller created");
+        client.assert(response.body.hasOwnProperty("applicationAreas"),"Seller created");
+        client.assert(response.body.hasOwnProperty("orderedProducts"),"Seller created");
+    });
+%}
+
+### Scenario 3: Update Seller
+PUT {{baseUrl}}/api/v1/seller
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+{
+  "skills": ["RECYCLING"],
+  "capacity": "VERY_COMPREHENSIVE",
+  "applicationAreas": ["OTHERS"]
+}
+
+> {%
+    client.test("Test update seller", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+    });
+%}
+
+### Scenario 3: Get Seller
+GET {{baseUrl}}/api/v1/seller
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Test update seller successfully", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.skills[0] === "RECYCLING", "Update failed, skills does not match");
+        client.assert(response.body.capacity === "VERY_COMPREHENSIVE", "Update failed, capacity does not match");
+        client.assert(response.body.applicationAreas[0] === "OTHERS","Update failed, applicationAreas does not match");
+    });
+%}

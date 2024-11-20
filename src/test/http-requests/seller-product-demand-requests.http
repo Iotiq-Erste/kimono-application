@@ -553,7 +553,7 @@ Content-Type: application/json
 
 > {%
     client.test("Company can not update a demand with a status of completed.", function () {
-        client.assert(response.status === 400, "Status code is 400");
+        client.assert(response.status === 404, "Status code is 404");
     });
 %}
 
@@ -673,7 +673,7 @@ Content-Type: application/json
 
 > {%
     client.test("Customer can not delete a demand with a status of completed.", function () {
-        client.assert(response.status === 400, "Status code is 400");
+        client.assert(response.status === 404, "Status code is 404");
     });
 %}
 

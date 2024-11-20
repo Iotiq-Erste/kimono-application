@@ -294,19 +294,7 @@ Content-Type: application/json
     });
 %}
 
-
-### Scenario 11: Delete Order
-DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
-Authorization: Bearer {{company_auth_token}}
-Content-Type: application/json
-
-> {%
-    client.test("Product has been deleted" ,function() {
-        client.assert(response.status === 204, "Status code is 204");
-    });
-%}
-
-### Scenario 12: Update Cart by Deleting Cart Item
+### Scenario 11: Update Cart by Deleting Cart Item
 PUT {{baseUrl}}/api/v1/cart
 Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
@@ -315,7 +303,41 @@ Content-Type: application/json
   "cartItems": []
 }
 
-### Scenario 13: Delete Product
+### Scenario 12: Delete Product
 DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
+
+### Scenario 13: Get Order
+GET {{baseUrl}}/api/v1/orders/{{newOrderId}}
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing order include deleted product" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.id == client.global.get("newOrderId"), "Get one order failed, created order id did not match with requested order id");
+    });
+ %}
+
+### Scenario 14: Delete Order
+DELETE {{baseUrl}}/api/v1/orders/{{newOrderId}}
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Product has been deleted" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+%}
+
+### Scenario 15: Get Deleted Order
+GET {{baseUrl}}/api/v1/orders/{{newProductID1}}
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Test get deleted order" ,function() {
+        client.assert(response.status === 404, "Status code is 404");
+    });
+%}
