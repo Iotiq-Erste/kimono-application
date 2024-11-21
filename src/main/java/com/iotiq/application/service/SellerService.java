@@ -1,12 +1,15 @@
 package com.iotiq.application.service;
 
 import com.iotiq.application.config.ModelMapperUtil;
+import com.iotiq.application.domain.ProductDemand;
 import com.iotiq.application.domain.Seller;
+import com.iotiq.application.domain.enums.Skill;
 import com.iotiq.application.messages.orderedproduct.OrderedProductDto;
 import com.iotiq.application.messages.seller.SellerDto;
 import com.iotiq.application.messages.seller.SellerUpdateRequest;
 import com.iotiq.application.repository.SellerRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
+import com.iotiq.commons.exceptions.UnremovableSkillException;
 import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
@@ -18,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,6 +32,7 @@ public class SellerService {
     private final UserService userService;
     private final OrderedProductService orderedProductService;
     private final Logger log = LoggerFactory.getLogger(SellerService.class);
+    private final ProductDemandService productDemandService;
 
     public Seller getCurrentSeller() {
         User currentUser = userService.getCurrentUser();
@@ -62,6 +67,14 @@ public class SellerService {
     @Transactional
     public void update(SellerUpdateRequest request) {
         Seller currentSeller = getCurrentSeller();
+
+        Set<Skill> removedSkillList = currentSeller.getSkills();
+        removedSkillList.removeAll(request.getSkills());
+
+        if(hasMatchingSkills(currentSeller, removedSkillList)) {
+            throw new UnremovableSkillException();
+        }
+
         if (request.getApplicationAreas() != null && currentSeller.getApplicationAreas() != null)
             currentSeller.getApplicationAreas().clear();
         if (request.getSkills() != null && currentSeller.getSkills() != null)
@@ -80,5 +93,14 @@ public class SellerService {
 
         return orderedProductService.getOrderedProducts(pageableRequest, sort, getCurrentSeller()).stream().limit(2)
                 .collect(Collectors.toList());
+    }
+
+    private boolean hasMatchingSkills(Seller seller, Set<Skill> skills) {
+        if (skills.isEmpty()) {
+            return false;
+        }
+        List<ProductDemand> productDemandList = productDemandService.getAssignedDemandsInProgressForSeller(seller);
+        return productDemandList.stream()
+                .anyMatch(pd -> pd.getSustainability().getSkills().containsAll(skills));
     }
 }
