@@ -9,7 +9,7 @@ import com.iotiq.application.messages.seller.SellerDto;
 import com.iotiq.application.messages.seller.SellerUpdateRequest;
 import com.iotiq.application.repository.SellerRepository;
 import com.iotiq.commons.exceptions.EntityNotFoundException;
-import com.iotiq.commons.exceptions.UnremovableSkillException;
+import com.iotiq.application.exception.UnremovableSkillException;
 import com.iotiq.commons.message.request.PageableRequest;
 import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserService;
