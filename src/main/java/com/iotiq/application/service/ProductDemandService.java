@@ -44,7 +44,7 @@ public class ProductDemandService {
 
     public Page<ProductDemandDto> getProductDemandsForSeller(Pageable pageable, Seller seller) {
         return productDemandRepository.
-                findByIsActiveTrueAndSellerIsNullAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(pageable, seller.getSkills()).map(productDemand -> {
+                findActiveUnassignedAndMatchingSkills(pageable, seller.getSkills()).map(productDemand -> {
                     ProductDemandDto demandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
                     demandDto.setCustomerBasicInfo(createBasicInfo(productDemand));
                     return demandDto;
@@ -96,7 +96,7 @@ public class ProductDemandService {
     @Transactional
     public void updateDemandStatusBySeller(UUID id, SellerProductDemandUpdateRequest updateRequest, Seller seller) {
 
-        ProductDemand productDemand = productDemandRepository.findByIdAndIsActiveTrueSustainabilitySkillsEmptyOrSustainabilitySkillsIn(id, seller.getSkills())
+        ProductDemand productDemand = productDemandRepository.findActiveByIdAndMatchingSkills(id, seller.getSkills())
                 .orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
         if(productDemand.getStatus().equals(RequestStatus.COMPLETED) || productDemand.getStatus().equals(RequestStatus.CANCELLED)){
             throw new EntityNotFoundException(ProductDemand.ENTITY_NAME);
@@ -160,7 +160,7 @@ public class ProductDemandService {
     }
 
     public ProductDemandDto getProductDemand(UUID id, Seller seller) {
-        ProductDemand productDemand = productDemandRepository.findByIdAndSellerIsNullOrSellerAndSustainabilitySkillsEmptyOrSustainabilitySkillsIn(id, seller, seller.getSkills()).orElseThrow(() ->
+        ProductDemand productDemand = productDemandRepository.findByIdAndSellerAndMatchingSkills(id, seller, seller.getSkills()).orElseThrow(() ->
                 new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
         ProductDemandDto productDemandDto = ModelMapperUtil.map(productDemand, ProductDemandDto.class);
         ModelMapperUtil.map(productDemand, ProductDemandDto.class);
