@@ -233,7 +233,53 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 8: Delete Product
-DELETE {{baseUrl}}/api/v1/products/{{newProductID1}}
+### Scenario 8: Update Cart by Adding Cart Item
+PUT {{baseUrl}}/api/v1/cart
 Authorization: Bearer {{customer_auth_token}}
 Content-Type: application/json
+
+{
+  "cartItems": [
+    {
+      "productId":"{{newProductID1}}",
+      "quantity":1
+    }
+  ]
+}
+
+### Scenario 9: Delete Product
+DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+### Scenario 10: Get Updated Cart
+GET {{baseUrl}}/api/v1/cart
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Testing deleted product removed from cart" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.cartItems.length === 0, "Update failed, cart length did not match");
+    });
+%}
+
+
+### Scenario 11: Update Cart by Deleted Product
+PUT {{baseUrl}}/api/v1/cart
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+{
+  "cartItems": [
+    {
+      "productId":"{{newProductID1}}",
+      "quantity":1
+    }
+  ]
+}
+> {%
+    client.test("Testing the addition of a deleted product to the cart" ,function() {
+        client.assert(response.status === 404, "Status code is 404");
+    });
+%}

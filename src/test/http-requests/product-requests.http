@@ -519,7 +519,19 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 10: Delete Product
+### Scenario 10: Get Brands Product
+GET {{baseUrl}}/api/v1/products/brands
+Authorization: Bearer {{auth_token}}
+Content-Type: application/json
+
+> {%
+    client.test("Test brand list" ,function() {
+        client.assert(response.status === 200, "Status code is 200");
+        client.assert(response.body.brands[0] === "BEYMEN", "Brand list doesnt match");
+    });
+%}
+
+### Scenario 11: Delete Product
 DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID1}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -531,7 +543,7 @@ Content-Type: application/json
     client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
 %}
 
-### Scenario 11: Delete Product
+### Scenario 12: Delete Product
 DELETE {{baseUrl}}/api/v1/seller/products/{{newProductID2}}
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -543,7 +555,7 @@ Content-Type: application/json
     client.global.set("productTotalElements", client.global.get("productTotalElements")-1);
 %}
 
-### Scenario 12: Get All Products
+### Scenario 13: Get All Products
 GET {{baseUrl}}/api/v1/products
 Authorization: Bearer {{auth_token}}
 Content-Type: application/json
@@ -555,7 +567,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 13: Obtain Token for another company
+### Scenario 14: Obtain Token for another company
 POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
 Content-Type: application/x-www-form-urlencoded
 
@@ -569,7 +581,7 @@ grant_type={{grantType}}&client_id={{clientId}}&password={{company2Password}}&us
     });
 %}
 
-### Scenario 12: Get All The Another Company's Products
+### Scenario 15: Get All The Another Company's Products
 GET {{baseUrl}}/api/v1/seller/products
 Authorization: Bearer {{auth_token2}}
 Content-Type: application/json
@@ -580,4 +592,3 @@ Content-Type: application/json
         client.assert(response.body.page.totalElements === 0, "Can not see other companies' products");
     });
 %}
-###
