@@ -16,13 +16,31 @@ client_secret = {{clientSecret}}
     });
 %}
 
-### Scenario 2: Creating Seller According to Role by Filter
+### Scenario 2: Obtain Token For Customer
+POST https://keycloak.iotiq.dev/realms/kimono/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type = {{grantType}} &
+client_id = {{clientId}} &
+password = {{customerPassword}} &
+username = {{customerUsername}} &
+client_secret = {{clientSecret}}
+
+> {%
+    client.global.set("customer_auth_token", response.body.access_token);
+    client.test("Obtain Token", function () {
+        client.assert(response.status === 200, "HTTP response code is 200");
+        client.assert(response.body.hasOwnProperty("access_token"), "Access token is obtained");
+    });
+%}
+
+### Scenario 3: Creating Seller According to Role by Filter
 GET {{baseUrl}}/api/v1/seller/products
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 
-### Scenario 3: Get Seller
+### Scenario 4: Get Seller
 GET {{baseUrl}}/api/v1/seller
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
@@ -37,13 +55,13 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Update Seller
+### Scenario 5: Update Seller
 PUT {{baseUrl}}/api/v1/seller
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
 
 {
-  "skills": ["RECYCLING"],
+  "skills": ["RECYCLING", "FINISHING"],
   "capacity": "VERY_COMPREHENSIVE",
   "applicationAreas": ["OTHERS"]
 }
@@ -54,7 +72,7 @@ Content-Type: application/json
     });
 %}
 
-### Scenario 3: Get Seller
+### Scenario 6: Get Seller
 GET {{baseUrl}}/api/v1/seller
 Authorization: Bearer {{company_auth_token}}
 Content-Type: application/json
@@ -65,5 +83,170 @@ Content-Type: application/json
         client.assert(response.body.skills[0] === "RECYCLING", "Update failed, skills does not match");
         client.assert(response.body.capacity === "VERY_COMPREHENSIVE", "Update failed, capacity does not match");
         client.assert(response.body.applicationAreas[0] === "OTHERS","Update failed, applicationAreas does not match");
+    });
+%}
+
+### Scenario 7: Create Product Demand #1
+POST {{baseUrl}}/api/v1/product-demands
+Authorization: Bearer {{customer_auth_token}}
+Content-Type: application/json
+
+{
+  "ageGroup": {
+    "adultAgeGroup": "THIRTY_TO_FOURTYFIVE",
+    "childrenAgeGroup": "TWO_TO_SIX_YEARS"
+  },
+  "applicationAreaGroup": {
+    "applicationArea": "PROFESSIONAL_CLOTHING",
+    "usageCycle": "ONE_TIME"
+  },
+  "brand": "BEYMEN",
+  "category": "JEANS",
+  "certifications": [
+    "BLUESIGN",
+    "TOXPROOF"
+  ],
+  "color": "RED",
+  "composition": {
+    "activeSubstanceAreas": [
+      "COMPLETE"
+    ],
+    "activeSubstances": [
+      "CHITOSAN"
+    ],
+    "activeSubstancePlacements": [
+      "SERUM"
+    ],
+    "activeSubstanceReleases": [
+      "DIFFUSING"
+    ],
+    "compositions": [
+      "PATCHWORK"
+    ],
+    "staggerings": [
+      "TEMPORAL"
+    ]
+  },
+  "design": {
+    "designAppearance": "DYNAMIC",
+    "designColor": "COLORFUL"
+  },
+  "designBodyParts": [
+    "SEAMLESS"
+  ],
+  "fiberTypes": [
+    "COTTON",
+    "MODAL"
+  ],
+  "gender": "MALE",
+  "haptics": {
+    "elasticity": "ELASTIC",
+    "fineness": "FINE",
+    "lightweight": "LIGHT",
+    "lintFree": "FREE",
+    "scratchy": "SMOOTH",
+    "seamFeelable": "FEELABLE",
+    "softness": "SOFT",
+    "uniform": "MOSTLY"
+  },
+  "material": "COTTON",
+  "materialBehavior": {
+    "abrasionResistant": "VERY",
+    "absorbency": "VERY",
+    "antistatic": "VERY",
+    "breathable": "VERY",
+    "colorfast": "VERY",
+    "moistureTransporting": "VERY",
+    "odorNeutralizing": "VERY",
+    "scratchResistant": "VERY",
+    "sweatWicking": "VERY",
+    "washable": "VERY"
+  },
+  "materialParameter": {
+    "thickness": 2,
+    "weightPerUnitArea": 20,
+    "breathability": 50,
+    "moistureWicking": 20
+  },
+  "motif": "ANIMALS",
+  "neurodermatitis": "STAGE_ONE_DRY_SKIN",
+  "oekotexStandard": "PRODUCT_CLASS_1",
+  "priceRange": "STANDARD",
+  "rating": "FOUR_POINT_AND_OVER",
+  "sizes": [
+    "XXS"
+  ],
+  "specificBodyParts": [
+    "SCALP",
+    "FACE"
+  ],
+  "specificFunctionalities": [
+    "ANTIBACTERIAL",
+    "ANTIVIRAL"
+  ],
+  "sustainability": {
+    "environmentalCompatibilities": [
+      "ENVIRONMENTAL_COMPATIBILITY",
+      "BIODEGRADABLE"
+    ],
+    "lifeCycles": [
+      "LIFE_CYCLE"
+    ],
+    "regionalityList": [
+      "MADE_IN_GERMANY"
+    ],
+    "resourceConsumptions": [
+      "LOW_USAGE"
+    ],
+    "socialEthics": [
+      "FAIR_WAGES"
+    ],
+    "sustainabilityCompositions": [
+      "RARE_MATERIALS"
+    ],
+    "sustainabilityLightweights": [
+      "LIGHTWEIGHT"
+    ],
+    "skills": [
+      "RECYCLING",
+      "FINISHING"
+    ]
+  }
+}
+
+> {%
+    client.test("Creating product demand", function () {
+        client.assert(response.status === 201, "Status code is 201");
+    });
+    client.global.set("newProductDemandID1", response.body.newProductDemandID);
+%}
+
+### Scenario 8: Update Product Demand
+PUT {{baseUrl}}/api/v1/seller/product-demands/{{newProductDemandID1}}
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+{
+  "status": "IN_PROGRESS"
+}
+
+> {%
+    client.test("Seller update demand status to in progress", function () {
+        client.assert(response.status === 200, "Status code is 200");
+    });
+%}
+
+### Scenario 9: Update Seller
+PUT {{baseUrl}}/api/v1/seller
+Authorization: Bearer {{company_auth_token}}
+Content-Type: application/json
+
+{
+  "skills": ["RECYCLING"]
+}
+
+> {%
+    client.test("Test seller can not update skills if have demand have the skill", function () {
+        client.assert(response.status === 404, "HTTP response code is 404");
     });
 %}
