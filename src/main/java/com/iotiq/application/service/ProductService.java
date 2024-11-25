@@ -78,7 +78,15 @@ public class ProductService {
         Product product = productRepository.findById(id).
                 orElseThrow(() -> new EntityNotFoundException(Product.ENTITY_NAME, id));
 
+        if(product.getCertifications() != null) product.getCertifications().clear();
+        if(product.getDesignBodyParts() != null) product.getDesignBodyParts().clear();
+        if(product.getFiberTypes() != null) product.getFiberTypes().clear();
+        if(product.getSizes() != null) product.getSizes().clear();
+        if(product.getSpecificBodyParts() != null) product.getSpecificBodyParts().clear();
+        if(product.getSpecificFunctionalities() != null) product.getSpecificFunctionalities().clear();
+        if(product.getSustainability() != null) if((product.getSustainability().getSkills()) != null) product.getSustainability().getSkills().clear();
         ModelMapperUtil.map(request, product);
+
 
         productRepository.save(product);
         log.info("Product updated: {}", product.getId());
