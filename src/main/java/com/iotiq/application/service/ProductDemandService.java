@@ -35,6 +35,8 @@ public class ProductDemandService {
         ProductDemand productDemand = ModelMapperUtil.map(productDemandRequest, ProductDemand.class);
         productDemand.setCustomer(customer);
 
+        setBrand(productDemand);
+
         ProductDemand createdProductDemand = productDemandRepository.save(productDemand);
 
         log.info("Product demand {} created", createdProductDemand.getId());
@@ -98,7 +100,7 @@ public class ProductDemandService {
 
         ProductDemand productDemand = productDemandRepository.findActiveByIdAndMatchingSkills(id, seller.getSkills())
                 .orElseThrow(() -> new EntityNotFoundException(ProductDemand.ENTITY_NAME, id));
-        if(productDemand.getStatus().equals(RequestStatus.COMPLETED) || productDemand.getStatus().equals(RequestStatus.CANCELLED)){
+        if (productDemand.getStatus().equals(RequestStatus.COMPLETED) || productDemand.getStatus().equals(RequestStatus.CANCELLED)) {
             throw new EntityNotFoundException(ProductDemand.ENTITY_NAME);
         }
         updateSellerInfo(productDemand, updateRequest.getStatus(), seller);
@@ -175,5 +177,13 @@ public class ProductDemandService {
         basicInfo.setPhoneNumber(productDemand.getCustomer().getUser().getPersonalInfo().getPhoneNumber());
         basicInfo.setEmail(productDemand.getCustomer().getUser().getPersonalInfo().getEmail());
         return basicInfo;
+    }
+
+    private void setBrand(ProductDemand productDemand) {
+
+        if (productDemand.getBrand().isBlank()) {
+            String result = "Product Demand " + (productDemandRepository.findMaxUnbrandedProductDemand() + 1);
+            productDemand.setBrand(result);
+        }
     }
 }
