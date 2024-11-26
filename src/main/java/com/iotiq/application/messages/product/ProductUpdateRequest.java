@@ -23,6 +23,7 @@ import com.iotiq.application.domain.enums.Rating;
 import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
+import com.iotiq.application.validation.NotBlankIfNotNull;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,13 +34,16 @@ import java.util.List;
 @Setter
 public class ProductUpdateRequest {
 
+    @NotBlankIfNotNull
     private String title;
+    @NotBlankIfNotNull
     private String description;
     @Valid
     private Price price;
     private String imageUrl;
     private AgeGroup ageGroup;
     private ApplicationAreaGroup applicationAreaGroup;
+    @NotBlankIfNotNull
     private String brand;
     private Category category;
     private List<Certification> certifications;
