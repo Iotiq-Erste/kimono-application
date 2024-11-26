@@ -181,7 +181,7 @@ public class ProductDemandService {
 
     private void setBrand(ProductDemand productDemand) {
 
-        if (productDemand.getBrand().isBlank()) {
+        if (productDemand.getBrand() == null || productDemand.getBrand().isBlank()) {
             String result = "Product Demand " + (productDemandRepository.findMaxUnbrandedProductDemand() + 1);
             productDemand.setBrand(result);
         }
