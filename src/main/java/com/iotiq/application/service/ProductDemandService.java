@@ -15,6 +15,7 @@ import com.iotiq.commons.exceptions.EntityNotFoundException;
 import com.iotiq.user.domain.Person;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.flywaydb.core.internal.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -181,7 +182,7 @@ public class ProductDemandService {
 
     private void setBrand(ProductDemand productDemand) {
 
-        if (productDemand.getBrand() == null || productDemand.getBrand().isBlank()) {
+        if (!StringUtils.hasText(productDemand.getBrand())) {
             String result = "Product Demand " + (productDemandRepository.findMaxUnbrandedProductDemand() + 1);
             productDemand.setBrand(result);
         }
