@@ -24,6 +24,7 @@ import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -33,13 +34,16 @@ import java.util.List;
 @Setter
 public class ProductUpdateRequest {
 
+    @Pattern(regexp = "^(?!\\s*$).+", message = "Field must not be empty if provided")
     private String title;
+    @Pattern(regexp = "^(?!\\s*$).+", message = "Field must not be empty if provided")
     private String description;
     @Valid
     private Price price;
     private String imageUrl;
     private AgeGroup ageGroup;
     private ApplicationAreaGroup applicationAreaGroup;
+    @Pattern(regexp = "^(?!\\s*$).+", message = "Field must not be empty if provided")
     private String brand;
     private Category category;
     private List<Certification> certifications;

@@ -23,6 +23,7 @@ import com.iotiq.application.domain.enums.Size;
 import com.iotiq.application.domain.enums.SpecificBodyPart;
 import com.iotiq.application.domain.enums.SpecificFunctionality;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -38,10 +39,12 @@ public class ProductDemandRequest {
 
     private String brand;
 
+    @NotNull
     private Category category;
 
     private List<Certification> certifications;
 
+    @NotNull
     private Color color;
 
     private Composition composition;
@@ -52,6 +55,7 @@ public class ProductDemandRequest {
 
     private List<FiberType> fiberTypes;
 
+    @NotNull
     private Gender gender;
 
     private Haptics haptics;
@@ -71,6 +75,7 @@ public class ProductDemandRequest {
 
     private Rating rating;
 
+    @NotNull
     private List<Size> sizes;
 
     private List<SpecificBodyPart> specificBodyParts;

@@ -56,6 +56,7 @@ public class ProductCreateRequest{
     private Design design;
     private List<DesignBodyPart> designBodyParts;
     private List<FiberType> fiberTypes;
+    @NotNull
     private Gender gender;
     private Haptics haptics;
     private MaterialBehavior materialBehavior;
