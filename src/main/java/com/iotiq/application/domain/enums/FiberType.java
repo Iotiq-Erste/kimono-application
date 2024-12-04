@@ -10,5 +10,8 @@ public enum FiberType {
     LYOCELL,
     PROTEIN,
     SKIN_TO_SKIN_FIBER,
-    TENCEL
+    TENCEL,
+    WOOL,
+    SISAL
+
 }
