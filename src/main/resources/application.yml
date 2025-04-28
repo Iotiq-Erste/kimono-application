@@ -51,13 +51,10 @@ image:
 #        descriptor:
 #          sql:
 #            BasicBinder: trace
-server:
-  port: 8099
 
 cors:
   allowed-origins:
   - http://localhost:8011
-  - https://kimono.iotiq.dev
   allowed-methods:
   - GET
   - POST
