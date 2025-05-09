@@ -9,6 +9,7 @@ import com.iotiq.application.repository.KeycloakUserRepository;
 import com.iotiq.user.domain.TransientUser;
 import com.iotiq.user.domain.User;
 import com.iotiq.user.internal.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,7 @@ public class JwtKeycloakAuthConverter implements Converter<Jwt, AbstractAuthenti
     private final KeycloakUserRepository keycloakUserRepository;
 
     @Override
+    @Transactional
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         try {
             KeycloakUserDetails userDetails = extractKeycloakUserDetails(jwt);
@@ -49,6 +51,7 @@ public class JwtKeycloakAuthConverter implements Converter<Jwt, AbstractAuthenti
         }
     }
 
+    @Transactional
     public User handleKeycloakUser(KeycloakUserDetails userDetails) {
         return keycloakUserRepository.findByKeycloakId(userDetails.getKeycloakId())
                 .orElseGet(() -> createNewKeycloakUser(userDetails));
@@ -58,7 +61,8 @@ public class JwtKeycloakAuthConverter implements Converter<Jwt, AbstractAuthenti
         return EnumSet.allOf(Role.class).contains(userRole);
     }
 
-    private KeycloakUser createNewKeycloakUser(KeycloakUserDetails userDetails) {
+    @Transactional
+    public KeycloakUser createNewKeycloakUser(KeycloakUserDetails userDetails) {
         KeycloakUser newUser = new KeycloakUser();
         newUser.setKeycloakId(userDetails.getKeycloakId());
         newUser.setUsername(userDetails.getUsername());
